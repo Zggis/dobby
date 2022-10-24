@@ -1,0 +1,26 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.4'
+	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+	id 'java'
+}
+
+group = 'com.zggis'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '9'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.0-rc2'
+implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc2'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
