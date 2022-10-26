@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM linuxserver/ffmpeg
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get -y install default-jre-headless && \
