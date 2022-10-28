@@ -18,7 +18,8 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import com.zggis.dobby.batch.JobUtils;
+import com.zggis.dobby.batch.FileDTO;
+import com.zggis.dobby.batch.VideoFileDTO;
 import com.zggis.dobby.batch.VideoMergeDTO;
 
 public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutionListener {
@@ -48,15 +49,10 @@ public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutio
 	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
-		List<String> blrpus = (List<String>) stepExecution.getJobExecution().getExecutionContext().get("BLRPUHevc");
-		Map<String, String> blrpuMap = new HashMap<>();
-		for (String rpu : blrpus) {
-			Matcher m = EPISODE_NUM_REGEX.matcher(JobUtils.getWithoutPathAndExtension(rpu).toLowerCase());
-			if (m.find()) {
-				String season = m.group(1);
-				String episode = m.group(2).substring(1, m.group(2).length()).replace("e", "-");
-				blrpuMap.put(season + episode, rpu);
-			}
+		List<FileDTO> blrpus = (List<FileDTO>) stepExecution.getJobExecution().getExecutionContext().get("BLRPUHevc");
+		Map<String, FileDTO> blrpuMap = new HashMap<>();
+		for (FileDTO rpu : blrpus) {
+			blrpuMap.put(rpu.getKey(), rpu);
 		}
 		File dir = new File(mediaDir);
 		File[] directoryListing = dir.listFiles();
@@ -68,9 +64,10 @@ public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutio
 					if (m.find()) {
 						String season = m.group(1);
 						String episode = m.group(2).substring(1, m.group(2).length()).replace("e", "-");
-						String blrpuFileName = blrpuMap.get(season + episode);
+						FileDTO blrpuFileName = blrpuMap.get(season + episode);
 						if (blrpuFileName != null) {
-							VideoMergeDTO newInjectionDTO = new VideoMergeDTO(mediaDir + "/" + child.getName(),
+							VideoMergeDTO newInjectionDTO = new VideoMergeDTO(
+									new VideoFileDTO(mediaDir + "/" + child.getName(), season + episode),
 									blrpuFileName);
 							availableMerges.push(newInjectionDTO);
 						} else {

@@ -6,10 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
+import com.zggis.dobby.batch.HevcFileDTO;
+import com.zggis.dobby.batch.HevcVideoConversion;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class MP4ToHevcProcessor implements ItemProcessor<String, String> {
+public class MP4ToHevcProcessor implements ItemProcessor<HevcVideoConversion, HevcVideoConversion> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MP4ToHevcProcessor.class);
 
@@ -19,24 +21,21 @@ public class MP4ToHevcProcessor implements ItemProcessor<String, String> {
 
 	private DoviProcessBuilder pbservice;
 
-	private String mediaDir;
-
 	private boolean execute;
 
-	public MP4ToHevcProcessor(DoviProcessBuilder pbservice, String mediaDir, String outputDir, String MP4EXTRACT,
-			boolean execute) {
+	public MP4ToHevcProcessor(DoviProcessBuilder pbservice, String outputDir, String MP4EXTRACT, boolean execute) {
 		this.MP4EXTRACT = MP4EXTRACT;
 		this.outputDir = outputDir;
 		this.pbservice = pbservice;
-		this.mediaDir = mediaDir;
 		this.execute = execute;
 	}
 
 	@Override
-	public String process(String dolbyVisionFileName) throws IOException {
-		logger.info("Generating HEVC file from {}...", dolbyVisionFileName);
-		String CMD = MP4EXTRACT + " -raw 1 -out \"" + outputDir + JobUtils.getWithoutExtension(dolbyVisionFileName)
-				+ ".hevc\" \"" + mediaDir + dolbyVisionFileName + "\"";
+	public HevcVideoConversion process(HevcVideoConversion conversion) throws IOException {
+		logger.info("Generating HEVC file from {}...", conversion.getDolbyVisionFileName());
+		String CMD = MP4EXTRACT + " -raw 1 -out \"" + outputDir
+				+ JobUtils.getWithoutPathAndExtension(conversion.getDolbyVisionFileName()) + ".hevc\" \""
+				+ conversion.getDolbyVisionFileName() + "\"";
 		logger.debug(CMD);
 		ProcessBuilder pb = pbservice.get(CMD);
 		pb.redirectErrorStream(true);
@@ -46,7 +45,12 @@ public class MP4ToHevcProcessor implements ItemProcessor<String, String> {
 		} else {
 			logger.info("===EXECUTION SKIPPED===");
 		}
-		return outputDir + JobUtils.getWithoutExtension(dolbyVisionFileName) + ".hevc";
+		conversion.getResults()
+				.add(new HevcFileDTO(
+						outputDir + JobUtils.getWithoutPathAndExtension(conversion.getDolbyVisionFileName()) + ".hevc",
+						conversion.getKey(), true));
+		return conversion;
+
 	}
 
 }

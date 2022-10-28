@@ -1,6 +1,6 @@
 package com.zggis.dobby.dto;
 
-public class VideoFileDTO {
+public class OldVideoFileDTO {
 
 	private String season;
 
@@ -10,7 +10,7 @@ public class VideoFileDTO {
 
 	private boolean dolbyVision;
 
-	public VideoFileDTO() {
+	public OldVideoFileDTO() {
 		super();
 	}
 

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import com.zggis.dobby.batch.JobUtils;
+import com.zggis.dobby.batch.FileDTO;
 import com.zggis.dobby.batch.VideoInjectionDTO;
 
 public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepExecutionListener {
@@ -25,8 +23,6 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
 	private static final Logger logger = LoggerFactory.getLogger(CacheInjectorReader.class);
 
 	private Stack<VideoInjectionDTO> availableInjections = new Stack<>();
-
-	private static final Pattern EPISODE_NUM_REGEX = Pattern.compile("^.*?s(\\d{2})((?:e\\d{2})+).*");
 
 	@Override
 	public VideoInjectionDTO read()
@@ -41,29 +37,21 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
 	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
-		List<String> rpus = (List<String>) stepExecution.getJobExecution().getExecutionContext().get("DolbyVisionRPU");
-		List<String> stds = (List<String>) stepExecution.getJobExecution().getExecutionContext().get("StandardHevc");
-		Map<String, String> rpuMap = new HashMap<>();
-		for (String rpu : rpus) {
-			Matcher m = EPISODE_NUM_REGEX.matcher(JobUtils.getWithoutPathAndExtension(rpu).toLowerCase());
-			if (m.find()) {
-				String season = m.group(1);
-				String episode = m.group(2).substring(1, m.group(2).length()).replace("e", "-");
-				rpuMap.put(season + episode, rpu);
-			}
+		List<FileDTO> rpus = (List<FileDTO>) stepExecution.getJobExecution().getExecutionContext()
+				.get("DolbyVisionRPU");
+		List<FileDTO> stds = (List<FileDTO>) stepExecution.getJobExecution().getExecutionContext().get("STDHEVC");
+
+		Map<String, FileDTO> rpuMap = new HashMap<>();
+		for (FileDTO rpu : rpus) {
+			rpuMap.put(rpu.getKey(), rpu);
 		}
-		for (String std : stds) {
-			Matcher m = EPISODE_NUM_REGEX.matcher(JobUtils.getWithoutPathAndExtension(std).toLowerCase());
-			if (m.find()) {
-				String season = m.group(1);
-				String episode = m.group(2).substring(1, m.group(2).length()).replace("e", "-");
-				String rpuFileName = rpuMap.get(season + episode);
-				if (rpuFileName != null) {
-					VideoInjectionDTO newInjectionDTO = new VideoInjectionDTO(std, rpuFileName);
-					availableInjections.push(newInjectionDTO);
-				} else {
-					logger.warn("Unable to find a RPU episode match for {}", std);
-				}
+		for (FileDTO stdFile : stds) {
+			FileDTO rpuFile = rpuMap.get(stdFile.getKey());
+			if (rpuFile != null) {
+				VideoInjectionDTO newInjectionDTO = new VideoInjectionDTO(stdFile, rpuFile);
+				availableInjections.push(newInjectionDTO);
+			} else {
+				logger.warn("Unable to find a RPU episode match for {}", stdFile.getName());
 			}
 		}
 	}

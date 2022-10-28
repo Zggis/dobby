@@ -2,30 +2,30 @@ package com.zggis.dobby.batch;
 
 public class VideoInjectionDTO {
 
-	private String standardHevcFileName;
+	private FileDTO standardHevcFile;
 
-	private String rpuFileName;
+	private FileDTO rpuFile;
 
-	public VideoInjectionDTO(String standardHevcFileName, String rpuFileName) {
+	public VideoInjectionDTO(FileDTO standardHevcFileName, FileDTO rpuFileName) {
 		super();
-		this.standardHevcFileName = standardHevcFileName;
-		this.rpuFileName = rpuFileName;
+		this.standardHevcFile = standardHevcFileName;
+		this.rpuFile = rpuFileName;
 	}
 
-	public String getStandardHevcFileName() {
-		return standardHevcFileName;
+	public FileDTO getStandardHevcFile() {
+		return standardHevcFile;
 	}
 
-	public void setStandardHevcFileName(String standardHevcFileName) {
-		this.standardHevcFileName = standardHevcFileName;
+	public void setStandardHevcFile(FileDTO standardHevcFileName) {
+		this.standardHevcFile = standardHevcFileName;
 	}
 
-	public String getRpuFileName() {
-		return rpuFileName;
+	public FileDTO getRpuFile() {
+		return rpuFile;
 	}
 
-	public void setRpuFileName(String rpuFileName) {
-		this.rpuFileName = rpuFileName;
+	public void setRpuFile(FileDTO rpuFileName) {
+		this.rpuFile = rpuFileName;
 	}
 
 }

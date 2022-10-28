@@ -11,18 +11,20 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-public class CacheFileReader implements ItemReader<String>, StepExecutionListener {
+import com.zggis.dobby.batch.FileDTO;
+
+public class CacheFileReader implements ItemReader<FileDTO>, StepExecutionListener {
 
 	private String fileType;
 
-	private Stack<String> tempFileNames = new Stack<>();
+	private Stack<FileDTO> tempFileNames = new Stack<>();
 
 	public CacheFileReader(String fileType) {
 		this.fileType = fileType;
 	}
 
 	@Override
-	public String read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+	public FileDTO read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
 		if (!tempFileNames.isEmpty()) {
 			return tempFileNames.pop();
 		} else {
@@ -33,7 +35,7 @@ public class CacheFileReader implements ItemReader<String>, StepExecutionListene
 	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
-		tempFileNames.addAll((Collection<String>) stepExecution.getJobExecution().getExecutionContext().get(fileType));
+		tempFileNames.addAll((Collection<FileDTO>) stepExecution.getJobExecution().getExecutionContext().get(fileType));
 	}
 
 	@Override

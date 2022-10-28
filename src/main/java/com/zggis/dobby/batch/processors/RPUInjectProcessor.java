@@ -6,11 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
+import com.zggis.dobby.batch.FileDTO;
+import com.zggis.dobby.batch.HevcFileDTO;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.batch.VideoInjectionDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, String> {
+public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, FileDTO> {
 
 	private static final Logger logger = LoggerFactory.getLogger(RPUInjectProcessor.class);
 
@@ -30,11 +32,12 @@ public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, Stri
 	}
 
 	@Override
-	public String process(VideoInjectionDTO injectDTO) throws IOException {
-		logger.info("Injecting {} into {}", injectDTO.getRpuFileName(), injectDTO.getStandardHevcFileName());
-		String cmd = DOVI_TOOL + " inject-rpu -i \"" + injectDTO.getStandardHevcFileName() + "\" --rpu-in \""
-				+ injectDTO.getRpuFileName() + "\" -o \"" + outputDir
-				+ JobUtils.getWithoutPathAndExtension(injectDTO.getStandardHevcFileName()) + "[BL+RPU].hevc\"";
+	public FileDTO process(VideoInjectionDTO injectDTO) throws IOException {
+		logger.info("Injecting {} into {}", injectDTO.getRpuFile().getName(),
+				injectDTO.getStandardHevcFile().getName());
+		String cmd = DOVI_TOOL + " inject-rpu -i \"" + injectDTO.getStandardHevcFile().getName() + "\" --rpu-in \""
+				+ injectDTO.getRpuFile().getName() + "\" -o \"" + outputDir
+				+ JobUtils.getWithoutPathAndExtension(injectDTO.getStandardHevcFile().getName()) + "[BL+RPU].hevc\"";
 		logger.debug(cmd);
 		ProcessBuilder pb = pbservice.get(cmd);
 		pb.redirectErrorStream(true);
@@ -44,7 +47,9 @@ public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, Stri
 		} else {
 			logger.info("===EXECUTION SKIPPED===");
 		}
-		return outputDir + JobUtils.getWithoutPathAndExtension(injectDTO.getStandardHevcFileName()) + "[BL+RPU].hevc";
+		return new HevcFileDTO(outputDir
+				+ JobUtils.getWithoutPathAndExtension(injectDTO.getStandardHevcFile().getName()) + "[BL+RPU].hevc",
+				injectDTO.getStandardHevcFile().getKey(), true);
 	}
 
 }

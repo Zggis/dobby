@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zggis.dobby.dto.ActiveAreaDTO;
 import com.zggis.dobby.dto.BorderInfoDTO;
-import com.zggis.dobby.dto.VideoFileDTO;
+import com.zggis.dobby.dto.OldVideoFileDTO;
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 import com.zggis.dobby.dto.mediainfo.TrackDTO;
 
@@ -519,7 +519,7 @@ public class ConverterService {
 				if (child.getName().endsWith(".mkv") || child.getName().endsWith(".mp4")) {
 					logger.debug("Checking {}", child.getName());
 					Matcher m = EPISODE_NUM_REGEX.matcher(child.getName().toLowerCase());
-					VideoFileDTO newFile = new VideoFileDTO();
+					OldVideoFileDTO newFile = new OldVideoFileDTO();
 					newFile.setFullName(child.getName());
 					if (m.find()) {
 						newFile.setSeason(m.group(1));

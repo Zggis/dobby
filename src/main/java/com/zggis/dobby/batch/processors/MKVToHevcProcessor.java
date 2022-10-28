@@ -6,10 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
+import com.zggis.dobby.batch.HevcFileDTO;
+import com.zggis.dobby.batch.HevcVideoConversion;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class MKVToHevcProcessor implements ItemProcessor<String, String> {
+public class MKVToHevcProcessor implements ItemProcessor<HevcVideoConversion, HevcVideoConversion> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MKVToHevcProcessor.class);
 
@@ -19,24 +21,20 @@ public class MKVToHevcProcessor implements ItemProcessor<String, String> {
 
 	private DoviProcessBuilder pbservice;
 
-	private String mediaDir;
-
 	private boolean execute;
 
-	public MKVToHevcProcessor(DoviProcessBuilder pbservice, String mediaDir, String outputDir, String MKVEXTRACT,
-			boolean execute) {
+	public MKVToHevcProcessor(DoviProcessBuilder pbservice, String outputDir, String MKVEXTRACT, boolean execute) {
 		this.MKVEXTRACT = MKVEXTRACT;
 		this.outputDir = outputDir;
 		this.pbservice = pbservice;
-		this.mediaDir = mediaDir;
 		this.execute = execute;
 	}
 
 	@Override
-	public String process(String standardFileName) throws IOException {
-		logger.info("Generating HEVC file from {}...", standardFileName);
-		String cmd = MKVEXTRACT + " \"" + mediaDir + standardFileName + "\" tracks 0:\"" + outputDir
-				+ JobUtils.getWithoutExtension(standardFileName) + ".hevc\"";
+	public HevcVideoConversion process(HevcVideoConversion conversion) throws IOException {
+		logger.info("Generating HEVC file from {}...", conversion.getStandardFileName());
+		String cmd = MKVEXTRACT + " \"" + conversion.getStandardFileName() + "\" tracks 0:\"" + outputDir
+				+ JobUtils.getWithoutPathAndExtension(conversion.getStandardFileName()) + ".hevc\"";
 		logger.debug(cmd);
 		ProcessBuilder pb = pbservice.get(cmd);
 		pb.redirectErrorStream(true);
@@ -46,7 +44,11 @@ public class MKVToHevcProcessor implements ItemProcessor<String, String> {
 		} else {
 			logger.info("===EXECUTION SKIPPED===");
 		}
-		return outputDir + JobUtils.getWithoutExtension(standardFileName) + ".hevc";
+		conversion.getResults()
+				.add(new HevcFileDTO(
+						outputDir + JobUtils.getWithoutPathAndExtension(conversion.getStandardFileName()) + ".hevc",
+						conversion.getKey(), false));
+		return conversion;
 	}
 
 }
