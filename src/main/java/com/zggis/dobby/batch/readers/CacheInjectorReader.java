@@ -40,7 +40,6 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
 		List<FileDTO> rpus = (List<FileDTO>) stepExecution.getJobExecution().getExecutionContext()
 				.get("DolbyVisionRPU");
 		List<FileDTO> stds = (List<FileDTO>) stepExecution.getJobExecution().getExecutionContext().get("STDHEVC");
-
 		Map<String, FileDTO> rpuMap = new HashMap<>();
 		for (FileDTO rpu : rpus) {
 			rpuMap.put(rpu.getKey(), rpu);

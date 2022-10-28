@@ -23,11 +23,10 @@ import com.zggis.dobby.batch.processors.MP4ToHevcProcessor;
 import com.zggis.dobby.batch.processors.MediaInfoProcessor;
 import com.zggis.dobby.batch.processors.MergeToMKVProcessor;
 import com.zggis.dobby.batch.processors.RPUInjectProcessor;
-import com.zggis.dobby.batch.readers.CacheFileReader;
-import com.zggis.dobby.batch.readers.CacheHevcConversionReader;
 import com.zggis.dobby.batch.readers.CacheInjectorReader;
 import com.zggis.dobby.batch.readers.CacheMergeReader;
-import com.zggis.dobby.batch.readers.HevcConversionDiskFileReader;
+import com.zggis.dobby.batch.readers.CacheReader;
+import com.zggis.dobby.batch.readers.DiskHevcConversionFileReader;
 import com.zggis.dobby.batch.writers.CacheConversionWriter;
 import com.zggis.dobby.batch.writers.CacheFileWriter;
 import com.zggis.dobby.batch.writers.CacheHevcConversionWriter;
@@ -84,7 +83,7 @@ public class BatchConfiguration {
 	
 	@Bean
 	public ItemReader<HevcVideoConversion> mediaInfoDiskFileReader() {
-		return new HevcConversionDiskFileReader(mediaDir);
+		return new DiskHevcConversionFileReader(mediaDir);
 	}
 	
 	@Bean
@@ -114,7 +113,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemReader<HevcVideoConversion> hevcConversionDiskFileReader() {
-		return new CacheHevcConversionReader("HevcVideoConversion");
+		return new CacheReader<HevcVideoConversion>("HevcVideoConversion");
 	}
 
 	@Bean
@@ -142,7 +141,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemReader<FileDTO> hevcReader() {
-		return new CacheFileReader("DVHEVC");
+		return new CacheReader<FileDTO>("DVHEVC");
 	}
 
 	@Bean

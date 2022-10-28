@@ -11,23 +11,20 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import com.zggis.dobby.batch.HevcVideoConversion;
-
-public class CacheHevcConversionReader implements ItemReader<HevcVideoConversion>, StepExecutionListener {
+public class CacheReader<T> implements ItemReader<T>, StepExecutionListener {
 
 	private String fileType;
 
-	private Stack<HevcVideoConversion> availableConversions = new Stack<>();
+	private Stack<T> items = new Stack<>();
 
-	public CacheHevcConversionReader(String fileType) {
-		this.fileType = fileType;
+	public CacheReader(String cacheKey) {
+		this.fileType = cacheKey;
 	}
 
 	@Override
-	public HevcVideoConversion read()
-			throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		if (!availableConversions.isEmpty()) {
-			return availableConversions.pop();
+	public T read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+		if (!items.isEmpty()) {
+			return items.pop();
 		} else {
 			return null;
 		}
@@ -36,8 +33,7 @@ public class CacheHevcConversionReader implements ItemReader<HevcVideoConversion
 	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
-		availableConversions.addAll(
-				(Collection<HevcVideoConversion>) stepExecution.getJobExecution().getExecutionContext().get(fileType));
+		items.addAll((Collection<T>) stepExecution.getJobExecution().getExecutionContext().get(fileType));
 	}
 
 	@Override

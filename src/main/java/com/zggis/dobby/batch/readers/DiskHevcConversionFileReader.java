@@ -17,15 +17,15 @@ import org.springframework.batch.item.UnexpectedInputException;
 import com.zggis.dobby.batch.HevcVideoConversion;
 import com.zggis.dobby.batch.VideoFileDTO;
 
-public class HevcConversionDiskFileReader implements ItemReader<HevcVideoConversion> {
+public class DiskHevcConversionFileReader implements ItemReader<HevcVideoConversion> {
 
-	private static final Logger logger = LoggerFactory.getLogger(HevcConversionDiskFileReader.class);
+	private static final Logger logger = LoggerFactory.getLogger(DiskHevcConversionFileReader.class);
 
 	private static final Pattern EPISODE_NUM_REGEX = Pattern.compile("^.*?s(\\d{2})((?:e\\d{2})+).*");
 
 	Stack<HevcVideoConversion> conversions = new Stack<>();
 
-	public HevcConversionDiskFileReader(String mediaDir) {
+	public DiskHevcConversionFileReader(String mediaDir) {
 		Map<String, VideoFileDTO> dvShowMap = new HashMap<>();
 		Map<String, VideoFileDTO> showMap = new HashMap<>();
 		logger.info("Scanning {} for TV shows...", mediaDir);
