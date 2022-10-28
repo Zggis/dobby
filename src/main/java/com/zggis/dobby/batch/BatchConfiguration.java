@@ -20,14 +20,17 @@ import org.springframework.context.annotation.Configuration;
 import com.zggis.dobby.batch.processors.ExtractRpuProcessor;
 import com.zggis.dobby.batch.processors.MKVToHevcProcessor;
 import com.zggis.dobby.batch.processors.MP4ToHevcProcessor;
+import com.zggis.dobby.batch.processors.MediaInfoProcessor;
 import com.zggis.dobby.batch.processors.MergeToMKVProcessor;
 import com.zggis.dobby.batch.processors.RPUInjectProcessor;
 import com.zggis.dobby.batch.readers.CacheFileReader;
+import com.zggis.dobby.batch.readers.CacheHevcConversionReader;
 import com.zggis.dobby.batch.readers.CacheInjectorReader;
 import com.zggis.dobby.batch.readers.CacheMergeReader;
 import com.zggis.dobby.batch.readers.HevcConversionDiskFileReader;
 import com.zggis.dobby.batch.writers.CacheConversionWriter;
 import com.zggis.dobby.batch.writers.CacheFileWriter;
+import com.zggis.dobby.batch.writers.CacheHevcConversionWriter;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
 @Configuration
@@ -69,7 +72,29 @@ public class BatchConfiguration {
 	@Bean
 	public Job mergeVideoFilesJob(MyJobCompletionHandler listener) {
 		return jobBuilderFactory.get("mergeVideoFilesJob").incrementer(new RunIdIncrementer()).listener(listener)
-				.flow(step1()).next(step2()).next(step3()).next(step4()).end().build();
+				.flow(step0()).next(step1()).next(step2()).next(step3()).next(step4()).end().build();
+	}
+	
+	// Step 0 - Fetch Media Info
+	@Bean
+	public Step step0() {
+		return stepBuilderFactory.get("step0").<HevcVideoConversion, HevcVideoConversion>chunk(CHUNK).reader(mediaInfoDiskFileReader())
+				.processor(mediaInfoProcessor()).writer(hevcConversionWriter()).build();
+	}
+	
+	@Bean
+	public ItemReader<HevcVideoConversion> mediaInfoDiskFileReader() {
+		return new HevcConversionDiskFileReader(mediaDir);
+	}
+	
+	@Bean
+	public MediaInfoProcessor mediaInfoProcessor() {
+		return new MediaInfoProcessor(pbservice, mediaDir + "/temp/", MEDIAINFO, true);
+	}
+	
+	@Bean
+	public ItemWriter<HevcVideoConversion> hevcConversionWriter() {
+		return new CacheHevcConversionWriter();
 	}
 
 	// Step 1 - Convert DV MP4 to HEVC
@@ -89,7 +114,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemReader<HevcVideoConversion> hevcConversionDiskFileReader() {
-		return new HevcConversionDiskFileReader(mediaDir);
+		return new CacheHevcConversionReader("HevcVideoConversion");
 	}
 
 	@Bean

@@ -7,33 +7,17 @@ public class HevcVideoConversion {
 
 	private String key;
 
-	private String standardFileName;
+	private VideoFileDTO standardFile;
 
-	private String dolbyVisionFileName;
+	private VideoFileDTO dolbyVisionFile;
 
 	private List<HevcFileDTO> results = new ArrayList<>();
 
-	public HevcVideoConversion(String key, String standardFileName, String dolbyVisionFileName) {
+	public HevcVideoConversion(String key, VideoFileDTO standardFile, VideoFileDTO dolbyVisionFile) {
 		super();
-		this.standardFileName = standardFileName;
-		this.dolbyVisionFileName = dolbyVisionFileName;
+		this.standardFile = standardFile;
+		this.dolbyVisionFile = dolbyVisionFile;
 		this.key = key;
-	}
-
-	public String getStandardFileName() {
-		return standardFileName;
-	}
-
-	public void setStandardFileName(String standardFileName) {
-		this.standardFileName = standardFileName;
-	}
-
-	public String getDolbyVisionFileName() {
-		return dolbyVisionFileName;
-	}
-
-	public void setDolbyVisionFileName(String dolbyVisionFileName) {
-		this.dolbyVisionFileName = dolbyVisionFileName;
 	}
 
 	public String getKey() {
@@ -42,6 +26,22 @@ public class HevcVideoConversion {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	public VideoFileDTO getStandardFile() {
+		return standardFile;
+	}
+
+	public void setStandardFile(VideoFileDTO standardFile) {
+		this.standardFile = standardFile;
+	}
+
+	public VideoFileDTO getDolbyVisionFile() {
+		return dolbyVisionFile;
+	}
+
+	public void setDolbyVisionFile(VideoFileDTO dolbyVisionFile) {
+		this.dolbyVisionFile = dolbyVisionFile;
 	}
 
 	public List<HevcFileDTO> getResults() {

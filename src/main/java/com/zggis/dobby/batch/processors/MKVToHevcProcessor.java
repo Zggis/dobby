@@ -32,9 +32,9 @@ public class MKVToHevcProcessor implements ItemProcessor<HevcVideoConversion, He
 
 	@Override
 	public HevcVideoConversion process(HevcVideoConversion conversion) throws IOException {
-		logger.info("Generating HEVC file from {}...", conversion.getStandardFileName());
-		String cmd = MKVEXTRACT + " \"" + conversion.getStandardFileName() + "\" tracks 0:\"" + outputDir
-				+ JobUtils.getWithoutPathAndExtension(conversion.getStandardFileName()) + ".hevc\"";
+		logger.info("Generating HEVC file from {}...", conversion.getStandardFile().getName());
+		String cmd = MKVEXTRACT + " \"" + conversion.getStandardFile().getName() + "\" tracks 0:\"" + outputDir
+				+ JobUtils.getWithoutPathAndExtension(conversion.getStandardFile().getName()) + ".hevc\"";
 		logger.debug(cmd);
 		ProcessBuilder pb = pbservice.get(cmd);
 		pb.redirectErrorStream(true);
@@ -45,8 +45,8 @@ public class MKVToHevcProcessor implements ItemProcessor<HevcVideoConversion, He
 			logger.info("===EXECUTION SKIPPED===");
 		}
 		conversion.getResults()
-				.add(new HevcFileDTO(
-						outputDir + JobUtils.getWithoutPathAndExtension(conversion.getStandardFileName()) + ".hevc",
+				.add(new HevcFileDTO(outputDir
+						+ JobUtils.getWithoutPathAndExtension(conversion.getStandardFile().getName()) + ".hevc",
 						conversion.getKey(), false));
 		return conversion;
 	}

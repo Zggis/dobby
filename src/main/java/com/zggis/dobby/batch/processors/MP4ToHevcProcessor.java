@@ -32,10 +32,10 @@ public class MP4ToHevcProcessor implements ItemProcessor<HevcVideoConversion, He
 
 	@Override
 	public HevcVideoConversion process(HevcVideoConversion conversion) throws IOException {
-		logger.info("Generating HEVC file from {}...", conversion.getDolbyVisionFileName());
+		logger.info("Generating HEVC file from {}...", conversion.getDolbyVisionFile().getName());
 		String CMD = MP4EXTRACT + " -raw 1 -out \"" + outputDir
-				+ JobUtils.getWithoutPathAndExtension(conversion.getDolbyVisionFileName()) + ".hevc\" \""
-				+ conversion.getDolbyVisionFileName() + "\"";
+				+ JobUtils.getWithoutPathAndExtension(conversion.getDolbyVisionFile().getName()) + ".hevc\" \""
+				+ conversion.getDolbyVisionFile().getName() + "\"";
 		logger.debug(CMD);
 		ProcessBuilder pb = pbservice.get(CMD);
 		pb.redirectErrorStream(true);
@@ -46,8 +46,8 @@ public class MP4ToHevcProcessor implements ItemProcessor<HevcVideoConversion, He
 			logger.info("===EXECUTION SKIPPED===");
 		}
 		conversion.getResults()
-				.add(new HevcFileDTO(
-						outputDir + JobUtils.getWithoutPathAndExtension(conversion.getDolbyVisionFileName()) + ".hevc",
+				.add(new HevcFileDTO(outputDir
+						+ JobUtils.getWithoutPathAndExtension(conversion.getDolbyVisionFile().getName()) + ".hevc",
 						conversion.getKey(), true));
 		return conversion;
 
