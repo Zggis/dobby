@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.zggis'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '9'
+sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
@@ -14,10 +14,13 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
-// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.0-rc2'
-implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc2'
-
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.0-rc2'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0-rc2'
+  	implementation 'org.springframework.boot:spring-boot-starter-batch'
+ 	
+ 	runtimeOnly 'org.hsqldb:hsqldb'
+  	
+  	testImplementation 'org.springframework.batch:spring-batch-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

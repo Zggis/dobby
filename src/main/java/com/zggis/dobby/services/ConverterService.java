@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zggis.dobby.dto.ActiveAreaDTO;
@@ -28,7 +27,6 @@ import com.zggis.dobby.dto.VideoFileDTO;
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 import com.zggis.dobby.dto.mediainfo.TrackDTO;
 
-@Component
 public class ConverterService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConverterService.class);
@@ -102,8 +100,8 @@ public class ConverterService {
 						deleteDirectory("temp");
 						continue;
 					}
-					BorderInfoDTO rpuBorderInfo = getRPUBorderInfo(dolbyVisionFilename);
 					ActiveAreaDTO activeArea = getMKVBorderInfo(standardFilename, standardMediaInfo);
+					BorderInfoDTO rpuBorderInfo = getRPUBorderInfo(dolbyVisionFilename);
 					if (validateActiveArea(activeArea, rpuBorderInfo, standardMediaInfo, standardFilename,
 							dolbyVisionFilename)) {
 						if (!generateHevcFromMKV(standardFilename)) {
