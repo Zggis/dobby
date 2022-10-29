@@ -22,6 +22,9 @@ public class DiskHevcConversionFileReader implements ItemReader<HevcVideoConvers
 	private static final Logger logger = LoggerFactory.getLogger(DiskHevcConversionFileReader.class);
 
 	private static final Pattern EPISODE_NUM_REGEX = Pattern.compile("^.*?s(\\d{2})((?:e\\d{2})+).*");
+	
+	//private static final Pattern DOLBY_VISION_REGEX = Pattern.compile("^.*?dv.*");
+	//Matcher m2 = DOLBY_VISION_REGEX.matcher(child.getName().toLowerCase());
 
 	Stack<HevcVideoConversion> conversions = new Stack<>();
 

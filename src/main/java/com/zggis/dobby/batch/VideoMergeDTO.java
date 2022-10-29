@@ -4,12 +4,14 @@ public class VideoMergeDTO {
 
 	private VideoFileDTO standardFile;
 
-	private HevcFileDTO blRPUFile;
+	private BLRPUHevcFileDTO blRPUFile;
+	
+	private boolean valid = false;
 
-	public VideoMergeDTO(VideoFileDTO standardFile, HevcFileDTO blRPUFile) {
+	public VideoMergeDTO(VideoFileDTO standardFile, BLRPUHevcFileDTO blRPUFile) {
 		super();
 		this.standardFile = standardFile;
-		this.blRPUFile = blRPUFile;
+		this.setBlRPUFile(blRPUFile);
 	}
 
 	public VideoFileDTO getStandardFile() {
@@ -20,12 +22,20 @@ public class VideoMergeDTO {
 		this.standardFile = standardFile;
 	}
 
-	public HevcFileDTO getBlRPUFile() {
+	public BLRPUHevcFileDTO getBlRPUFile() {
 		return blRPUFile;
 	}
 
-	public void setBlRPUFile(HevcFileDTO blRPUFile) {
+	public void setBlRPUFile(BLRPUHevcFileDTO blRPUFile) {
 		this.blRPUFile = blRPUFile;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
 
 }

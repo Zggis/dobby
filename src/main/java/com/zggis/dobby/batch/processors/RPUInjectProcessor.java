@@ -6,12 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import com.zggis.dobby.batch.HevcFileDTO;
+import com.zggis.dobby.batch.BLRPUHevcFileDTO;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.batch.VideoInjectionDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, HevcFileDTO> {
+public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, BLRPUHevcFileDTO> {
 
 	private static final Logger logger = LoggerFactory.getLogger(RPUInjectProcessor.class);
 
@@ -31,7 +31,7 @@ public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, Hevc
 	}
 
 	@Override
-	public HevcFileDTO process(VideoInjectionDTO injectDTO) throws IOException {
+	public BLRPUHevcFileDTO process(VideoInjectionDTO injectDTO) throws IOException {
 		logger.info("Injecting {} into {}", injectDTO.getRpuFile().getName(),
 				injectDTO.getStandardHevcFile().getName());
 		String cmd = DOVI_TOOL + " inject-rpu -i \"" + injectDTO.getStandardHevcFile().getName() + "\" --rpu-in \""
@@ -46,9 +46,11 @@ public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, Hevc
 		} else {
 			logger.info("===EXECUTION SKIPPED===");
 		}
-		return new HevcFileDTO(outputDir
+		BLRPUHevcFileDTO blrpuHevcFileDTO = new BLRPUHevcFileDTO(outputDir
 				+ JobUtils.getWithoutPathAndExtension(injectDTO.getStandardHevcFile().getName()) + "[BL+RPU].hevc",
 				injectDTO.getStandardHevcFile().getKey(), true);
+		blrpuHevcFileDTO.setBorderInfo(injectDTO.getRpuFile().getBorderInfo());
+		return blrpuHevcFileDTO;
 	}
 
 }

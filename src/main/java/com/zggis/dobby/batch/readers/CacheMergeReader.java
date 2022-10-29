@@ -15,7 +15,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import com.zggis.dobby.batch.HevcFileDTO;
+import com.zggis.dobby.batch.BLRPUHevcFileDTO;
 import com.zggis.dobby.batch.VideoFileDTO;
 import com.zggis.dobby.batch.VideoMergeDTO;
 
@@ -38,18 +38,17 @@ public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutio
 	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
-		List<HevcFileDTO> blrpus = (List<HevcFileDTO>) stepExecution.getJobExecution().getExecutionContext()
+		List<BLRPUHevcFileDTO> blrpus = (List<BLRPUHevcFileDTO>) stepExecution.getJobExecution().getExecutionContext()
 				.get("BLRPUHevc");
-		Map<String, HevcFileDTO> blrpuMap = new HashMap<>();
-		for (HevcFileDTO rpu : blrpus) {
+		Map<String, BLRPUHevcFileDTO> blrpuMap = new HashMap<>();
+		for (BLRPUHevcFileDTO rpu : blrpus) {
 			blrpuMap.put(rpu.getKey(), rpu);
 		}
 		List<VideoFileDTO> stdFiles = (List<VideoFileDTO>) stepExecution.getJobExecution().getExecutionContext()
 				.get("STDMKV");
 		for (VideoFileDTO stdFile : stdFiles) {
-			HevcFileDTO blrpuFileName = blrpuMap.get(stdFile.getKey());
+			BLRPUHevcFileDTO blrpuFileName = blrpuMap.get(stdFile.getKey());
 			if (blrpuFileName != null) {
-
 				VideoMergeDTO newInjectionDTO = new VideoMergeDTO(stdFile, blrpuFileName);
 				availableMerges.push(newInjectionDTO);
 			} else {
