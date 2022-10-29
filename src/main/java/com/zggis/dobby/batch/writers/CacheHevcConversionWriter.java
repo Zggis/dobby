@@ -11,6 +11,7 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
 import com.zggis.dobby.batch.HevcVideoConversion;
+import com.zggis.dobby.batch.VideoFileDTO;
 
 public class CacheHevcConversionWriter implements ItemWriter<HevcVideoConversion>, StepExecutionListener {
 
@@ -34,6 +35,11 @@ public class CacheHevcConversionWriter implements ItemWriter<HevcVideoConversion
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
 		stepExecution.getJobExecution().getExecutionContext().put("HevcVideoConversion", hevcConversions);
+		List<VideoFileDTO> stdFiles = new ArrayList<>();
+		for (HevcVideoConversion conversion : hevcConversions) {
+			stdFiles.add(conversion.getStandardFile());
+		}
+		stepExecution.getJobExecution().getExecutionContext().put("STDMKV", stdFiles);
 		return ExitStatus.COMPLETED;
 	}
 

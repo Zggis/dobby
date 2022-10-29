@@ -7,6 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
+import com.zggis.dobby.dto.mediainfo.TrackDTO;
+
 public class JobUtils {
 
 	public static void printOutput(Process p) throws IOException {
@@ -81,5 +84,14 @@ public class JobUtils {
 			directory.delete();
 		}
 
+	}
+
+	public static String getFrameRate(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD)) {
+				return track.frameRate;
+			}
+		}
+		return null;
 	}
 }

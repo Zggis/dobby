@@ -2,29 +2,29 @@ package com.zggis.dobby.batch;
 
 public class VideoMergeDTO {
 
-	private FileDTO standardFile;
+	private VideoFileDTO standardFile;
 
-	private FileDTO blRPUFile;
+	private HevcFileDTO blRPUFile;
 
-	public VideoMergeDTO(FileDTO standardFile, FileDTO blRPUFile) {
+	public VideoMergeDTO(VideoFileDTO standardFile, HevcFileDTO blRPUFile) {
 		super();
 		this.standardFile = standardFile;
 		this.blRPUFile = blRPUFile;
 	}
 
-	public FileDTO getStandardFile() {
+	public VideoFileDTO getStandardFile() {
 		return standardFile;
 	}
 
-	public void setStandardFile(FileDTO standardFile) {
+	public void setStandardFile(VideoFileDTO standardFile) {
 		this.standardFile = standardFile;
 	}
 
-	public FileDTO getBlRPUFile() {
+	public HevcFileDTO getBlRPUFile() {
 		return blRPUFile;
 	}
 
-	public void setBlRPUFile(FileDTO blRPUFile) {
+	public void setBlRPUFile(HevcFileDTO blRPUFile) {
 		this.blRPUFile = blRPUFile;
 	}
 

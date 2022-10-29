@@ -8,13 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import com.zggis.dobby.batch.FileDTO;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.batch.VideoFileDTO;
 import com.zggis.dobby.batch.VideoMergeDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, FileDTO> {
+public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFileDTO> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MergeToMKVProcessor.class);
 
@@ -49,9 +48,14 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, FileDTO
 	}
 
 	@Override
-	public FileDTO process(VideoMergeDTO merge) throws IOException {
+	public VideoFileDTO process(VideoMergeDTO merge) throws IOException {
+		String frameRate = JobUtils.getFrameRate(merge.getStandardFile().getMediaInfo());
 		String duration = null;
-		duration = fpsMap.get(DEFAULT_RESOLUTION);
+		if (fpsMap.containsKey(frameRate)) {
+			duration = fpsMap.get(frameRate);
+		} else {
+			duration = fpsMap.get(DEFAULT_RESOLUTION);
+		}
 		logger.info("Generating MKV file from {}...", merge.getBlRPUFile().getName());
 		String cmd = MKVMERGE + " --output \"" + outputDir
 				+ JobUtils.getWithoutPathAndExtension(merge.getStandardFile().getName()) + "[BL+RPU].mkv\""

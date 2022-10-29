@@ -6,13 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import com.zggis.dobby.batch.FileDTO;
 import com.zggis.dobby.batch.HevcFileDTO;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.batch.VideoInjectionDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, FileDTO> {
+public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, HevcFileDTO> {
 
 	private static final Logger logger = LoggerFactory.getLogger(RPUInjectProcessor.class);
 
@@ -32,7 +31,7 @@ public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, File
 	}
 
 	@Override
-	public FileDTO process(VideoInjectionDTO injectDTO) throws IOException {
+	public HevcFileDTO process(VideoInjectionDTO injectDTO) throws IOException {
 		logger.info("Injecting {} into {}", injectDTO.getRpuFile().getName(),
 				injectDTO.getStandardHevcFile().getName());
 		String cmd = DOVI_TOOL + " inject-rpu -i \"" + injectDTO.getStandardHevcFile().getName() + "\" --rpu-in \""

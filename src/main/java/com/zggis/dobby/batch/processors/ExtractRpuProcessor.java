@@ -6,12 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
+import com.zggis.dobby.batch.HevcFileDTO;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.batch.RPUFileDTO;
-import com.zggis.dobby.batch.FileDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class ExtractRpuProcessor implements ItemProcessor<FileDTO, FileDTO> {
+public class ExtractRpuProcessor implements ItemProcessor<HevcFileDTO, RPUFileDTO> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExtractRpuProcessor.class);
 
@@ -31,7 +31,7 @@ public class ExtractRpuProcessor implements ItemProcessor<FileDTO, FileDTO> {
 	}
 
 	@Override
-	public FileDTO process(FileDTO file) throws IOException {
+	public RPUFileDTO process(HevcFileDTO file) throws IOException {
 		logger.info("Generating RPU file from {}...", file.getName());
 		String cmd = DOVI_TOOL + " -m 2 extract-rpu \"" + file.getName() + "\"" + " -o \"" + outputDir
 				+ JobUtils.getWithoutPathAndExtension(file.getName()) + "-RPU.bin\"";

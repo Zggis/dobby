@@ -10,14 +10,14 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
+import com.zggis.dobby.batch.IFile;
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.FileDTO;
 
-public class CacheFileWriter implements ItemWriter<FileDTO>, StepExecutionListener {
+public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExecutionListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(CacheFileWriter.class);
 
-	private List<FileDTO> files = new ArrayList<>();
+	private List<T> files = new ArrayList<>();
 
 	private String fileType;
 
@@ -26,8 +26,8 @@ public class CacheFileWriter implements ItemWriter<FileDTO>, StepExecutionListen
 	}
 
 	@Override
-	public void write(List<? extends FileDTO> items) throws Exception {
-		for (FileDTO conversion : items) {
+	public void write(List<? extends T> items) throws Exception {
+		for (T conversion : items) {
 			files.add(conversion);
 			logger.info("Writing {} : {}", fileType, conversion.getName());
 		}
@@ -40,7 +40,7 @@ public class CacheFileWriter implements ItemWriter<FileDTO>, StepExecutionListen
 
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
-		for (FileDTO fileName : files) {
+		for (T fileName : files) {
 			if (!JobUtils.doesMediaFileExists(fileName.getName())) {
 				return ExitStatus.FAILED;
 			}
