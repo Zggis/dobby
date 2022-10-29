@@ -18,10 +18,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.zggis.dobby.batch.processors.ExtractRpuProcessor;
+import com.zggis.dobby.batch.processors.MKVActiveAreaProcessor;
 import com.zggis.dobby.batch.processors.MKVToHevcProcessor;
 import com.zggis.dobby.batch.processors.MP4ToHevcProcessor;
 import com.zggis.dobby.batch.processors.MediaInfoProcessor;
 import com.zggis.dobby.batch.processors.MergeToMKVProcessor;
+import com.zggis.dobby.batch.processors.RPUBorderInfoProcessor;
 import com.zggis.dobby.batch.processors.RPUInjectProcessor;
 import com.zggis.dobby.batch.readers.CacheInjectorReader;
 import com.zggis.dobby.batch.readers.CacheMergeReader;
@@ -71,7 +73,8 @@ public class BatchConfiguration {
 	@Bean
 	public Job mergeVideoFilesJob(MyJobCompletionHandler listener) {
 		return jobBuilderFactory.get("mergeVideoFilesJob").incrementer(new RunIdIncrementer()).listener(listener)
-				.flow(step0()).next(step1()).next(step2()).next(step3()).next(step4()).end().build();
+				.flow(step0()).next(step0_5()).next(step1()).next(step2()).next(step2_5()).next(step3()).next(step4())
+				.end().build();
 	}
 
 	// Step 0 - Fetch Media Info
@@ -95,6 +98,28 @@ public class BatchConfiguration {
 	@Bean
 	public ItemWriter<HevcVideoConversion> hevcConversionWriter() {
 		return new CacheHevcConversionWriter();
+	}
+
+	// step 0.5 - Populate active area
+	@Bean
+	public Step step0_5() {
+		return stepBuilderFactory.get("step0_5").<VideoFileDTO, VideoFileDTO>chunk(CHUNK).reader(stdMkvReader())
+				.processor(mkvActiveAreaProcessor()).writer(stdMkvWriter()).build();
+	}
+
+	@Bean
+	public ItemReader<VideoFileDTO> stdMkvReader() {
+		return new CacheReader<VideoFileDTO>("STDMKV");
+	}
+
+	@Bean
+	public MKVActiveAreaProcessor mkvActiveAreaProcessor() {
+		return new MKVActiveAreaProcessor(pbservice, FFMPEG, false);
+	}
+
+	@Bean
+	public ItemWriter<VideoFileDTO> stdMkvWriter() {
+		return new CacheFileWriter<VideoFileDTO>("STDMKV");
 	}
 
 	// Step 1 - Convert DV MP4 to HEVC
@@ -152,6 +177,28 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemWriter<RPUFileDTO> hevcToRpuWriter() {
+		return new CacheFileWriter<RPUFileDTO>("DolbyVisionRPU");
+	}
+
+	// Step 2.5 - Populate Border info
+	@Bean
+	public Step step2_5() {
+		return stepBuilderFactory.get("step2_5").<RPUFileDTO, RPUFileDTO>chunk(CHUNK).reader(rpuReader())
+				.processor(rpuBorderInfoProcessor()).writer(rpuWriter()).build();
+	}
+
+	@Bean
+	public ItemReader<RPUFileDTO> rpuReader() {
+		return new CacheReader<RPUFileDTO>("DolbyVisionRPU");
+	}
+
+	@Bean
+	public RPUBorderInfoProcessor rpuBorderInfoProcessor() {
+		return new RPUBorderInfoProcessor(pbservice, DOVI_TOOL, true);
+	}
+
+	@Bean
+	public ItemWriter<RPUFileDTO> rpuWriter() {
 		return new CacheFileWriter<RPUFileDTO>("DolbyVisionRPU");
 	}
 

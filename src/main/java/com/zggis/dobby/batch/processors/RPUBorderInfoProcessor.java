@@ -7,10 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.zggis.dobby.batch.JobUtils;
+import com.zggis.dobby.batch.RPUFileDTO;
 import com.zggis.dobby.dto.BorderInfoDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class RPUBorderInfoProcessor implements ItemProcessor<String, BorderInfoDTO> {
+public class RPUBorderInfoProcessor implements ItemProcessor<RPUFileDTO, RPUFileDTO> {
 
 	private static final Logger logger = LoggerFactory.getLogger(RPUBorderInfoProcessor.class);
 
@@ -27,9 +28,9 @@ public class RPUBorderInfoProcessor implements ItemProcessor<String, BorderInfoD
 	}
 
 	@Override
-	public BorderInfoDTO process(String rpuFilename) throws IOException {
-		logger.info("Fetching Border info from {}...", rpuFilename);
-		String CMD = DOVI_TOOL + " info -f 123 -i \"" + rpuFilename + "\"";
+	public RPUFileDTO process(RPUFileDTO rpuFile) throws IOException {
+		logger.info("Fetching Border info from {}...", rpuFile.getName());
+		String CMD = DOVI_TOOL + " info -f 123 -i \"" + rpuFile.getName() + "\"";
 		logger.debug(CMD);
 		ProcessBuilder pb = pbservice.get(CMD);
 		pb.redirectErrorStream(true);
@@ -82,7 +83,8 @@ public class RPUBorderInfoProcessor implements ItemProcessor<String, BorderInfoD
 				return null;
 			}
 		}
-		return result;
+		rpuFile.setBorderInfo(result);
+		return rpuFile;
 	}
 
 }

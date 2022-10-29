@@ -25,7 +25,6 @@ public class CacheHevcConversionWriter implements ItemWriter<HevcVideoConversion
 			hevcConversions.add(conversion);
 			logger.info("Writing Conversion {}", conversion.getKey());
 		}
-
 	}
 
 	@Override

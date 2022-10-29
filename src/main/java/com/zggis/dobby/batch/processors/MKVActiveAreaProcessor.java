@@ -9,10 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.zggis.dobby.batch.JobUtils;
+import com.zggis.dobby.batch.VideoFileDTO;
 import com.zggis.dobby.dto.ActiveAreaDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class MKVActiveAreaProcessor implements ItemProcessor<String, ActiveAreaDTO> {
+public class MKVActiveAreaProcessor implements ItemProcessor<VideoFileDTO, VideoFileDTO> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MKVActiveAreaProcessor.class);
 
@@ -20,20 +21,17 @@ public class MKVActiveAreaProcessor implements ItemProcessor<String, ActiveAreaD
 
 	private DoviProcessBuilder pbservice;
 
-	private String mediaDir;
-
 	private boolean execute;
 
-	public MKVActiveAreaProcessor(DoviProcessBuilder pbservice, String mediaDir, String FFMPEG, boolean execute) {
+	public MKVActiveAreaProcessor(DoviProcessBuilder pbservice, String FFMPEG, boolean execute) {
 		this.FFMPEG = FFMPEG;
 		this.pbservice = pbservice;
-		this.mediaDir = mediaDir;
 		this.execute = execute;
 	}
 
 	@Override
-	public ActiveAreaDTO process(String standardFilename) throws IOException {
-		logger.info("Fetching Border info from {}...", standardFilename);
+	public VideoFileDTO process(VideoFileDTO standardFile) throws IOException {
+		logger.info("Fetching Border info from {}...", standardFile.getName());
 		double duration = 1500; // Need to figure out how to get actual duration
 
 		List<Integer> activeAreaHeights = new ArrayList<>();
@@ -44,7 +42,7 @@ public class MKVActiveAreaProcessor implements ItemProcessor<String, ActiveAreaD
 			logger.info("===EXECUTION SKIPPED===");
 		}
 		for (double i = 0.2; i <= 0.8 && execute; i += 0.1) {
-			String CMD = FFMPEG + " -ss 00:" + (int) ((duration * i) / 60) + ":00 -i \"" + mediaDir + standardFilename
+			String CMD = FFMPEG + " -ss 00:" + (int) ((duration * i) / 60) + ":00 -i \"" + standardFile.getName()
 					+ "\" -vf cropdetect -frames:v 400 -f null -";
 			logger.debug(CMD);
 			ProcessBuilder pb = pbservice.get(CMD);
@@ -76,7 +74,8 @@ public class MKVActiveAreaProcessor implements ItemProcessor<String, ActiveAreaD
 		ActiveAreaDTO result = new ActiveAreaDTO();
 		result.setActiveAreaHeights(activeAreaHeights);
 		result.setActiveAreaWidths(activeAreaWidths);
-		return result;
+		standardFile.setActiveArea(result);
+		return standardFile;
 	}
 
 }
