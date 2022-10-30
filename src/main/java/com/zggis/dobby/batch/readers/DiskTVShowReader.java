@@ -14,21 +14,21 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import com.zggis.dobby.batch.HevcVideoConversion;
-import com.zggis.dobby.batch.VideoFileDTO;
+import com.zggis.dobby.batch.dto.TVShowConversionDTO;
+import com.zggis.dobby.batch.dto.VideoFileDTO;
 
-public class DiskHevcConversionFileReader implements ItemReader<HevcVideoConversion> {
+public class DiskTVShowReader implements ItemReader<TVShowConversionDTO> {
 
-	private static final Logger logger = LoggerFactory.getLogger(DiskHevcConversionFileReader.class);
+	private static final Logger logger = LoggerFactory.getLogger(DiskTVShowReader.class);
 
 	private static final Pattern EPISODE_NUM_REGEX = Pattern.compile("^.*?s(\\d{2})((?:e\\d{2})+).*");
 	
 	//private static final Pattern DOLBY_VISION_REGEX = Pattern.compile("^.*?dv.*");
 	//Matcher m2 = DOLBY_VISION_REGEX.matcher(child.getName().toLowerCase());
 
-	Stack<HevcVideoConversion> conversions = new Stack<>();
+	Stack<TVShowConversionDTO> conversions = new Stack<>();
 
-	public DiskHevcConversionFileReader(String mediaDir) {
+	public DiskTVShowReader(String mediaDir) {
 		Map<String, VideoFileDTO> dvShowMap = new HashMap<>();
 		Map<String, VideoFileDTO> showMap = new HashMap<>();
 		logger.info("Scanning {} for TV shows...", mediaDir);
@@ -56,7 +56,7 @@ public class DiskHevcConversionFileReader implements ItemReader<HevcVideoConvers
 		for (String key : showMap.keySet()) {
 			VideoFileDTO dolbyVisionFile = dvShowMap.get(key);
 			if (dolbyVisionFile != null) {
-				HevcVideoConversion conversion = new HevcVideoConversion(key, showMap.get(key), dolbyVisionFile);
+				TVShowConversionDTO conversion = new TVShowConversionDTO(key, showMap.get(key), dolbyVisionFile);
 				conversions.push(conversion);
 			} else {
 				logger.warn("Cannot find Dolby Vision file for {}", showMap.get(key));
@@ -65,7 +65,7 @@ public class DiskHevcConversionFileReader implements ItemReader<HevcVideoConvers
 	}
 
 	@Override
-	public HevcVideoConversion read()
+	public TVShowConversionDTO read()
 			throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
 		if (!conversions.isEmpty()) {
 			return conversions.pop();

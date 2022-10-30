@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import com.zggis.dobby.batch.BLRPUHevcFileDTO;
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.VideoInjectionDTO;
+import com.zggis.dobby.batch.dto.BLRPUHevcFileDTO;
+import com.zggis.dobby.batch.dto.VideoInjectionDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
 public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, BLRPUHevcFileDTO> {

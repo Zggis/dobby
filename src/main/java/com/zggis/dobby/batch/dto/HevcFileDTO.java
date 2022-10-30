@@ -1,4 +1,4 @@
-package com.zggis.dobby.batch;
+package com.zggis.dobby.batch.dto;
 
 public class HevcFileDTO extends FileDTO {
 	

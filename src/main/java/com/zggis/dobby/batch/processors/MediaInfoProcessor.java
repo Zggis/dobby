@@ -7,13 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zggis.dobby.batch.HevcVideoConversion;
+import com.zggis.dobby.batch.dto.TVShowConversionDTO;
+import com.zggis.dobby.batch.dto.VideoFileDTO;
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.VideoFileDTO;
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class MediaInfoProcessor implements ItemProcessor<HevcVideoConversion, HevcVideoConversion> {
+public class MediaInfoProcessor implements ItemProcessor<TVShowConversionDTO, TVShowConversionDTO> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MediaInfoProcessor.class);
 
@@ -30,7 +30,7 @@ public class MediaInfoProcessor implements ItemProcessor<HevcVideoConversion, He
 	}
 
 	@Override
-	public HevcVideoConversion process(HevcVideoConversion conversion) throws IOException {
+	public TVShowConversionDTO process(TVShowConversionDTO conversion) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		logger.info("Fetching media info from {}...", conversion.getStandardFile().getName());
 		String stdInfoCMD = MEDIAINFO + " --output=JSON \"" + conversion.getStandardFile().getName() + "\"";
@@ -63,7 +63,7 @@ public class MediaInfoProcessor implements ItemProcessor<HevcVideoConversion, He
 		}
 		VideoFileDTO dvFileDTO = new VideoFileDTO(conversion.getDolbyVisionFile().getName(), conversion.getKey());
 		dvFileDTO.setMediaInfo(mediaInfo2);
-		return new HevcVideoConversion(conversion.getKey(), stdFileDTO, dvFileDTO);
+		return new TVShowConversionDTO(conversion.getKey(), stdFileDTO, dvFileDTO);
 	}
 
 }

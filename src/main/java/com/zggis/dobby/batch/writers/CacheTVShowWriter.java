@@ -10,18 +10,18 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
-import com.zggis.dobby.batch.HevcVideoConversion;
-import com.zggis.dobby.batch.VideoFileDTO;
+import com.zggis.dobby.batch.dto.TVShowConversionDTO;
+import com.zggis.dobby.batch.dto.VideoFileDTO;
 
-public class CacheHevcConversionWriter implements ItemWriter<HevcVideoConversion>, StepExecutionListener {
+public class CacheTVShowWriter implements ItemWriter<TVShowConversionDTO>, StepExecutionListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(CacheHevcConversionWriter.class);
+	private static final Logger logger = LoggerFactory.getLogger(CacheTVShowWriter.class);
 
-	private List<HevcVideoConversion> hevcConversions = new ArrayList<>();
+	private List<TVShowConversionDTO> hevcConversions = new ArrayList<>();
 
 	@Override
-	public void write(List<? extends HevcVideoConversion> items) throws Exception {
-		for (HevcVideoConversion conversion : items) {
+	public void write(List<? extends TVShowConversionDTO> items) throws Exception {
+		for (TVShowConversionDTO conversion : items) {
 			hevcConversions.add(conversion);
 			logger.info("Writing Conversion {}", conversion.getKey());
 		}
@@ -35,7 +35,7 @@ public class CacheHevcConversionWriter implements ItemWriter<HevcVideoConversion
 	public ExitStatus afterStep(StepExecution stepExecution) {
 		stepExecution.getJobExecution().getExecutionContext().put("HevcVideoConversion", hevcConversions);
 		List<VideoFileDTO> stdFiles = new ArrayList<>();
-		for (HevcVideoConversion conversion : hevcConversions) {
+		for (TVShowConversionDTO conversion : hevcConversions) {
 			stdFiles.add(conversion.getStandardFile());
 		}
 		stepExecution.getJobExecution().getExecutionContext().put("STDMKV", stdFiles);

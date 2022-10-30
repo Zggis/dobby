@@ -15,9 +15,9 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import com.zggis.dobby.batch.BLRPUHevcFileDTO;
-import com.zggis.dobby.batch.VideoFileDTO;
-import com.zggis.dobby.batch.VideoMergeDTO;
+import com.zggis.dobby.batch.dto.BLRPUHevcFileDTO;
+import com.zggis.dobby.batch.dto.VideoFileDTO;
+import com.zggis.dobby.batch.dto.VideoMergeDTO;
 
 public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutionListener {
 

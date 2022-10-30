@@ -1,4 +1,4 @@
-package com.zggis.dobby.batch;
+package com.zggis.dobby.batch.dto;
 
 import com.zggis.dobby.dto.ActiveAreaDTO;
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;

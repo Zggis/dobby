@@ -9,8 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.VideoFileDTO;
+import com.zggis.dobby.batch.dto.VideoFileDTO;
 import com.zggis.dobby.dto.ActiveAreaDTO;
+import com.zggis.dobby.dto.mediainfo.TrackDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
 public class MKVActiveAreaProcessor implements ItemProcessor<VideoFileDTO, VideoFileDTO> {
@@ -32,8 +33,12 @@ public class MKVActiveAreaProcessor implements ItemProcessor<VideoFileDTO, Video
 	@Override
 	public VideoFileDTO process(VideoFileDTO standardFile) throws IOException {
 		logger.info("Fetching Border info from {}...", standardFile.getName());
-		double duration = 1500; // Need to figure out how to get actual duration
-
+		double duration = -1;
+		for (TrackDTO track : standardFile.getMediaInfo().media.track) {
+			if ("1".equals(track.iD)) {
+				duration = Double.parseDouble(track.duration);
+			}
+		}
 		List<Integer> activeAreaHeights = new ArrayList<>();
 		List<Integer> activeAreaWidths = new ArrayList<>();
 		if (!execute) {
@@ -60,8 +65,8 @@ public class MKVActiveAreaProcessor implements ItemProcessor<VideoFileDTO, Video
 						}
 						String strBotVal = tokens[5].split(":")[1].trim();
 						String strLeftVal = tokens[3].split(":")[1].trim();
-						activeAreaHeights.add(Integer.parseInt(strBotVal));
-						activeAreaWidths.add(Integer.parseInt(strLeftVal));
+						activeAreaHeights.add(Integer.parseInt(strBotVal) * 2);
+						activeAreaWidths.add(Integer.parseInt(strLeftVal) * 2);
 						logger.debug("Adding {} as bottom value", strBotVal);
 						logger.debug("Adding {} as left value", strLeftVal);
 					}

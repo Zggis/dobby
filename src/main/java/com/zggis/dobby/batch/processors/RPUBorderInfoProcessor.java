@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.RPUFileDTO;
+import com.zggis.dobby.batch.dto.RPUFileDTO;
 import com.zggis.dobby.dto.BorderInfoDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 

@@ -15,9 +15,9 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import com.zggis.dobby.batch.HevcFileDTO;
-import com.zggis.dobby.batch.RPUFileDTO;
-import com.zggis.dobby.batch.VideoInjectionDTO;
+import com.zggis.dobby.batch.dto.HevcFileDTO;
+import com.zggis.dobby.batch.dto.RPUFileDTO;
+import com.zggis.dobby.batch.dto.VideoInjectionDTO;
 
 public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepExecutionListener {
 

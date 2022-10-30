@@ -17,21 +17,30 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.zggis.dobby.batch.dto.BLRPUHevcFileDTO;
+import com.zggis.dobby.batch.dto.HevcFileDTO;
+import com.zggis.dobby.batch.dto.RPUFileDTO;
+import com.zggis.dobby.batch.dto.TVShowConversionDTO;
+import com.zggis.dobby.batch.dto.VideoFileDTO;
+import com.zggis.dobby.batch.dto.VideoInjectionDTO;
+import com.zggis.dobby.batch.dto.VideoMergeDTO;
 import com.zggis.dobby.batch.processors.ExtractRpuProcessor;
 import com.zggis.dobby.batch.processors.MKVActiveAreaProcessor;
 import com.zggis.dobby.batch.processors.MKVToHevcProcessor;
 import com.zggis.dobby.batch.processors.MP4ToHevcProcessor;
 import com.zggis.dobby.batch.processors.MediaInfoProcessor;
 import com.zggis.dobby.batch.processors.MergeToMKVProcessor;
+import com.zggis.dobby.batch.processors.MergeValidationProcessor;
 import com.zggis.dobby.batch.processors.RPUBorderInfoProcessor;
 import com.zggis.dobby.batch.processors.RPUInjectProcessor;
 import com.zggis.dobby.batch.readers.CacheInjectorReader;
 import com.zggis.dobby.batch.readers.CacheMergeReader;
 import com.zggis.dobby.batch.readers.CacheReader;
-import com.zggis.dobby.batch.readers.DiskHevcConversionFileReader;
+import com.zggis.dobby.batch.readers.DiskTVShowReader;
 import com.zggis.dobby.batch.writers.CacheConversionWriter;
 import com.zggis.dobby.batch.writers.CacheFileWriter;
-import com.zggis.dobby.batch.writers.CacheHevcConversionWriter;
+import com.zggis.dobby.batch.writers.CacheTVShowWriter;
+import com.zggis.dobby.batch.writers.CacheMergeWriter;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
 @Configuration
@@ -72,22 +81,21 @@ public class BatchConfiguration {
 
 	@Bean
 	public Job mergeVideoFilesJob(MyJobCompletionHandler listener) {
-		return jobBuilderFactory.get("mergeVideoFilesJob").incrementer(new RunIdIncrementer()).listener(listener)
-				.flow(step0()).next(step1()).next(step2()).next(step3()).next(step4()).next(step5()).next(step7()).end()
-				.build();
+		return jobBuilderFactory.get("Merge TV Shows").incrementer(new RunIdIncrementer()).listener(listener)
+				.flow(fetchMedia()).next(scanActiveArea()).next(convertMediaToHEVC()).next(extractRPU())
+				.next(getBorderInfo()).next(injectRPU()).next(validateMerge()).next(mergeResult()).end().build();
 	}
 
 	// Step 0 - Fetch Media Info
 	@Bean
-	public Step step0() {
-		return stepBuilderFactory.get("step0").<HevcVideoConversion, HevcVideoConversion>chunk(CHUNK)
-				.reader(mediaInfoDiskFileReader()).processor(mediaInfoProcessor()).writer(hevcConversionWriter())
-				.build();
+	public Step fetchMedia() {
+		return stepBuilderFactory.get("Scan Media").<TVShowConversionDTO, TVShowConversionDTO>chunk(CHUNK)
+				.reader(tvShowReader()).processor(mediaInfoProcessor()).writer(tvShowStagedWriter()).build();
 	}
 
 	@Bean
-	public ItemReader<HevcVideoConversion> mediaInfoDiskFileReader() {
-		return new DiskHevcConversionFileReader(mediaDir);
+	public ItemReader<TVShowConversionDTO> tvShowReader() {
+		return new DiskTVShowReader(mediaDir);
 	}
 
 	@Bean
@@ -96,20 +104,20 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public ItemWriter<HevcVideoConversion> hevcConversionWriter() {
-		return new CacheHevcConversionWriter();
+	public ItemWriter<TVShowConversionDTO> tvShowStagedWriter() {
+		return new CacheTVShowWriter();
 	}
 
 	// step 1 - Populate active area
 	@Bean
-	public Step step1() {
-		return stepBuilderFactory.get("step1").<VideoFileDTO, VideoFileDTO>chunk(CHUNK).reader(stdMkvReader())
-				.processor(mkvActiveAreaProcessor()).writer(stdMkvWriter()).build();
+	public Step scanActiveArea() {
+		return stepBuilderFactory.get("Analyze HDR File").<VideoFileDTO, VideoFileDTO>chunk(CHUNK)
+				.reader(stdMkvReader()).processor(mkvActiveAreaProcessor()).writer(stdMkvWriter()).build();
 	}
 
 	@Bean
 	public ItemReader<VideoFileDTO> stdMkvReader() {
-		return new CacheReader<VideoFileDTO>("STDMKV");
+		return new CacheReader<VideoFileDTO>(JobCacheKey.STDMKV);
 	}
 
 	@Bean
@@ -119,27 +127,27 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemWriter<VideoFileDTO> stdMkvWriter() {
-		return new CacheFileWriter<VideoFileDTO>("STDMKV");
+		return new CacheFileWriter<VideoFileDTO>(JobCacheKey.STDMKV);
 	}
 
-	// Step 2 - Convert DV MP4 to HEVC
+	// Step 2 - Convert Mp4 and MKV to HEVC
 	@Bean
-	public Step step2() {
-		return stepBuilderFactory.get("step2").<HevcVideoConversion, HevcVideoConversion>chunk(CHUNK)
-				.reader(hevcConversionDiskFileReader()).processor(compositeItemProcessor()).writer(conversionWriter())
+	public Step convertMediaToHEVC() {
+		return stepBuilderFactory.get("Convert media to HEVC").<TVShowConversionDTO, TVShowConversionDTO>chunk(CHUNK)
+				.reader(tvShowCacheReader()).processor(compositeItemProcessor()).writer(tvShowConvertedWriter())
 				.build();
 	}
 
 	@Bean
-	public ItemProcessor<HevcVideoConversion, HevcVideoConversion> compositeItemProcessor() {
-		CompositeItemProcessor<HevcVideoConversion, HevcVideoConversion> compositeItemProcessor = new CompositeItemProcessor<>();
+	public ItemProcessor<TVShowConversionDTO, TVShowConversionDTO> compositeItemProcessor() {
+		CompositeItemProcessor<TVShowConversionDTO, TVShowConversionDTO> compositeItemProcessor = new CompositeItemProcessor<>();
 		compositeItemProcessor.setDelegates(Arrays.asList(mp4ToHevcProcessor(), mkvToHevcProcessor()));
 		return compositeItemProcessor;
 	}
 
 	@Bean
-	public ItemReader<HevcVideoConversion> hevcConversionDiskFileReader() {
-		return new CacheReader<HevcVideoConversion>("HevcVideoConversion");
+	public ItemReader<TVShowConversionDTO> tvShowCacheReader() {
+		return new CacheReader<TVShowConversionDTO>(JobCacheKey.CONVERSION);
 	}
 
 	@Bean
@@ -153,21 +161,21 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public ItemWriter<HevcVideoConversion> conversionWriter() {
+	public ItemWriter<TVShowConversionDTO> tvShowConvertedWriter() {
 		return new CacheConversionWriter();
 	}
 
 	// Step 3 - Extract RPU from DV HEVC
 
 	@Bean
-	public Step step3() {
-		return stepBuilderFactory.get("step3").<HevcFileDTO, RPUFileDTO>chunk(CHUNK).reader(hevcReader())
-				.processor(extractRpuProcessor()).writer(hevcToRpuWriter()).build();
+	public Step extractRPU() {
+		return stepBuilderFactory.get("Extract RPU").<HevcFileDTO, RPUFileDTO>chunk(CHUNK).reader(dvHevcReader())
+				.processor(extractRpuProcessor()).writer(dvHevcWriter()).build();
 	}
 
 	@Bean
-	public ItemReader<HevcFileDTO> hevcReader() {
-		return new CacheReader<HevcFileDTO>("DVHEVC");
+	public ItemReader<HevcFileDTO> dvHevcReader() {
+		return new CacheReader<HevcFileDTO>(JobCacheKey.DVHEVC);
 	}
 
 	@Bean
@@ -176,20 +184,20 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public ItemWriter<RPUFileDTO> hevcToRpuWriter() {
-		return new CacheFileWriter<RPUFileDTO>("DolbyVisionRPU");
+	public ItemWriter<RPUFileDTO> dvHevcWriter() {
+		return new CacheFileWriter<RPUFileDTO>(JobCacheKey.RPU);
 	}
 
 	// Step 4 - Populate Border info
 	@Bean
-	public Step step4() {
-		return stepBuilderFactory.get("step4").<RPUFileDTO, RPUFileDTO>chunk(CHUNK).reader(rpuReader())
+	public Step getBorderInfo() {
+		return stepBuilderFactory.get("Analyze RPU").<RPUFileDTO, RPUFileDTO>chunk(CHUNK).reader(rpuReader())
 				.processor(rpuBorderInfoProcessor()).writer(rpuWriter()).build();
 	}
 
 	@Bean
 	public ItemReader<RPUFileDTO> rpuReader() {
-		return new CacheReader<RPUFileDTO>("DolbyVisionRPU");
+		return new CacheReader<RPUFileDTO>(JobCacheKey.RPU);
 	}
 
 	@Bean
@@ -199,14 +207,14 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemWriter<RPUFileDTO> rpuWriter() {
-		return new CacheFileWriter<RPUFileDTO>("DolbyVisionRPU");
+		return new CacheFileWriter<RPUFileDTO>(JobCacheKey.RPU);
 	}
 
 	// Step 5 - Inject RPU into standard HEVC
 
 	@Bean
-	public Step step5() {
-		return stepBuilderFactory.get("step5").<VideoInjectionDTO, BLRPUHevcFileDTO>chunk(CHUNK)
+	public Step injectRPU() {
+		return stepBuilderFactory.get("Inject RPU into HEVC").<VideoInjectionDTO, BLRPUHevcFileDTO>chunk(CHUNK)
 				.reader(cacheInjectorReader()).processor(rpuInjectProcessor()).writer(blRPUCacheFileWriter()).build();
 	}
 
@@ -222,22 +230,43 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemWriter<BLRPUHevcFileDTO> blRPUCacheFileWriter() {
-		return new CacheFileWriter<BLRPUHevcFileDTO>("BLRPUHevc");
+		return new CacheFileWriter<BLRPUHevcFileDTO>(JobCacheKey.BLRPUHEVC);
 	}
 
 	// Step 6 - Validate merge
-	
+	@Bean
+	public Step validateMerge() {
+		return stepBuilderFactory.get("Validate Merge").<VideoMergeDTO, VideoMergeDTO>chunk(CHUNK)
+				.reader(cacheMergeValidationReader()).processor(mergeValidationProcessor())
+				.writer(cacheMergeValidationWriter()).build();
+	}
+
+	@Bean
+	public ItemReader<VideoMergeDTO> cacheMergeValidationReader() {
+		return new CacheMergeReader();
+	}
+
+	@Bean
+	public MergeValidationProcessor mergeValidationProcessor() {
+		return new MergeValidationProcessor(false);
+	}
+
+	@Bean
+	public ItemWriter<VideoMergeDTO> cacheMergeValidationWriter() {
+		return new CacheMergeWriter();
+	}
+
 	// Step 7 - Convert BL-RPU to MKV
 
 	@Bean
-	public Step step7() {
-		return stepBuilderFactory.get("step7").<VideoMergeDTO, VideoFileDTO>chunk(CHUNK).reader(cacheMergeReader())
-				.processor(mergeToMkvProcessor()).writer(blRPUMKVCacheFileWriter()).build();
+	public Step mergeResult() {
+		return stepBuilderFactory.get("Generate Result").<VideoMergeDTO, VideoFileDTO>chunk(CHUNK)
+				.reader(cacheMergeReader()).processor(mergeToMkvProcessor()).writer(blRPUMKVCacheFileWriter()).build();
 	}
 
 	@Bean
 	public ItemReader<VideoMergeDTO> cacheMergeReader() {
-		return new CacheMergeReader();
+		return new CacheReader<VideoMergeDTO>(JobCacheKey.MERGE);
 	}
 
 	@Bean
@@ -247,7 +276,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemWriter<VideoFileDTO> blRPUMKVCacheFileWriter() {
-		return new CacheFileWriter<VideoFileDTO>("BLRPUMKV");
+		return new CacheFileWriter<VideoFileDTO>(JobCacheKey.BLRPUMKV);
 	}
 
 }

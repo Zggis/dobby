@@ -1,14 +1,13 @@
-package com.zggis.dobby.batch;
+package com.zggis.dobby.batch.dto;
 
 import com.zggis.dobby.dto.BorderInfoDTO;
 
-public class RPUFileDTO extends FileDTO {
+public class BLRPUHevcFileDTO extends HevcFileDTO {
 
 	private BorderInfoDTO borderInfo;
 
-	public RPUFileDTO(String name, String key) {
-		this.name = name;
-		this.key = key;
+	public BLRPUHevcFileDTO(String name, String key, boolean dolbyVision) {
+		super(name, key, dolbyVision);
 	}
 
 	public BorderInfoDTO getBorderInfo() {

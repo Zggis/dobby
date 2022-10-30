@@ -27,10 +27,6 @@ public class JobUtils {
 		}
 	}
 
-	public static String getWithoutExtension(String fullFilename) {
-		return fullFilename.substring(0, fullFilename.lastIndexOf('.'));
-	}
-
 	public static String getWithoutPathAndExtension(String fullFilename) {
 		return fullFilename.substring(fullFilename.lastIndexOf('/') + 1, fullFilename.lastIndexOf('.'));
 	}
@@ -83,7 +79,6 @@ public class JobUtils {
 			}
 			directory.delete();
 		}
-
 	}
 
 	public static String getFrameRate(MediaInfoDTO mediaInfo) {
@@ -93,5 +88,23 @@ public class JobUtils {
 			}
 		}
 		return null;
+	}
+
+	public static int getHeight(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD)) {
+				return Integer.parseInt(track.height);
+			}
+		}
+		return -1;
+	}
+
+	public static int getWidth(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD)) {
+				return Integer.parseInt(track.width);
+			}
+		}
+		return -1;
 	}
 }

@@ -10,19 +10,19 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
-import com.zggis.dobby.batch.HevcFileDTO;
-import com.zggis.dobby.batch.HevcVideoConversion;
+import com.zggis.dobby.batch.dto.HevcFileDTO;
+import com.zggis.dobby.batch.dto.TVShowConversionDTO;
 import com.zggis.dobby.batch.JobUtils;
 
-public class CacheConversionWriter implements ItemWriter<HevcVideoConversion>, StepExecutionListener {
+public class CacheConversionWriter implements ItemWriter<TVShowConversionDTO>, StepExecutionListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(CacheConversionWriter.class);
 
 	private List<HevcFileDTO> files = new ArrayList<>();
 
 	@Override
-	public void write(List<? extends HevcVideoConversion> items) throws Exception {
-		for (HevcVideoConversion conversion : items) {
+	public void write(List<? extends TVShowConversionDTO> items) throws Exception {
+		for (TVShowConversionDTO conversion : items) {
 			files.addAll(conversion.getResults());
 			logger.info("Writing {} : {}", "DV/STDHEVC", conversion.getKey());
 		}

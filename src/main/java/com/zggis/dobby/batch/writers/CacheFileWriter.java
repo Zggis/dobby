@@ -10,8 +10,9 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
-import com.zggis.dobby.batch.IFile;
+import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.batch.JobUtils;
+import com.zggis.dobby.batch.dto.IFile;
 
 public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExecutionListener {
 
@@ -19,9 +20,9 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
 
 	private List<T> files = new ArrayList<>();
 
-	private String fileType;
+	private JobCacheKey fileType;
 
-	public CacheFileWriter(String fileType) {
+	public CacheFileWriter(JobCacheKey fileType) {
 		this.fileType = fileType;
 	}
 
@@ -29,7 +30,7 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
 	public void write(List<? extends T> items) throws Exception {
 		for (T conversion : items) {
 			files.add(conversion);
-			logger.info("Writing {} : {}", fileType, conversion.getName());
+			logger.info("Writing {} : {}", fileType.value, conversion.getName());
 		}
 
 	}
@@ -45,7 +46,7 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
 				return ExitStatus.FAILED;
 			}
 		}
-		stepExecution.getJobExecution().getExecutionContext().put(fileType, files);
+		stepExecution.getJobExecution().getExecutionContext().put(fileType.value, files);
 		return ExitStatus.COMPLETED;
 	}
 

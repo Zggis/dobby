@@ -11,13 +11,15 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
+import com.zggis.dobby.batch.JobCacheKey;
+
 public class CacheReader<T> implements ItemReader<T>, StepExecutionListener {
 
-	private String fileType;
+	private JobCacheKey fileType;
 
 	private Stack<T> items = new Stack<>();
 
-	public CacheReader(String cacheKey) {
+	public CacheReader(JobCacheKey cacheKey) {
 		this.fileType = cacheKey;
 	}
 
@@ -33,7 +35,7 @@ public class CacheReader<T> implements ItemReader<T>, StepExecutionListener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
-		items.addAll((Collection<T>) stepExecution.getJobExecution().getExecutionContext().get(fileType));
+		items.addAll((Collection<T>) stepExecution.getJobExecution().getExecutionContext().get(fileType.value));
 	}
 
 	@Override

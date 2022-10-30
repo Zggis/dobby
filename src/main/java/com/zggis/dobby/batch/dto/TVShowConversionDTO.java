@@ -1,9 +1,9 @@
-package com.zggis.dobby.batch;
+package com.zggis.dobby.batch.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HevcVideoConversion {
+public class TVShowConversionDTO {
 
 	private String key;
 
@@ -13,7 +13,7 @@ public class HevcVideoConversion {
 
 	private List<HevcFileDTO> results = new ArrayList<>();
 
-	public HevcVideoConversion(String key, VideoFileDTO standardFile, VideoFileDTO dolbyVisionFile) {
+	public TVShowConversionDTO(String key, VideoFileDTO standardFile, VideoFileDTO dolbyVisionFile) {
 		super();
 		this.standardFile = standardFile;
 		this.dolbyVisionFile = dolbyVisionFile;

@@ -6,12 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import com.zggis.dobby.batch.HevcFileDTO;
-import com.zggis.dobby.batch.HevcVideoConversion;
+import com.zggis.dobby.batch.dto.HevcFileDTO;
+import com.zggis.dobby.batch.dto.TVShowConversionDTO;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class MP4ToHevcProcessor implements ItemProcessor<HevcVideoConversion, HevcVideoConversion> {
+public class MP4ToHevcProcessor implements ItemProcessor<TVShowConversionDTO, TVShowConversionDTO> {
 
 	private static final Logger logger = LoggerFactory.getLogger(MP4ToHevcProcessor.class);
 
@@ -31,7 +31,7 @@ public class MP4ToHevcProcessor implements ItemProcessor<HevcVideoConversion, He
 	}
 
 	@Override
-	public HevcVideoConversion process(HevcVideoConversion conversion) throws IOException {
+	public TVShowConversionDTO process(TVShowConversionDTO conversion) throws IOException {
 		logger.info("Generating HEVC file from {}...", conversion.getDolbyVisionFile().getName());
 		String CMD = MP4EXTRACT + " -raw 1 -out \"" + outputDir
 				+ JobUtils.getWithoutPathAndExtension(conversion.getDolbyVisionFile().getName()) + ".hevc\" \""
