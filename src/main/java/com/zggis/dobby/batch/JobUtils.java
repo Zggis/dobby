@@ -45,13 +45,6 @@ public class JobUtils {
 		return false;
 	}
 
-	public static void createDirectory(String directoryStr) {
-		File directory = new File(directoryStr);
-		if (!directory.exists()) {
-			directory.mkdirs();
-		}
-	}
-
 	public static String returnOutput(Process p) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		try (InputStreamReader isr = new InputStreamReader(p.getInputStream())) {
@@ -66,19 +59,6 @@ public class JobUtils {
 			System.out.println(e.getMessage());
 		}
 		return builder.toString();
-	}
-
-	public static void deleteDirectory(String directoryName) {
-		File directory = new File(directoryName);
-		if (directory.exists()) {
-			File[] directoryListing = directory.listFiles();
-			if (directoryListing != null) {
-				for (File file : directoryListing) {
-					file.delete();
-				}
-			}
-			directory.delete();
-		}
 	}
 
 	public static String getFrameRate(MediaInfoDTO mediaInfo) {

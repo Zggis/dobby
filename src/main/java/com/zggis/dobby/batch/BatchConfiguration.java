@@ -39,18 +39,16 @@ import com.zggis.dobby.batch.readers.CacheReader;
 import com.zggis.dobby.batch.readers.DiskTVShowReader;
 import com.zggis.dobby.batch.writers.CacheConversionWriter;
 import com.zggis.dobby.batch.writers.CacheFileWriter;
-import com.zggis.dobby.batch.writers.CacheTVShowWriter;
 import com.zggis.dobby.batch.writers.CacheMergeWriter;
+import com.zggis.dobby.batch.writers.CacheTVShowWriter;
 import com.zggis.dobby.services.DoviProcessBuilder;
+import com.zggis.dobby.services.MediaServiceImpl;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration {
 
 	private static final int CHUNK = 1;
-
-	@Value("${media.dir}")
-	private String mediaDir;
 
 	@Value("${dovi.tool.location}")
 	private String DOVI_TOOL;
@@ -69,6 +67,9 @@ public class BatchConfiguration {
 
 	@Value("${ffmpeg.location}")
 	private String FFMPEG;
+
+	@Autowired
+	private MediaServiceImpl mediaService;
 
 	@Autowired
 	private DoviProcessBuilder pbservice;
@@ -95,12 +96,12 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemReader<TVShowConversionDTO> tvShowReader() {
-		return new DiskTVShowReader(mediaDir);
+		return new DiskTVShowReader(mediaService.getMediaDirectory());
 	}
 
 	@Bean
 	public MediaInfoProcessor mediaInfoProcessor() {
-		return new MediaInfoProcessor(pbservice, mediaDir + "/temp/", MEDIAINFO, true);
+		return new MediaInfoProcessor(pbservice, mediaService.getTempDirectory(), MEDIAINFO, true);
 	}
 
 	@Bean
@@ -122,7 +123,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MKVActiveAreaProcessor mkvActiveAreaProcessor() {
-		return new MKVActiveAreaProcessor(pbservice, FFMPEG, false);
+		return new MKVActiveAreaProcessor(pbservice, FFMPEG, true);
 	}
 
 	@Bean
@@ -152,12 +153,12 @@ public class BatchConfiguration {
 
 	@Bean
 	public MP4ToHevcProcessor mp4ToHevcProcessor() {
-		return new MP4ToHevcProcessor(pbservice, mediaDir + "/temp/", MP4EXTRACT, false);
+		return new MP4ToHevcProcessor(pbservice, mediaService.getTempDirectory(), MP4EXTRACT, true);
 	}
 
 	@Bean
 	public MKVToHevcProcessor mkvToHevcProcessor() {
-		return new MKVToHevcProcessor(pbservice, mediaDir + "/temp/", MKVEXTRACT, false);
+		return new MKVToHevcProcessor(pbservice, mediaService.getTempDirectory(), MKVEXTRACT, true);
 	}
 
 	@Bean
@@ -180,7 +181,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public ExtractRpuProcessor extractRpuProcessor() {
-		return new ExtractRpuProcessor(pbservice, mediaDir + "/temp/", DOVI_TOOL, false);
+		return new ExtractRpuProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, true);
 	}
 
 	@Bean
@@ -225,7 +226,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public RPUInjectProcessor rpuInjectProcessor() {
-		return new RPUInjectProcessor(pbservice, mediaDir + "/temp/", DOVI_TOOL, false);
+		return new RPUInjectProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, true);
 	}
 
 	@Bean
@@ -248,7 +249,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MergeValidationProcessor mergeValidationProcessor() {
-		return new MergeValidationProcessor(false);
+		return new MergeValidationProcessor(true);
 	}
 
 	@Bean
@@ -271,7 +272,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MergeToMKVProcessor mergeToMkvProcessor() {
-		return new MergeToMKVProcessor(pbservice, mediaDir + "/results/", MKVMERGE, false);
+		return new MergeToMKVProcessor(pbservice, mediaService.getResultsDirectory(), MKVMERGE, true);
 	}
 
 	@Bean

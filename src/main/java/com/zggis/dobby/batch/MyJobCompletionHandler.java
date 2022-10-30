@@ -6,16 +6,17 @@ import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.zggis.dobby.services.MediaServiceImpl;
 
 @Component
 public class MyJobCompletionHandler extends JobExecutionListenerSupport {
 
 	private static final Logger log = LoggerFactory.getLogger(MyJobCompletionHandler.class);
 
-	@Value("${media.dir}")
-	private String mediaDir;
+	@Autowired
+	private MediaServiceImpl mediaService;
 
 	@Autowired
 	public MyJobCompletionHandler() {
@@ -25,14 +26,14 @@ public class MyJobCompletionHandler extends JobExecutionListenerSupport {
 	@Override
 	public void afterJob(JobExecution jobExecution) {
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-			// JobUtils.deleteDirectory(mediaDir + "/temp");
+			mediaService.deleteTempDirectory();
 			log.info("Job Complete!");
 		}
 	}
 
 	@Override
 	public void beforeJob(JobExecution jobExecution) {
-		JobUtils.createDirectory(mediaDir + "/temp");
+		mediaService.createTempDirectory();
 	}
 
 }
