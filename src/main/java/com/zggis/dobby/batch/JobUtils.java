@@ -7,23 +7,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 import com.zggis.dobby.dto.mediainfo.TrackDTO;
 
 public class JobUtils {
 
+	private static final Logger logger = LoggerFactory.getLogger(JobUtils.class);
+
 	public static void printOutput(Process p) throws IOException {
+		StringBuilder builder = new StringBuilder();
 		try (InputStreamReader isr = new InputStreamReader(p.getInputStream())) {
 			int c;
 			while ((c = isr.read()) >= 0) {
-				System.out.print((char) c);
-				System.out.flush();
+				builder.append((char) c);
 			}
 		}
 		try {
 			p.waitFor();
+			logger.info(builder.toString());
 		} catch (InterruptedException e) {
 			System.out.println(e.getMessage());
+			logger.info(e.getMessage());
 		}
 	}
 
@@ -114,4 +121,5 @@ public class JobUtils {
 		}
 		return null;
 	}
+
 }

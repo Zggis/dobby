@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zggis.dobby.batch.ConsoleColor;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.dto.batch.TVShowConversionDTO;
 import com.zggis.dobby.dto.batch.VideoFileDTO;
@@ -77,30 +78,31 @@ public class MediaInfoProcessor implements ItemProcessor<TVShowConversionDTO, TV
 		String standardResolution = JobUtils.getResolution(standardFile.getMediaInfo());
 		String dolbyVisionResolution = JobUtils.getResolution(dolbyVisionFile.getMediaInfo());
 		if (!standardResolution.equals(dolbyVisionResolution)) {
-			logger.error("Resolutions do not match, DV:{}, HDR:{}", dolbyVisionResolution, standardResolution);
+			logger.error(ConsoleColor.RED.value + "Resolutions do not match, DV:{}, HDR:{}" + ConsoleColor.NONE.value,
+					dolbyVisionResolution, standardResolution);
 			return false;
 		}
 		if ("3840x2160 DL".equals(standardResolution)) {
-			logger.error("{} - No Support for Double Layer Profile 7 File",
+			logger.error(ConsoleColor.RED.value + "{} cannot support double layer profile 7" + ConsoleColor.NONE.value,
 					JobUtils.getWithoutPath(standardFile.getName()));
 			return false;
 		}
 		String hdrFormat = JobUtils.getHDRFormat(standardFile.getMediaInfo());
-		if (hdrFormat != null) {
-			if (hdrFormat.toLowerCase().contains("dvhe.05")) {
-				logger.error("{} - Dolby Vision Profile 5 found.", JobUtils.getWithoutPath(standardFile.getName()));
-				return false;
-			}
-		} else {
-			logger.error("{} - No HDR format detected.", JobUtils.getWithoutPath(standardFile.getName()));
+		if (hdrFormat == null) {
+			logger.error(ConsoleColor.RED.value + "No HDR format detected for {}" + ConsoleColor.NONE.value,
+					JobUtils.getWithoutPath(standardFile.getName()));
 			return false;
 		}
 		String frameRate = JobUtils.getFrameRate(standardFile.getMediaInfo());
 		if (frameRate == null) {
-			logger.error("{} - Could not determine Frame Rate of", JobUtils.getWithoutPath(standardFile.getName()));
+			logger.error(ConsoleColor.RED.value + "Could not determine Frame Rate of {}" + ConsoleColor.NONE.value,
+					JobUtils.getWithoutPath(standardFile.getName()));
 			return false;
 		}
-		logger.info("\n{}\nResolution:\t{}\tGOOD\nHDR Format:\t{}\tGOOD\nFrame Rate:\t{}\t\tGOOD",
+		logger.info(
+				"\n{}\nResolution:\t{}\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value
+						+ "\nHDR Format:\t{}\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value
+						+ "\nFrame Rate:\t{}\t\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value + "",
 				JobUtils.getWithoutPath(standardFile.getName()), standardResolution, hdrFormat, frameRate);
 		return true;
 	}

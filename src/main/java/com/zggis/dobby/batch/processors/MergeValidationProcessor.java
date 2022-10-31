@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
+import com.zggis.dobby.batch.ConsoleColor;
+import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.dto.batch.VideoMergeDTO;
 
 public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, VideoMergeDTO> {
@@ -20,6 +22,8 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
 
 	@Override
 	public VideoMergeDTO process(VideoMergeDTO conversion) throws IOException {
+		logger.info("Validating merge of {} and {}", JobUtils.getWithoutPath(conversion.getBlRPUFile().getName()),
+				JobUtils.getWithoutPath(conversion.getStandardFile().getName()));
 		if (execute == false) {
 			return conversion;
 		}
@@ -34,7 +38,10 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
 		Double heightPercent = ((double) matches
 				/ (double) conversion.getStandardFile().getActiveArea().getActiveAreaHeights().size()) * 100;
 		if (matches < (conversion.getStandardFile().getActiveArea().getActiveAreaHeights().size() * 0.6)) {
-			logger.error("Active area height failed to pass matching threshold {}%, aborting merge.", heightPercent);
+			logger.error(
+					ConsoleColor.RED.value + "Active area height failed to pass matching threshold {}%, aborting merge."
+							+ ConsoleColor.NONE.value,
+					heightPercent);
 			conversion.setBlRPUFile(null);
 			conversion.setStandardFile(null);
 			return conversion;
@@ -50,13 +57,16 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
 		Double widthPercent = ((double) widthMatches
 				/ (double) conversion.getStandardFile().getActiveArea().getActiveAreaWidths().size()) * 100;
 		if (widthMatches < (conversion.getStandardFile().getActiveArea().getActiveAreaWidths().size() * 0.6)) {
-			logger.error("Active area width failed to pass matching threshold {}%, aborting merge.", widthPercent);
+			logger.error(
+					ConsoleColor.RED.value + "Active area width failed to pass matching threshold {}%, aborting merge."
+							+ ConsoleColor.NONE.value,
+					widthPercent);
 			conversion.setBlRPUFile(null);
 			conversion.setStandardFile(null);
 			return conversion;
 		}
-		logger.info("Active areas match [Height:{}% Width:{}%], proceeding with merge...", heightPercent.intValue(),
-				widthPercent.intValue());
+		logger.info(ConsoleColor.GREEN.value + "Active areas match [Height:{}% Width:{}%], proceeding with merge..."
+				+ ConsoleColor.NONE.value, heightPercent.intValue(), widthPercent.intValue());
 		return conversion;
 	}
 

@@ -6,6 +6,7 @@ import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.zggis.dobby.services.MediaServiceImpl;
@@ -18,6 +19,9 @@ public class MyJobCompletionHandler extends JobExecutionListenerSupport {
 	@Autowired
 	private MediaServiceImpl mediaService;
 
+	@Value("${logging.file.name}")
+	private String logFileLocation;
+
 	@Autowired
 	public MyJobCompletionHandler() {
 		super();
@@ -25,9 +29,17 @@ public class MyJobCompletionHandler extends JobExecutionListenerSupport {
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {
+		mediaService.deleteTempDirectory();
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-			mediaService.deleteTempDirectory();
-			log.info("Job Complete!");
+			log.info(ConsoleColor.GREEN.value + "Job Completed Successfully!" + ConsoleColor.NONE.value);
+		} else if (jobExecution.getStatus() == BatchStatus.FAILED) {
+			log.info(ConsoleColor.RED.value + "Job Failed!" + ConsoleColor.NONE.value);
+		}
+		log.info("Logs for this job can be found at {}", logFileLocation);
+		log.info(ConsoleColor.YELLOW.value + "Application will exist in 30s" + ConsoleColor.NONE.value);
+		try {
+			Thread.sleep(30000);
+		} catch (InterruptedException e) {
 		}
 	}
 
