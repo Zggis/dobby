@@ -32,9 +32,11 @@ COPY /linux/gpac gpac
 RUN cd gpac ; ./configure --static-mp4box --use-zlib=no
 RUN cd gpac ; make -j4
 RUN cd gpac ; make install
-#ENTRYPOINT [ "bash" ]
 ADD /linux/dovi_tool /data/dovi_tool
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
+RUN chown 99 /root
+RUN chgrp 100 /root
 USER 99:100
+#ENTRYPOINT [ "bash" ]
 ENTRYPOINT ["java","-jar","./app.jar"]
