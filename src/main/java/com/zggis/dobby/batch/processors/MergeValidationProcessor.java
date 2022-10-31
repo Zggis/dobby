@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import com.zggis.dobby.batch.dto.VideoMergeDTO;
+import com.zggis.dobby.dto.batch.VideoMergeDTO;
 
 public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, VideoMergeDTO> {
 

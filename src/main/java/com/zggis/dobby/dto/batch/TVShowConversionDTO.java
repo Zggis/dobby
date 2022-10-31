@@ -1,4 +1,4 @@
-package com.zggis.dobby.batch.dto;
+package com.zggis.dobby.dto.batch;
 
 import java.util.ArrayList;
 import java.util.List;

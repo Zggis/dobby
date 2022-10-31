@@ -11,7 +11,7 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
 import com.zggis.dobby.batch.JobCacheKey;
-import com.zggis.dobby.batch.dto.VideoMergeDTO;
+import com.zggis.dobby.dto.batch.VideoMergeDTO;
 
 public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutionListener {
 

@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.dto.HevcFileDTO;
-import com.zggis.dobby.batch.dto.RPUFileDTO;
+import com.zggis.dobby.dto.batch.HevcFileDTO;
+import com.zggis.dobby.dto.batch.RPUFileDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
 public class ExtractRpuProcessor implements ItemProcessor<HevcFileDTO, RPUFileDTO> {

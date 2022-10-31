@@ -12,7 +12,7 @@ import org.springframework.batch.item.ItemWriter;
 
 import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.dto.IFile;
+import com.zggis.dobby.dto.batch.IFile;
 
 public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExecutionListener {
 

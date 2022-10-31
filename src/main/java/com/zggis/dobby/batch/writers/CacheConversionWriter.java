@@ -10,10 +10,10 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
-import com.zggis.dobby.batch.dto.HevcFileDTO;
-import com.zggis.dobby.batch.dto.TVShowConversionDTO;
 import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.batch.JobUtils;
+import com.zggis.dobby.dto.batch.HevcFileDTO;
+import com.zggis.dobby.dto.batch.TVShowConversionDTO;
 
 public class CacheConversionWriter implements ItemWriter<TVShowConversionDTO>, StepExecutionListener {
 

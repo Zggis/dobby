@@ -8,8 +8,8 @@ import org.springframework.batch.item.ItemProcessor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.dto.TVShowConversionDTO;
-import com.zggis.dobby.batch.dto.VideoFileDTO;
+import com.zggis.dobby.dto.batch.TVShowConversionDTO;
+import com.zggis.dobby.dto.batch.VideoFileDTO;
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 

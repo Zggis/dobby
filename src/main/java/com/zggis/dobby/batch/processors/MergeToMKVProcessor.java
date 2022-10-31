@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.dto.VideoFileDTO;
-import com.zggis.dobby.batch.dto.VideoMergeDTO;
+import com.zggis.dobby.dto.batch.VideoFileDTO;
+import com.zggis.dobby.dto.batch.VideoMergeDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
 public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFileDTO> {

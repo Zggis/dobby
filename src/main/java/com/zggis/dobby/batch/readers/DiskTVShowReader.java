@@ -14,8 +14,8 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import com.zggis.dobby.batch.dto.TVShowConversionDTO;
-import com.zggis.dobby.batch.dto.VideoFileDTO;
+import com.zggis.dobby.dto.batch.TVShowConversionDTO;
+import com.zggis.dobby.dto.batch.VideoFileDTO;
 
 public class DiskTVShowReader implements ItemReader<TVShowConversionDTO> {
 

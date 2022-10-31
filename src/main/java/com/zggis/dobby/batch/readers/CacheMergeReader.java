@@ -17,9 +17,9 @@ import org.springframework.batch.item.UnexpectedInputException;
 
 import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.batch.JobUtils;
-import com.zggis.dobby.batch.dto.BLRPUHevcFileDTO;
-import com.zggis.dobby.batch.dto.VideoFileDTO;
-import com.zggis.dobby.batch.dto.VideoMergeDTO;
+import com.zggis.dobby.dto.batch.BLRPUHevcFileDTO;
+import com.zggis.dobby.dto.batch.VideoFileDTO;
+import com.zggis.dobby.dto.batch.VideoMergeDTO;
 
 public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutionListener {
 

@@ -17,13 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.zggis.dobby.batch.dto.BLRPUHevcFileDTO;
-import com.zggis.dobby.batch.dto.HevcFileDTO;
-import com.zggis.dobby.batch.dto.RPUFileDTO;
-import com.zggis.dobby.batch.dto.TVShowConversionDTO;
-import com.zggis.dobby.batch.dto.VideoFileDTO;
-import com.zggis.dobby.batch.dto.VideoInjectionDTO;
-import com.zggis.dobby.batch.dto.VideoMergeDTO;
 import com.zggis.dobby.batch.processors.ExtractRpuProcessor;
 import com.zggis.dobby.batch.processors.MKVActiveAreaProcessor;
 import com.zggis.dobby.batch.processors.MKVToHevcProcessor;
@@ -41,6 +34,13 @@ import com.zggis.dobby.batch.writers.CacheConversionWriter;
 import com.zggis.dobby.batch.writers.CacheFileWriter;
 import com.zggis.dobby.batch.writers.CacheMergeWriter;
 import com.zggis.dobby.batch.writers.CacheTVShowWriter;
+import com.zggis.dobby.dto.batch.BLRPUHevcFileDTO;
+import com.zggis.dobby.dto.batch.HevcFileDTO;
+import com.zggis.dobby.dto.batch.RPUFileDTO;
+import com.zggis.dobby.dto.batch.TVShowConversionDTO;
+import com.zggis.dobby.dto.batch.VideoFileDTO;
+import com.zggis.dobby.dto.batch.VideoInjectionDTO;
+import com.zggis.dobby.dto.batch.VideoMergeDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 import com.zggis.dobby.services.MediaServiceImpl;
 
