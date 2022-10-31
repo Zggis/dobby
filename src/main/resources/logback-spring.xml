@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<springProperty scope="context" name="logfile" source="logging.file.name" />
+	<springProperty scope="context" name="console" source="console.logging" />
+	<timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss" />
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</layout>
+	</appender>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>${logfile}</file>
+		<append>false</append>
+		<encoder>
+			<Pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</encoder>
+	</appender>
+	<root level="info" additivity="false">
+		<springProfile name="local">
+			<appender-ref ref="STDOUT" />
+		</springProfile>
+		<appender-ref ref="FILE"></appender-ref>
+	</root>
+</configuration>
