@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.batch.dto.TVShowConversionDTO;
 import com.zggis.dobby.batch.dto.VideoFileDTO;
-import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
@@ -32,7 +32,7 @@ public class MediaInfoProcessor implements ItemProcessor<TVShowConversionDTO, TV
 	@Override
 	public TVShowConversionDTO process(TVShowConversionDTO conversion) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		logger.info("Fetching media info from {}...", conversion.getStandardFile().getName());
+		logger.info("Fetching media info from {}...", JobUtils.getWithoutPath(conversion.getStandardFile().getName()));
 		String stdInfoCMD = MEDIAINFO + " --output=JSON \"" + conversion.getStandardFile().getName() + "\"";
 		logger.debug(stdInfoCMD);
 		ProcessBuilder stdPB = pbservice.get(stdInfoCMD);
@@ -48,7 +48,8 @@ public class MediaInfoProcessor implements ItemProcessor<TVShowConversionDTO, TV
 		VideoFileDTO stdFileDTO = new VideoFileDTO(conversion.getStandardFile().getName(), conversion.getKey());
 		stdFileDTO.setMediaInfo(stdMediaInfo);
 		//
-		logger.info("Fetching media info from {}...", conversion.getDolbyVisionFile().getName());
+		logger.info("Fetching media info from {}...",
+				JobUtils.getWithoutPath(conversion.getDolbyVisionFile().getName()));
 		String CMD2 = MEDIAINFO + " --output=JSON \"" + conversion.getDolbyVisionFile().getName() + "\"";
 		logger.debug(CMD2);
 		ProcessBuilder pb2 = pbservice.get(CMD2);
@@ -63,7 +64,45 @@ public class MediaInfoProcessor implements ItemProcessor<TVShowConversionDTO, TV
 		}
 		VideoFileDTO dvFileDTO = new VideoFileDTO(conversion.getDolbyVisionFile().getName(), conversion.getKey());
 		dvFileDTO.setMediaInfo(mediaInfo2);
-		return new TVShowConversionDTO(conversion.getKey(), stdFileDTO, dvFileDTO);
+		TVShowConversionDTO tvShowConversionDTO = null;
+		if (validateMergeCompatibility(stdFileDTO, dvFileDTO)) {
+			tvShowConversionDTO = new TVShowConversionDTO(conversion.getKey(), stdFileDTO, dvFileDTO);
+		} else {
+			tvShowConversionDTO = new TVShowConversionDTO(conversion.getKey(), null, null);
+		}
+		return tvShowConversionDTO;
+	}
+
+	private boolean validateMergeCompatibility(VideoFileDTO standardFile, VideoFileDTO dolbyVisionFile) {
+		String standardResolution = JobUtils.getResolution(standardFile.getMediaInfo());
+		String dolbyVisionResolution = JobUtils.getResolution(dolbyVisionFile.getMediaInfo());
+		if (!standardResolution.equals(dolbyVisionResolution)) {
+			logger.error("Resolutions do not match, DV:{}, HDR:{}", dolbyVisionResolution, standardResolution);
+			return false;
+		}
+		if ("3840x2160 DL".equals(standardResolution)) {
+			logger.error("{} - No Support for Double Layer Profile 7 File",
+					JobUtils.getWithoutPath(standardFile.getName()));
+			return false;
+		}
+		String hdrFormat = JobUtils.getHDRFormat(standardFile.getMediaInfo());
+		if (hdrFormat != null) {
+			if (hdrFormat.toLowerCase().contains("dvhe.05")) {
+				logger.error("{} - Dolby Vision Profile 5 found.", JobUtils.getWithoutPath(standardFile.getName()));
+				return false;
+			}
+		} else {
+			logger.error("{} - No HDR format detected.", JobUtils.getWithoutPath(standardFile.getName()));
+			return false;
+		}
+		String frameRate = JobUtils.getFrameRate(standardFile.getMediaInfo());
+		if (frameRate == null) {
+			logger.error("{} - Could not determine Frame Rate of", JobUtils.getWithoutPath(standardFile.getName()));
+			return false;
+		}
+		logger.info("\n{}\nResolution:\t{}\tGOOD\nHDR Format:\t{}\tGOOD\nFrame Rate:\t{}\t\tGOOD",
+				JobUtils.getWithoutPath(standardFile.getName()), standardResolution, hdrFormat, frameRate);
+		return true;
 	}
 
 }

@@ -56,7 +56,7 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFi
 		} else {
 			duration = fpsMap.get(DEFAULT_RESOLUTION);
 		}
-		logger.info("Generating MKV file from {}...", merge.getBlRPUFile().getName());
+		logger.info("Generating MKV file from {}...", JobUtils.getWithoutPath(merge.getBlRPUFile().getName()));
 		String cmd = MKVMERGE + " --output \"" + outputDir
 				+ JobUtils.getWithoutPathAndExtension(merge.getStandardFile().getName()) + "[BL+RPU].mkv\""
 				+ " --no-video \"" + merge.getStandardFile().getName()

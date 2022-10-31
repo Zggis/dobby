@@ -10,6 +10,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
+import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.batch.dto.VideoMergeDTO;
 
 public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutionListener {
@@ -33,11 +34,12 @@ public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutio
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
 		for (VideoMergeDTO merge : mergers) {
+			logger.debug("Writing merger {} to ...", merge.getBlRPUFile().getKey());
 			if (merge.getBlRPUFile() == null || merge.getStandardFile() == null) {
 				return ExitStatus.FAILED;
 			}
 		}
-		stepExecution.getJobExecution().getExecutionContext().put("BLRPUMerge", mergers);
+		stepExecution.getJobExecution().getExecutionContext().put(JobCacheKey.MERGE.value, mergers);
 		return ExitStatus.COMPLETED;
 	}
 

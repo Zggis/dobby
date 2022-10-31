@@ -31,6 +31,10 @@ public class JobUtils {
 		return fullFilename.substring(fullFilename.lastIndexOf('/') + 1, fullFilename.lastIndexOf('.'));
 	}
 
+	public static String getWithoutPath(String fullFilename) {
+		return fullFilename.substring(fullFilename.lastIndexOf('/') + 1);
+	}
+
 	public static boolean doesMediaFileExists(String filename) {
 		File file = new File(filename);
 		if (file.exists() && !file.isDirectory()) {
@@ -86,5 +90,28 @@ public class JobUtils {
 			}
 		}
 		return -1;
+	}
+
+	public static String getResolution(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD)) {
+				String result = track.width + "x" + track.height;
+				if ("3840x21601920x1080".equals(result)) {
+					return "3840x2160 DL";
+				} else {
+					return result;
+				}
+			}
+		}
+		return null;
+	}
+
+	public static String getHDRFormat(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD)) {
+				return track.hDR_Format;
+			}
+		}
+		return null;
 	}
 }

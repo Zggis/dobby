@@ -32,7 +32,7 @@ public class MKVActiveAreaProcessor implements ItemProcessor<VideoFileDTO, Video
 
 	@Override
 	public VideoFileDTO process(VideoFileDTO standardFile) throws IOException {
-		logger.info("Fetching Border info from {}...", standardFile.getName());
+		logger.info("Fetching Border info from {}...", JobUtils.getWithoutPath(standardFile.getName()));
 		double duration = -1;
 		for (TrackDTO track : standardFile.getMediaInfo().media.track) {
 			if ("1".equals(track.iD)) {
@@ -67,8 +67,8 @@ public class MKVActiveAreaProcessor implements ItemProcessor<VideoFileDTO, Video
 						String strLeftVal = tokens[3].split(":")[1].trim();
 						activeAreaHeights.add(Integer.parseInt(strBotVal) * 2);
 						activeAreaWidths.add(Integer.parseInt(strLeftVal) * 2);
-						logger.debug("Adding {} as bottom value", strBotVal);
-						logger.debug("Adding {} as left value", strLeftVal);
+						logger.trace("Adding {} as bottom value", strBotVal);
+						logger.trace("Adding {} as left value", strLeftVal);
 					}
 				} catch (NumberFormatException e) {
 					logger.error("Cannot parse offset value");

@@ -15,6 +15,8 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
+import com.zggis.dobby.batch.JobCacheKey;
+import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.batch.dto.HevcFileDTO;
 import com.zggis.dobby.batch.dto.RPUFileDTO;
 import com.zggis.dobby.batch.dto.VideoInjectionDTO;
@@ -39,9 +41,9 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
 		List<RPUFileDTO> rpus = (List<RPUFileDTO>) stepExecution.getJobExecution().getExecutionContext()
-				.get("DolbyVisionRPU");
+				.get(JobCacheKey.RPU.value);
 		List<HevcFileDTO> stds = (List<HevcFileDTO>) stepExecution.getJobExecution().getExecutionContext()
-				.get("STDHEVC");
+				.get(JobCacheKey.STDHEVC.value);
 		Map<String, RPUFileDTO> rpuMap = new HashMap<>();
 		for (RPUFileDTO rpu : rpus) {
 			rpuMap.put(rpu.getKey(), rpu);
@@ -52,7 +54,7 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
 				VideoInjectionDTO newInjectionDTO = new VideoInjectionDTO(stdFile, rpuFile);
 				availableInjections.push(newInjectionDTO);
 			} else {
-				logger.warn("Unable to find a RPU episode match for {}", stdFile.getName());
+				logger.warn("Unable to find a RPU episode match for {}", JobUtils.getWithoutPath(stdFile.getName()));
 			}
 		}
 	}

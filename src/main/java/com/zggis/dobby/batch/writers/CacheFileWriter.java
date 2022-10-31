@@ -27,10 +27,10 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
 	}
 
 	@Override
-	public void write(List<? extends T> items) throws Exception {
-		for (T conversion : items) {
-			files.add(conversion);
-			logger.info("Writing {} : {}", fileType.value, conversion.getName());
+	public void write(List<? extends T> files) throws Exception {
+		for (T file : files) {
+			this.files.add(file);
+			logger.debug("Writing {} : {}", fileType.value, file.getName());
 		}
 
 	}
@@ -41,8 +41,8 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
 
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
-		for (T fileName : files) {
-			if (!JobUtils.doesMediaFileExists(fileName.getName())) {
+		for (T file : files) {
+			if (!JobUtils.doesMediaFileExists(file.getName())) {
 				return ExitStatus.FAILED;
 			}
 		}

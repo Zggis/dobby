@@ -32,7 +32,8 @@ public class MP4ToHevcProcessor implements ItemProcessor<TVShowConversionDTO, TV
 
 	@Override
 	public TVShowConversionDTO process(TVShowConversionDTO conversion) throws IOException {
-		logger.info("Generating HEVC file from {}...", conversion.getDolbyVisionFile().getName());
+		logger.info("Generating HEVC file from {}...",
+				JobUtils.getWithoutPath(conversion.getDolbyVisionFile().getName()));
 		String CMD = MP4EXTRACT + " -raw 1 -out \"" + outputDir
 				+ JobUtils.getWithoutPathAndExtension(conversion.getDolbyVisionFile().getName()) + ".hevc\" \""
 				+ conversion.getDolbyVisionFile().getName() + "\"";

@@ -32,7 +32,7 @@ public class MKVToHevcProcessor implements ItemProcessor<TVShowConversionDTO, TV
 
 	@Override
 	public TVShowConversionDTO process(TVShowConversionDTO conversion) throws IOException {
-		logger.info("Generating HEVC file from {}...", conversion.getStandardFile().getName());
+		logger.info("Generating HEVC file from {}...", JobUtils.getWithoutPath(conversion.getStandardFile().getName()));
 		String cmd = MKVEXTRACT + " \"" + conversion.getStandardFile().getName() + "\" tracks 0:\"" + outputDir
 				+ JobUtils.getWithoutPathAndExtension(conversion.getStandardFile().getName()) + ".hevc\"";
 		logger.debug(cmd);

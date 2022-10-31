@@ -12,6 +12,7 @@ import org.springframework.batch.item.ItemWriter;
 
 import com.zggis.dobby.batch.dto.HevcFileDTO;
 import com.zggis.dobby.batch.dto.TVShowConversionDTO;
+import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.batch.JobUtils;
 
 public class CacheConversionWriter implements ItemWriter<TVShowConversionDTO>, StepExecutionListener {
@@ -24,7 +25,7 @@ public class CacheConversionWriter implements ItemWriter<TVShowConversionDTO>, S
 	public void write(List<? extends TVShowConversionDTO> items) throws Exception {
 		for (TVShowConversionDTO conversion : items) {
 			files.addAll(conversion.getResults());
-			logger.info("Writing {} : {}", "DV/STDHEVC", conversion.getKey());
+			logger.debug("Writing {} : {}", "DV/STDHEVC", conversion.getKey());
 		}
 
 	}
@@ -47,8 +48,8 @@ public class CacheConversionWriter implements ItemWriter<TVShowConversionDTO>, S
 				stdFiles.add(fileName);
 			}
 		}
-		stepExecution.getJobExecution().getExecutionContext().put("DVHEVC", dvFiles);
-		stepExecution.getJobExecution().getExecutionContext().put("STDHEVC", stdFiles);
+		stepExecution.getJobExecution().getExecutionContext().put(JobCacheKey.DVHEVC.value, dvFiles);
+		stepExecution.getJobExecution().getExecutionContext().put(JobCacheKey.STDHEVC.value, stdFiles);
 		return ExitStatus.COMPLETED;
 	}
 

@@ -29,7 +29,7 @@ public class RPUBorderInfoProcessor implements ItemProcessor<RPUFileDTO, RPUFile
 
 	@Override
 	public RPUFileDTO process(RPUFileDTO rpuFile) throws IOException {
-		logger.info("Fetching Border info from {}...", rpuFile.getName());
+		logger.info("Fetching Border info from {}...", JobUtils.getWithoutPath(rpuFile.getName()));
 		String CMD = DOVI_TOOL + " info -f 123 -i \"" + rpuFile.getName() + "\"";
 		logger.debug(CMD);
 		ProcessBuilder pb = pbservice.get(CMD);

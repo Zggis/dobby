@@ -32,7 +32,7 @@ public class ExtractRpuProcessor implements ItemProcessor<HevcFileDTO, RPUFileDT
 
 	@Override
 	public RPUFileDTO process(HevcFileDTO file) throws IOException {
-		logger.info("Generating RPU file from {}...", file.getName());
+		logger.info("Generating RPU file from {}...", JobUtils.getWithoutPath(file.getName()));
 		String cmd = DOVI_TOOL + " -m 2 extract-rpu \"" + file.getName() + "\"" + " -o \"" + outputDir
 				+ JobUtils.getWithoutPathAndExtension(file.getName()) + "-RPU.bin\"";
 		logger.debug(cmd);

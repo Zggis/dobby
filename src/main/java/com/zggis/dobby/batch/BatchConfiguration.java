@@ -123,7 +123,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MKVActiveAreaProcessor mkvActiveAreaProcessor() {
-		return new MKVActiveAreaProcessor(pbservice, FFMPEG, true);
+		return new MKVActiveAreaProcessor(pbservice, FFMPEG, false);
 	}
 
 	@Bean
@@ -153,12 +153,12 @@ public class BatchConfiguration {
 
 	@Bean
 	public MP4ToHevcProcessor mp4ToHevcProcessor() {
-		return new MP4ToHevcProcessor(pbservice, mediaService.getTempDirectory(), MP4EXTRACT, true);
+		return new MP4ToHevcProcessor(pbservice, mediaService.getTempDirectory(), MP4EXTRACT, false);
 	}
 
 	@Bean
 	public MKVToHevcProcessor mkvToHevcProcessor() {
-		return new MKVToHevcProcessor(pbservice, mediaService.getTempDirectory(), MKVEXTRACT, true);
+		return new MKVToHevcProcessor(pbservice, mediaService.getTempDirectory(), MKVEXTRACT, false);
 	}
 
 	@Bean
@@ -181,7 +181,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public ExtractRpuProcessor extractRpuProcessor() {
-		return new ExtractRpuProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, true);
+		return new ExtractRpuProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, false);
 	}
 
 	@Bean
@@ -203,7 +203,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public RPUBorderInfoProcessor rpuBorderInfoProcessor() {
-		return new RPUBorderInfoProcessor(pbservice, DOVI_TOOL, true);
+		return new RPUBorderInfoProcessor(pbservice, DOVI_TOOL, false);
 	}
 
 	@Bean
@@ -226,7 +226,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public RPUInjectProcessor rpuInjectProcessor() {
-		return new RPUInjectProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, true);
+		return new RPUInjectProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, false);
 	}
 
 	@Bean
@@ -249,7 +249,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MergeValidationProcessor mergeValidationProcessor() {
-		return new MergeValidationProcessor(true);
+		return new MergeValidationProcessor(false);
 	}
 
 	@Bean
@@ -272,7 +272,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MergeToMKVProcessor mergeToMkvProcessor() {
-		return new MergeToMKVProcessor(pbservice, mediaService.getResultsDirectory(), MKVMERGE, true);
+		return new MergeToMKVProcessor(pbservice, mediaService.getResultsDirectory(), MKVMERGE, false);
 	}
 
 	@Bean

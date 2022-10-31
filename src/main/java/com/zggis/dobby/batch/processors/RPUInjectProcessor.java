@@ -32,8 +32,8 @@ public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, BLRP
 
 	@Override
 	public BLRPUHevcFileDTO process(VideoInjectionDTO injectDTO) throws IOException {
-		logger.info("Injecting {} into {}", injectDTO.getRpuFile().getName(),
-				injectDTO.getStandardHevcFile().getName());
+		logger.info("Injecting {} into {}", JobUtils.getWithoutPath(injectDTO.getRpuFile().getName()),
+				JobUtils.getWithoutPath(injectDTO.getStandardHevcFile().getName()));
 		String cmd = DOVI_TOOL + " inject-rpu -i \"" + injectDTO.getStandardHevcFile().getName() + "\" --rpu-in \""
 				+ injectDTO.getRpuFile().getName() + "\" -o \"" + outputDir
 				+ JobUtils.getWithoutPathAndExtension(injectDTO.getStandardHevcFile().getName()) + "[BL+RPU].hevc\"";
