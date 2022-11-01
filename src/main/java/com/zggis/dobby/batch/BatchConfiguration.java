@@ -86,9 +86,10 @@ public class BatchConfiguration {
 
 	@Bean
 	public Job mergeVideoFilesJob(MyJobCompletionHandler listener) {
-		return jobBuilderFactory.get("Merge TV Shows").incrementer(new RunIdIncrementer()).listener(listener)
-				.flow(fetchMedia()).next(scanActiveArea()).next(convertMediaToHEVC()).next(extractRPU())
-				.next(getBorderInfo()).next(injectRPU()).next(validateMerge()).next(mergeResult()).end().build();
+		return jobBuilderFactory.get(ConsoleColor.CYAN.value + "Merge TV Shows" + ConsoleColor.NONE.value)
+				.incrementer(new RunIdIncrementer()).listener(listener).flow(fetchMedia()).next(scanActiveArea())
+				.next(convertMediaToHEVC()).next(extractRPU()).next(getBorderInfo()).next(injectRPU())
+				.next(validateMerge()).next(mergeResult()).end().build();
 	}
 
 	// Step 0 - Fetch Media Info

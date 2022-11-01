@@ -27,10 +27,9 @@ public class JobUtils {
 		}
 		try {
 			p.waitFor();
-			logger.info(builder.toString());
+			logger.info(ConsoleColor.BLUE.value + "{}" + ConsoleColor.NONE.value, builder.toString());
 		} catch (InterruptedException e) {
-			System.out.println(e.getMessage());
-			logger.info(e.getMessage());
+			logger.error(ConsoleColor.RED.value + "{}" + ConsoleColor.NONE.value, e.getMessage());
 		}
 	}
 
