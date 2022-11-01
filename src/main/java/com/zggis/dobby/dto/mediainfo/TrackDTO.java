@@ -15,6 +15,10 @@ public class TrackDTO {
 	public String iD;
 	@JsonProperty("HDR_Format")
 	public String hDR_Format;
+	@JsonProperty("HDR_Format_Profile")
+	public String hDR_Format_Profile;
+	@JsonProperty("HDR_Format_Level")
+	public String hDR_Format_Level;
 	@JsonProperty("HDR_Format_Compatibility")
 	public String hDR_Format_Compatibility;
 	@JsonProperty("Width")

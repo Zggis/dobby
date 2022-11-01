@@ -43,20 +43,22 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
 	public void beforeStep(StepExecution stepExecution) {
 		List<RPUFileDTO> rpus = (List<RPUFileDTO>) stepExecution.getJobExecution().getExecutionContext()
 				.get(JobCacheKey.RPU.value);
-		List<HevcFileDTO> stds = (List<HevcFileDTO>) stepExecution.getJobExecution().getExecutionContext()
-				.get(JobCacheKey.STDHEVC.value);
+		List<HevcFileDTO> hevcs = (List<HevcFileDTO>) stepExecution.getJobExecution().getExecutionContext()
+				.get(JobCacheKey.HEVCFILE.value);
 		Map<String, RPUFileDTO> rpuMap = new HashMap<>();
 		for (RPUFileDTO rpu : rpus) {
 			rpuMap.put(rpu.getKey(), rpu);
 		}
-		for (HevcFileDTO stdFile : stds) {
-			RPUFileDTO rpuFile = rpuMap.get(stdFile.getKey());
-			if (rpuFile != null) {
-				VideoInjectionDTO newInjectionDTO = new VideoInjectionDTO(stdFile, rpuFile);
-				availableInjections.push(newInjectionDTO);
-			} else {
-				logger.warn(ConsoleColor.YELLOW.value + "Unable to find a RPU episode match for {}"
-						+ ConsoleColor.YELLOW.value, JobUtils.getWithoutPath(stdFile.getName()));
+		for (HevcFileDTO hevc : hevcs) {
+			if (!hevc.isDolbyVision()) {
+				RPUFileDTO rpuFile = rpuMap.get(hevc.getKey());
+				if (rpuFile != null) {
+					VideoInjectionDTO newInjectionDTO = new VideoInjectionDTO(hevc, rpuFile);
+					availableInjections.push(newInjectionDTO);
+				} else {
+					logger.warn(ConsoleColor.YELLOW.value + "Unable to find a RPU episode match for {}"
+							+ ConsoleColor.YELLOW.value, JobUtils.getWithoutPath(hevc.getName()));
+				}
 			}
 		}
 	}

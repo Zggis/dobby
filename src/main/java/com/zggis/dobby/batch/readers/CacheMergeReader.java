@@ -26,6 +26,8 @@ public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutio
 
 	private static final Logger logger = LoggerFactory.getLogger(CacheMergeReader.class);
 
+	private static final String DOLBY_VISION = "Dolby Vision";
+
 	private Stack<VideoMergeDTO> availableMerges = new Stack<>();
 
 	@Override
@@ -44,19 +46,21 @@ public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutio
 		List<BLRPUHevcFileDTO> blrpus = (List<BLRPUHevcFileDTO>) stepExecution.getJobExecution().getExecutionContext()
 				.get(JobCacheKey.BLRPUHEVC.value);
 		List<VideoFileDTO> stdFiles = (List<VideoFileDTO>) stepExecution.getJobExecution().getExecutionContext()
-				.get(JobCacheKey.STDMKV.value);
+				.get(JobCacheKey.MEDIAFILE.value);
 		Map<String, BLRPUHevcFileDTO> blrpuMap = new HashMap<>();
 		for (BLRPUHevcFileDTO rpu : blrpus) {
 			blrpuMap.put(rpu.getKey(), rpu);
 		}
 		for (VideoFileDTO stdFile : stdFiles) {
-			BLRPUHevcFileDTO blrpuFileName = blrpuMap.get(stdFile.getKey());
-			if (blrpuFileName != null) {
-				VideoMergeDTO newInjectionDTO = new VideoMergeDTO(stdFile, blrpuFileName);
-				availableMerges.push(newInjectionDTO);
-			} else {
-				logger.warn(ConsoleColor.YELLOW.value + "Unable to find a BLRPU episode match for {}"
-						+ ConsoleColor.YELLOW.value, JobUtils.getWithoutPath(stdFile.getName()));
+			if (!DOLBY_VISION.equals(JobUtils.getHDRFormat(stdFile.getMediaInfo()))) {
+				BLRPUHevcFileDTO blrpuFileName = blrpuMap.get(stdFile.getKey());
+				if (blrpuFileName != null) {
+					VideoMergeDTO newInjectionDTO = new VideoMergeDTO(stdFile, blrpuFileName);
+					availableMerges.push(newInjectionDTO);
+				} else {
+					logger.warn(ConsoleColor.YELLOW.value + "Unable to find a BLRPU episode match for {}"
+							+ ConsoleColor.YELLOW.value, JobUtils.getWithoutPath(stdFile.getName()));
+				}
 			}
 		}
 	}

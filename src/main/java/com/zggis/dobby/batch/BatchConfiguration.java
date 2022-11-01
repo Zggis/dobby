@@ -1,27 +1,22 @@
 package com.zggis.dobby.batch;
 
-import java.util.Arrays;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
+import com.zggis.dobby.batch.processors.ConvertToHevcProcessor;
 import com.zggis.dobby.batch.processors.ExtractRpuProcessor;
 import com.zggis.dobby.batch.processors.MKVActiveAreaProcessor;
-import com.zggis.dobby.batch.processors.MKVToHevcProcessor;
-import com.zggis.dobby.batch.processors.MP4ToHevcProcessor;
 import com.zggis.dobby.batch.processors.MediaInfoProcessor;
 import com.zggis.dobby.batch.processors.MergeToMKVProcessor;
 import com.zggis.dobby.batch.processors.MergeValidationProcessor;
@@ -31,14 +26,11 @@ import com.zggis.dobby.batch.readers.CacheInjectorReader;
 import com.zggis.dobby.batch.readers.CacheMergeReader;
 import com.zggis.dobby.batch.readers.CacheReader;
 import com.zggis.dobby.batch.readers.DiskTVShowReader;
-import com.zggis.dobby.batch.writers.CacheConversionWriter;
 import com.zggis.dobby.batch.writers.CacheFileWriter;
 import com.zggis.dobby.batch.writers.CacheMergeWriter;
-import com.zggis.dobby.batch.writers.CacheTVShowWriter;
 import com.zggis.dobby.dto.batch.BLRPUHevcFileDTO;
 import com.zggis.dobby.dto.batch.HevcFileDTO;
 import com.zggis.dobby.dto.batch.RPUFileDTO;
-import com.zggis.dobby.dto.batch.TVShowConversionDTO;
 import com.zggis.dobby.dto.batch.VideoFileDTO;
 import com.zggis.dobby.dto.batch.VideoInjectionDTO;
 import com.zggis.dobby.dto.batch.VideoMergeDTO;
@@ -50,6 +42,8 @@ import com.zggis.dobby.services.MediaServiceImpl;
 public class BatchConfiguration {
 
 	private static final int CHUNK = 1;
+
+	private static final boolean SKIP = true;
 
 	@Value("${dovi.tool.location}")
 	private String DOVI_TOOL;
@@ -96,23 +90,23 @@ public class BatchConfiguration {
 	@Bean
 	public Step fetchMedia() {
 		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "0/7 Scan Media" + ConsoleColor.NONE.value)
-				.<TVShowConversionDTO, TVShowConversionDTO>chunk(CHUNK).reader(tvShowReader())
-				.processor(mediaInfoProcessor()).writer(tvShowStagedWriter()).build();
+				.<VideoFileDTO, VideoFileDTO>chunk(CHUNK).reader(tvShowReader()).processor(mediaInfoProcessor())
+				.writer(tvShowStagedWriter()).build();
 	}
 
 	@Bean
-	public ItemReader<TVShowConversionDTO> tvShowReader() {
+	public ItemReader<VideoFileDTO> tvShowReader() {
 		return new DiskTVShowReader(mediaService.getMediaDirectory());
 	}
 
 	@Bean
 	public MediaInfoProcessor mediaInfoProcessor() {
-		return new MediaInfoProcessor(pbservice, mediaService.getTempDirectory(), MEDIAINFO, true);
+		return new MediaInfoProcessor(pbservice, mediaService.getTempDirectory(), MEDIAINFO);
 	}
 
 	@Bean
-	public ItemWriter<TVShowConversionDTO> tvShowStagedWriter() {
-		return new CacheTVShowWriter();
+	public ItemWriter<VideoFileDTO> tvShowStagedWriter() {
+		return new CacheFileWriter<VideoFileDTO>(JobCacheKey.MEDIAFILE);
 	}
 
 	// step 1 - Populate active area
@@ -120,61 +114,49 @@ public class BatchConfiguration {
 	public Step scanActiveArea() {
 		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "1/7 Analyze HDR File" + ConsoleColor.NONE.value)
 				.<VideoFileDTO, VideoFileDTO>chunk(CHUNK).reader(stdMkvReader()).processor(mkvActiveAreaProcessor())
-				.writer(stdMkvWriter()).build();
+				.writer(conversionWriter2()).build();
 	}
 
 	@Bean
 	public ItemReader<VideoFileDTO> stdMkvReader() {
-		return new CacheReader<VideoFileDTO>(JobCacheKey.STDMKV);
+		return new CacheReader<VideoFileDTO>(JobCacheKey.MEDIAFILE);
 	}
 
 	@Bean
 	public MKVActiveAreaProcessor mkvActiveAreaProcessor() {
 		if (StringUtils.hasText(hwaccel)) {
-			return new MKVActiveAreaProcessor(pbservice, FFMPEG + " " + hwaccel.trim(), true);
+			return new MKVActiveAreaProcessor(pbservice, FFMPEG + " " + hwaccel.trim(), SKIP);
 		} else {
-			return new MKVActiveAreaProcessor(pbservice, FFMPEG, true);
+			return new MKVActiveAreaProcessor(pbservice, FFMPEG, SKIP);
 		}
 	}
 
 	@Bean
-	public ItemWriter<VideoFileDTO> stdMkvWriter() {
-		return new CacheFileWriter<VideoFileDTO>(JobCacheKey.STDMKV);
+	public ItemWriter<VideoFileDTO> conversionWriter2() {
+		return new CacheFileWriter<VideoFileDTO>(JobCacheKey.MEDIAFILE);
 	}
 
 	// Step 2 - Convert Mp4 and MKV to HEVC
 	@Bean
 	public Step convertMediaToHEVC() {
 		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "2/7 Convert media to HEVC" + ConsoleColor.NONE.value)
-				.<TVShowConversionDTO, TVShowConversionDTO>chunk(CHUNK).reader(tvShowCacheReader())
-				.processor(compositeItemProcessor()).writer(tvShowConvertedWriter()).build();
+				.<VideoFileDTO, HevcFileDTO>chunk(CHUNK).reader(tvShowCacheReader()).processor(mp4ToHevcProcessor())
+				.writer(tvShowHevcWriter()).build();
 	}
 
 	@Bean
-	public ItemProcessor<TVShowConversionDTO, TVShowConversionDTO> compositeItemProcessor() {
-		CompositeItemProcessor<TVShowConversionDTO, TVShowConversionDTO> compositeItemProcessor = new CompositeItemProcessor<>();
-		compositeItemProcessor.setDelegates(Arrays.asList(mp4ToHevcProcessor(), mkvToHevcProcessor()));
-		return compositeItemProcessor;
+	public ItemReader<VideoFileDTO> tvShowCacheReader() {
+		return new CacheReader<VideoFileDTO>(JobCacheKey.MEDIAFILE);
 	}
 
 	@Bean
-	public ItemReader<TVShowConversionDTO> tvShowCacheReader() {
-		return new CacheReader<TVShowConversionDTO>(JobCacheKey.CONVERSION);
+	public ConvertToHevcProcessor mp4ToHevcProcessor() {
+		return new ConvertToHevcProcessor(pbservice, mediaService.getTempDirectory(), MP4EXTRACT, MKVEXTRACT, SKIP);
 	}
 
 	@Bean
-	public MP4ToHevcProcessor mp4ToHevcProcessor() {
-		return new MP4ToHevcProcessor(pbservice, mediaService.getTempDirectory(), MP4EXTRACT, true);
-	}
-
-	@Bean
-	public MKVToHevcProcessor mkvToHevcProcessor() {
-		return new MKVToHevcProcessor(pbservice, mediaService.getTempDirectory(), MKVEXTRACT, true);
-	}
-
-	@Bean
-	public ItemWriter<TVShowConversionDTO> tvShowConvertedWriter() {
-		return new CacheConversionWriter();
+	public ItemWriter<HevcFileDTO> tvShowHevcWriter() {
+		return new CacheFileWriter<HevcFileDTO>(JobCacheKey.HEVCFILE);
 	}
 
 	// Step 3 - Extract RPU from DV HEVC
@@ -188,12 +170,12 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemReader<HevcFileDTO> dvHevcReader() {
-		return new CacheReader<HevcFileDTO>(JobCacheKey.DVHEVC);
+		return new CacheReader<HevcFileDTO>(JobCacheKey.HEVCFILE);
 	}
 
 	@Bean
 	public ExtractRpuProcessor extractRpuProcessor() {
-		return new ExtractRpuProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, true);
+		return new ExtractRpuProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, SKIP);
 	}
 
 	@Bean
@@ -216,7 +198,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public RPUBorderInfoProcessor rpuBorderInfoProcessor() {
-		return new RPUBorderInfoProcessor(pbservice, DOVI_TOOL, true);
+		return new RPUBorderInfoProcessor(pbservice, DOVI_TOOL, SKIP);
 	}
 
 	@Bean
@@ -240,7 +222,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public RPUInjectProcessor rpuInjectProcessor() {
-		return new RPUInjectProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, true);
+		return new RPUInjectProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, SKIP);
 	}
 
 	@Bean
@@ -263,7 +245,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MergeValidationProcessor mergeValidationProcessor() {
-		return new MergeValidationProcessor(true);
+		return new MergeValidationProcessor(SKIP);
 	}
 
 	@Bean
@@ -287,7 +269,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MergeToMKVProcessor mergeToMkvProcessor() {
-		return new MergeToMKVProcessor(pbservice, mediaService.getResultsDirectory(), MKVMERGE, true);
+		return new MergeToMKVProcessor(pbservice, mediaService.getResultsDirectory(), MKVMERGE, SKIP);
 	}
 
 	@Bean

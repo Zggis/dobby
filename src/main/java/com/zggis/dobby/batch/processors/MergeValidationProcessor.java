@@ -8,6 +8,8 @@ import org.springframework.batch.item.ItemProcessor;
 
 import com.zggis.dobby.batch.ConsoleColor;
 import com.zggis.dobby.batch.JobUtils;
+import com.zggis.dobby.dto.batch.BLRPUHevcFileDTO;
+import com.zggis.dobby.dto.batch.VideoFileDTO;
 import com.zggis.dobby.dto.batch.VideoMergeDTO;
 
 public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, VideoMergeDTO> {
@@ -25,6 +27,11 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
 		logger.info("Validating merge of {} and {}", JobUtils.getWithoutPath(conversion.getBlRPUFile().getName()),
 				JobUtils.getWithoutPath(conversion.getStandardFile().getName()));
 		if (execute == false) {
+			return conversion;
+		}
+		if (!validateMergeCompatibility(conversion.getStandardFile(), conversion.getBlRPUFile())) {
+			conversion.setBlRPUFile(null);
+			conversion.setStandardFile(null);
 			return conversion;
 		}
 		int rpuActiveHeight = conversion.getBlRPUFile().getBorderInfo().getBottomOffset()
@@ -68,6 +75,39 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
 		logger.info(ConsoleColor.GREEN.value + "Active areas match [Height:{}% Width:{}%], proceeding with merge..."
 				+ ConsoleColor.NONE.value, heightPercent.intValue(), widthPercent.intValue());
 		return conversion;
+	}
+
+	private boolean validateMergeCompatibility(VideoFileDTO standardFile, BLRPUHevcFileDTO dolbyVisionFile) {
+		String standardResolution = JobUtils.getResolution(standardFile.getMediaInfo());
+		String dolbyVisionResolution = JobUtils.getResolution(dolbyVisionFile.getMediaInfo());
+		if (!standardResolution.equals(dolbyVisionResolution)) {
+			logger.error(ConsoleColor.RED.value + "Resolutions do not match, DV:{}, HDR:{}" + ConsoleColor.NONE.value,
+					dolbyVisionResolution, standardResolution);
+			return false;
+		}
+		if ("3840x2160 DL".equals(standardResolution)) {
+			logger.error(ConsoleColor.RED.value + "{} cannot support double layer profile 7" + ConsoleColor.NONE.value,
+					JobUtils.getWithoutPath(standardFile.getName()));
+			return false;
+		}
+		String hdrFormat = JobUtils.getHDRFormat(standardFile.getMediaInfo());
+		if (hdrFormat == null) {
+			logger.error(ConsoleColor.RED.value + "No HDR format detected for {}" + ConsoleColor.NONE.value,
+					JobUtils.getWithoutPath(standardFile.getName()));
+			return false;
+		}
+		String frameRate = JobUtils.getFrameRate(standardFile.getMediaInfo());
+		if (frameRate == null) {
+			logger.error(ConsoleColor.RED.value + "Could not determine Frame Rate of {}" + ConsoleColor.NONE.value,
+					JobUtils.getWithoutPath(standardFile.getName()));
+			return false;
+		}
+		logger.info(
+				"\n{}\nResolution:\t{}\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value
+						+ "\nHDR Format:\t{}\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value
+						+ "\nFrame Rate:\t{}\t\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value + "",
+				JobUtils.getWithoutPath(standardFile.getName()), standardResolution, hdrFormat, frameRate);
+		return true;
 	}
 
 }

@@ -1,8 +1,8 @@
 package com.zggis.dobby.batch;
 
 public enum JobCacheKey {
-	STDMKV("STDMKV"), CONVERSION("HevcVideoConversion"), RPU("DolbyVisionRPU"), BLRPUHEVC("BLRPUHevc"),
-	MERGE("BLRPUMerge"), BLRPUMKV("BLRPUMKV"), DVHEVC("DVHEVC"), STDHEVC("STDHEVC");
+	RPU("DolbyVisionRPU"), BLRPUHEVC("BLRPUHevc"), MERGE("BLRPUMerge"), BLRPUMKV("BLRPUMKV"), MEDIAFILE("MEDIAFILE"),
+	HEVCFILE("HEVCFILE");
 
 	public final String value;
 

@@ -70,7 +70,7 @@ public class JobUtils {
 		}
 		return builder.toString();
 	}
-
+	
 	public static String getFrameRate(MediaInfoDTO mediaInfo) {
 		for (TrackDTO track : mediaInfo.media.track) {
 			if ("1".equals(track.iD)) {
@@ -116,6 +116,15 @@ public class JobUtils {
 		for (TrackDTO track : mediaInfo.media.track) {
 			if ("1".equals(track.iD)) {
 				return track.hDR_Format;
+			}
+		}
+		return null;
+	}
+	
+	public static String getHDRFormatCompatibility(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD)) {
+				return track.hDR_Format_Compatibility;
 			}
 		}
 		return null;
