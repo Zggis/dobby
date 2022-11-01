@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 import com.zggis.dobby.batch.processors.ExtractRpuProcessor;
 import com.zggis.dobby.batch.processors.MKVActiveAreaProcessor;
@@ -67,6 +68,9 @@ public class BatchConfiguration {
 
 	@Value("${ffmpeg.location}")
 	private String FFMPEG;
+
+	@Value("${hardware.acceleration}")
+	private String hwaccel;
 
 	@Autowired
 	private MediaServiceImpl mediaService;
@@ -125,7 +129,11 @@ public class BatchConfiguration {
 
 	@Bean
 	public MKVActiveAreaProcessor mkvActiveAreaProcessor() {
-		return new MKVActiveAreaProcessor(pbservice, FFMPEG, true);
+		if (StringUtils.hasText(hwaccel)) {
+			return new MKVActiveAreaProcessor(pbservice, FFMPEG + " " + hwaccel.trim(), true);
+		} else {
+			return new MKVActiveAreaProcessor(pbservice, FFMPEG, true);
+		}
 	}
 
 	@Bean
