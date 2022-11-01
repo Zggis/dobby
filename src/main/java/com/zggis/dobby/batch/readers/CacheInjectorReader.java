@@ -15,6 +15,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
+import com.zggis.dobby.batch.ConsoleColor;
 import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.dto.batch.HevcFileDTO;
@@ -54,7 +55,8 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
 				VideoInjectionDTO newInjectionDTO = new VideoInjectionDTO(stdFile, rpuFile);
 				availableInjections.push(newInjectionDTO);
 			} else {
-				logger.warn("Unable to find a RPU episode match for {}", JobUtils.getWithoutPath(stdFile.getName()));
+				logger.warn(ConsoleColor.YELLOW.value + "Unable to find a RPU episode match for {}"
+						+ ConsoleColor.YELLOW.value, JobUtils.getWithoutPath(stdFile.getName()));
 			}
 		}
 	}

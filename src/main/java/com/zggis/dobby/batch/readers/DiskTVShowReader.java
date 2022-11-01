@@ -14,6 +14,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
+import com.zggis.dobby.batch.ConsoleColor;
 import com.zggis.dobby.dto.batch.TVShowConversionDTO;
 import com.zggis.dobby.dto.batch.VideoFileDTO;
 
@@ -22,9 +23,10 @@ public class DiskTVShowReader implements ItemReader<TVShowConversionDTO> {
 	private static final Logger logger = LoggerFactory.getLogger(DiskTVShowReader.class);
 
 	private static final Pattern EPISODE_NUM_REGEX = Pattern.compile("^.*?s(\\d{2})((?:e\\d{2})+).*");
-	
-	//private static final Pattern DOLBY_VISION_REGEX = Pattern.compile("^.*?dv.*");
-	//Matcher m2 = DOLBY_VISION_REGEX.matcher(child.getName().toLowerCase());
+
+	// private static final Pattern DOLBY_VISION_REGEX =
+	// Pattern.compile("^.*?dv.*");
+	// Matcher m2 = DOLBY_VISION_REGEX.matcher(child.getName().toLowerCase());
 
 	Stack<TVShowConversionDTO> conversions = new Stack<>();
 
@@ -51,7 +53,7 @@ public class DiskTVShowReader implements ItemReader<TVShowConversionDTO> {
 				}
 			}
 		} else {
-			logger.error("{} Does not exist.", mediaDir);
+			logger.error(ConsoleColor.RED.value + "{} Does not exist." + ConsoleColor.NONE.value, mediaDir);
 		}
 		for (String key : showMap.keySet()) {
 			VideoFileDTO dolbyVisionFile = dvShowMap.get(key);
@@ -59,7 +61,9 @@ public class DiskTVShowReader implements ItemReader<TVShowConversionDTO> {
 				TVShowConversionDTO conversion = new TVShowConversionDTO(key, showMap.get(key), dolbyVisionFile);
 				conversions.push(conversion);
 			} else {
-				logger.warn("Cannot find Dolby Vision file for {}", showMap.get(key));
+				logger.warn(
+						ConsoleColor.YELLOW.value + "Cannot find Dolby Vision file for {}" + ConsoleColor.NONE.value,
+						showMap.get(key));
 			}
 		}
 	}

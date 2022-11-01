@@ -10,6 +10,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
+import com.zggis.dobby.batch.ConsoleColor;
 import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.dto.batch.HevcFileDTO;
@@ -25,7 +26,8 @@ public class CacheConversionWriter implements ItemWriter<TVShowConversionDTO>, S
 	public void write(List<? extends TVShowConversionDTO> items) throws Exception {
 		for (TVShowConversionDTO conversion : items) {
 			files.addAll(conversion.getResults());
-			logger.debug("Writing {} : {}", "DV/STDHEVC", conversion.getKey());
+			logger.debug("Writing {} & {} for {}", JobCacheKey.DVHEVC.value, JobCacheKey.STDHEVC.value,
+					conversion.getKey());
 		}
 
 	}
@@ -38,14 +40,16 @@ public class CacheConversionWriter implements ItemWriter<TVShowConversionDTO>, S
 	public ExitStatus afterStep(StepExecution stepExecution) {
 		List<HevcFileDTO> stdFiles = new ArrayList<>();
 		List<HevcFileDTO> dvFiles = new ArrayList<>();
-		for (HevcFileDTO fileName : files) {
-			if (!JobUtils.doesMediaFileExists(fileName.getName())) {
+		for (HevcFileDTO file : files) {
+			if (!JobUtils.doesMediaFileExists(file.getName())) {
+				logger.error(ConsoleColor.RED.value + "Could not find processor result {}" + ConsoleColor.NONE.value,
+						file.getName());
 				return ExitStatus.FAILED;
 			}
-			if (fileName.isDolbyVision()) {
-				dvFiles.add(fileName);
+			if (file.isDolbyVision()) {
+				dvFiles.add(file);
 			} else {
-				stdFiles.add(fileName);
+				stdFiles.add(file);
 			}
 		}
 		stepExecution.getJobExecution().getExecutionContext().put(JobCacheKey.DVHEVC.value, dvFiles);

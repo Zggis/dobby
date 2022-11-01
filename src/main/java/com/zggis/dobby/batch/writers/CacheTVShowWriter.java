@@ -10,6 +10,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
+import com.zggis.dobby.batch.ConsoleColor;
 import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.dto.batch.TVShowConversionDTO;
 import com.zggis.dobby.dto.batch.VideoFileDTO;
@@ -38,6 +39,8 @@ public class CacheTVShowWriter implements ItemWriter<TVShowConversionDTO>, StepE
 		List<VideoFileDTO> stdFiles = new ArrayList<>();
 		for (TVShowConversionDTO conversion : hevcConversions) {
 			if (conversion.getDolbyVisionFile() == null || conversion.getStandardFile() == null) {
+				logger.error(ConsoleColor.RED.value + "Media info validation must have failed, job cannot proceed"
+						+ ConsoleColor.NONE.value);
 				return ExitStatus.FAILED;
 			}
 			stdFiles.add(conversion.getStandardFile());

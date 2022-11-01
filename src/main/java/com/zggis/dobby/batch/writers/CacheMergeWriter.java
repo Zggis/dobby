@@ -10,6 +10,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemWriter;
 
+import com.zggis.dobby.batch.ConsoleColor;
 import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.dto.batch.VideoMergeDTO;
 
@@ -36,6 +37,8 @@ public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutio
 		for (VideoMergeDTO merge : mergers) {
 			logger.debug("Writing merger {} to ...", merge.getBlRPUFile().getKey());
 			if (merge.getBlRPUFile() == null || merge.getStandardFile() == null) {
+				logger.error(ConsoleColor.RED.value + "Merge validation must have failed, job cannot proceed"
+						+ ConsoleColor.NONE.value);
 				return ExitStatus.FAILED;
 			}
 		}
