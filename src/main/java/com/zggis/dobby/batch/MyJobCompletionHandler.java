@@ -29,7 +29,6 @@ public class MyJobCompletionHandler extends JobExecutionListenerSupport {
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {
-		mediaService.deleteTempDirectory();
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
 			log.info(ConsoleColor.GREEN.value + "Job Completed Successfully!" + ConsoleColor.NONE.value);
 		} else if (jobExecution.getStatus() == BatchStatus.FAILED) {
