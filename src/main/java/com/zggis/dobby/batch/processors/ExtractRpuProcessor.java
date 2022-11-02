@@ -46,7 +46,7 @@ public class ExtractRpuProcessor implements ItemProcessor<HevcFileDTO, RPUFileDT
 				logger.info("===EXECUTION SKIPPED===");
 			}
 			return new RPUFileDTO(outputDir + JobUtils.getWithoutPathAndExtension(file.getName()) + "-RPU.bin",
-					file.getKey());
+					file.getKey(), file.getMediaInfo());
 		}
 		return null;
 	}

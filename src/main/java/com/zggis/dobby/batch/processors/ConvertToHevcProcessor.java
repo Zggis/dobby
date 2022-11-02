@@ -14,8 +14,6 @@ import com.zggis.dobby.services.DoviProcessBuilder;
 
 public class ConvertToHevcProcessor implements ItemProcessor<VideoFileDTO, HevcFileDTO> {
 
-	private static final String DOLBY_VISION = "Dolby Vision";
-
 	private static final Logger logger = LoggerFactory.getLogger(ConvertToHevcProcessor.class);
 
 	private String MP4EXTRACT;
@@ -55,7 +53,7 @@ public class ConvertToHevcProcessor implements ItemProcessor<VideoFileDTO, HevcF
 				+ JobUtils.getWithoutPathAndExtension(file.getName()) + ".hevc\"";
 		logger.debug(cmd);
 		ProcessBuilder pb = pbservice.get(cmd);
-		boolean dolbyVision = DOLBY_VISION.equals(JobUtils.getHDRFormat(file.getMediaInfo()));
+		boolean dolbyVision = JobUtils.isDolbyVision(file.getMediaInfo());
 		pb.redirectErrorStream(true);
 		if (execute) {
 			Process p = pb.start();
@@ -72,7 +70,7 @@ public class ConvertToHevcProcessor implements ItemProcessor<VideoFileDTO, HevcF
 				+ ".hevc\" \"" + file.getName() + "\"";
 		logger.debug(CMD);
 		ProcessBuilder pb = pbservice.get(CMD);
-		boolean dolbyVision = DOLBY_VISION.equals(JobUtils.getHDRFormat(file.getMediaInfo()));
+		boolean dolbyVision = JobUtils.isDolbyVision(file.getMediaInfo());
 		pb.redirectErrorStream(dolbyVision);
 		if (execute) {
 			Process p = pb.start();

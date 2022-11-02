@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
+import com.zggis.dobby.batch.ConsoleColor;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.dto.BorderInfoDTO;
 import com.zggis.dobby.dto.batch.RPUFileDTO;
@@ -30,7 +31,8 @@ public class RPUBorderInfoProcessor implements ItemProcessor<RPUFileDTO, RPUFile
 	@Override
 	public RPUFileDTO process(RPUFileDTO rpuFile) throws IOException {
 		logger.info("Fetching Border info from {}...", JobUtils.getWithoutPath(rpuFile.getName()));
-		String CMD = DOVI_TOOL + " info -f 123 -i \"" + rpuFile.getName() + "\"";
+		int frameCount = JobUtils.getFrameCount(rpuFile.getMediaInfo());
+		String CMD = DOVI_TOOL + " info -f " + (frameCount / 2) + " -i \"" + rpuFile.getName() + "\"";
 		logger.debug(CMD);
 		ProcessBuilder pb = pbservice.get(CMD);
 		pb.redirectErrorStream(true);
@@ -84,6 +86,7 @@ public class RPUBorderInfoProcessor implements ItemProcessor<RPUFileDTO, RPUFile
 			}
 		}
 		rpuFile.setBorderInfo(result);
+		logger.info(ConsoleColor.GREEN.value + "Added border info!" + ConsoleColor.NONE.value);
 		return rpuFile;
 	}
 

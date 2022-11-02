@@ -13,15 +13,15 @@ import com.zggis.dobby.dto.batch.VideoFileDTO;
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
 
-public class MediaInfoProcessor implements ItemProcessor<VideoFileDTO, VideoFileDTO> {
+public class ResultValidatorProcessor implements ItemProcessor<VideoFileDTO, VideoFileDTO> {
 
-	private static final Logger logger = LoggerFactory.getLogger(MediaInfoProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(ResultValidatorProcessor.class);
 
 	private String MEDIAINFO;
 
 	private DoviProcessBuilder pbservice;
 
-	public MediaInfoProcessor(DoviProcessBuilder pbservice, String MEDIAINFO) {
+	public ResultValidatorProcessor(DoviProcessBuilder pbservice, String MEDIAINFO) {
 		this.MEDIAINFO = MEDIAINFO;
 		this.pbservice = pbservice;
 	}
@@ -38,26 +38,19 @@ public class MediaInfoProcessor implements ItemProcessor<VideoFileDTO, VideoFile
 		Process process = pb.start();
 		String output = JobUtils.returnOutput(process);
 		mediaInfo = objectMapper.readValue(output, MediaInfoDTO.class);
-		if (JobUtils.isBLRPU(mediaInfo)) {
-			logger.warn(ConsoleColor.YELLOW.value
-					+ "Dolby Vision and HDR were already detected on {}, this file will be ignored."
+		if (!JobUtils.isBLRPU(mediaInfo)) {
+			logger.warn(ConsoleColor.RED.value + "Dolby Vision and HDR were not detected on {}, something went wrong."
 					+ ConsoleColor.NONE.value, videoFile.getName());
 			return null;
 		}
 		if (JobUtils.getFrameCount(mediaInfo) < 2000) {
-			logger.warn(ConsoleColor.YELLOW.value
-					+ "Not enough video frames detected for {}, a minimum of 2,000 is required in order to properly validate video borders. This file will be ignored."
+			logger.warn(ConsoleColor.RED.value + "Not enough video frames detected for {}, something went wrong."
 					+ ConsoleColor.NONE.value, videoFile.getName());
 			return null;
 		}
-		if (!JobUtils.isHDR(mediaInfo)) {
-
-			logger.warn(ConsoleColor.YELLOW.value + "No HDR format detected for {}. This file will be ignored."
-					+ ConsoleColor.NONE.value, videoFile.getName());
-			return null;
-		}
+		logger.info(ConsoleColor.GREEN.value + "Dolby Vision and HDR were detected on {}, result looks good!"
+				+ ConsoleColor.NONE.value, JobUtils.getWithoutPath(videoFile.getName()));
 		videoFile.setMediaInfo(mediaInfo);
-		logger.info(ConsoleColor.GREEN.value + "Added file!" + ConsoleColor.NONE.value);
 		return videoFile;
 	}
 

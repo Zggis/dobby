@@ -55,13 +55,21 @@ public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutio
 			if (!DOLBY_VISION.equals(JobUtils.getHDRFormat(stdFile.getMediaInfo()))) {
 				BLRPUHevcFileDTO blrpuFileName = blrpuMap.get(stdFile.getKey());
 				if (blrpuFileName != null) {
+					blrpuMap.remove(stdFile.getKey());
 					VideoMergeDTO newInjectionDTO = new VideoMergeDTO(stdFile, blrpuFileName);
 					availableMerges.push(newInjectionDTO);
 				} else {
-					logger.warn(ConsoleColor.YELLOW.value + "Unable to find a BLRPU episode match for {}"
-							+ ConsoleColor.YELLOW.value, JobUtils.getWithoutPath(stdFile.getName()));
+					logger.warn(ConsoleColor.YELLOW.value
+							+ "Unable to find a BLRPU episode match for {}, check the logs above. This may be caused by a missing file, or a file that failed validation and was skipped as a result."
+							+ ConsoleColor.YELLOW.value, stdFile.getName());
 				}
 			}
+		}
+		for (String key : blrpuMap.keySet()) {
+			BLRPUHevcFileDTO blrpuHevcFile = blrpuMap.get(key);
+			logger.warn(ConsoleColor.YELLOW.value
+					+ "Unable to find a HDR episode match for {}, check the logs above. This may be caused by a missing file, or a file that failed validation and was skipped as a result."
+					+ ConsoleColor.YELLOW.value, blrpuHevcFile.getName());
 		}
 	}
 

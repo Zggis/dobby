@@ -11,6 +11,8 @@ public class TrackDTO {
 	public String duration;
 	@JsonProperty("FrameRate")
 	public String frameRate;
+	@JsonProperty("FrameCount")
+	public String frameCount;
 	@JsonProperty("ID")
 	public String iD;
 	@JsonProperty("HDR_Format")

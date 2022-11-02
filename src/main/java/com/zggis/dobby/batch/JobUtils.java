@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 import com.zggis.dobby.dto.mediainfo.TrackDTO;
@@ -129,6 +130,46 @@ public class JobUtils {
 			}
 		}
 		return null;
+	}
+
+	public static boolean isHDR(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD) || "Video".equalsIgnoreCase(track.type)) {
+				return StringUtils.hasText(track.hDR_Format);
+			}
+		}
+		return false;
+	}
+
+	public static boolean isDolbyVision(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD) || "Video".equalsIgnoreCase(track.type)) {
+				return track.hDR_Format.contains("Dolby Vision");
+			}
+		}
+		return false;
+	}
+
+	public static boolean isBLRPU(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD) || "Video".equalsIgnoreCase(track.type)) {
+				return track.hDR_Format.contains("Dolby Vision") && track.hDR_Format.contains("SMPTE ST 2086");
+			}
+		}
+		return false;
+	}
+
+	public static int getFrameCount(MediaInfoDTO mediaInfo) {
+		for (TrackDTO track : mediaInfo.media.track) {
+			if ("1".equals(track.iD) || "Video".equalsIgnoreCase(track.type)) {
+				if (StringUtils.hasText(track.frameCount)) {
+					return Integer.parseInt(track.frameCount);
+				} else {
+					return -1;
+				}
+			}
+		}
+		return -1;
 	}
 
 }

@@ -105,7 +105,7 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
 		logger.info(
 				"Resolution:\t{}\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value
 						+ "\nHDR Format:\t{}\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value
-						+ "\nFrame Rate:\t{}\t\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value + "\n",
+						+ "\nFrame Rate:\t{}\t\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value,
 				standardResolution, hdrFormat, frameRate);
 		return true;
 	}

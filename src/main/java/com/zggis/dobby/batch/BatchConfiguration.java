@@ -26,6 +26,7 @@ import com.zggis.dobby.batch.processors.MergeToMKVProcessor;
 import com.zggis.dobby.batch.processors.MergeValidationProcessor;
 import com.zggis.dobby.batch.processors.RPUBorderInfoProcessor;
 import com.zggis.dobby.batch.processors.RPUInjectProcessor;
+import com.zggis.dobby.batch.processors.ResultValidatorProcessor;
 import com.zggis.dobby.batch.readers.CacheInjectorReader;
 import com.zggis.dobby.batch.readers.CacheMergeReader;
 import com.zggis.dobby.batch.readers.CacheReader;
@@ -89,7 +90,7 @@ public class BatchConfiguration {
 		return jobBuilderFactory.get(ConsoleColor.CYAN.value + "Merge TV Shows" + ConsoleColor.NONE.value)
 				.incrementer(new RunIdIncrementer()).listener(listener).flow(fetchMedia()).next(scanActiveArea())
 				.next(convertMediaToHEVC()).next(extractRPU()).next(getBorderInfo()).next(injectRPU())
-				.next(validateMerge()).next(mergeResult()).end().build();
+				.next(validateMerge()).next(mergeResult()).next(validateResult()).end().build();
 	}
 
 	// Step 0 - Fetch Media Info
@@ -107,7 +108,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MediaInfoProcessor mediaInfoProcessor() {
-		return new MediaInfoProcessor(pbservice, mediaService.getTempDirectory(), MEDIAINFO);
+		return new MediaInfoProcessor(pbservice, MEDIAINFO);
 	}
 
 	@Bean
@@ -119,7 +120,7 @@ public class BatchConfiguration {
 	@Bean
 	public Step scanActiveArea() {
 		return stepBuilderFactory
-				.get(ConsoleColor.CYAN.value + "1/7 Analyze Active Area of HDR Files" + ConsoleColor.NONE.value)
+				.get(ConsoleColor.CYAN.value + "1/8 Analyze Active Area of HDR Files" + ConsoleColor.NONE.value)
 				.<VideoFileDTO, VideoFileDTO>chunk(CHUNK).reader(stdMkvReader()).processor(mkvActiveAreaProcessor())
 				.writer(conversionWriter2()).build();
 	}
@@ -146,7 +147,7 @@ public class BatchConfiguration {
 	// Step 2 - Convert Mp4 and MKV to HEVC
 	@Bean
 	public Step convertMediaToHEVC() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "2/7 Convert media to HEVC" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "2/8 Convert media to HEVC" + ConsoleColor.NONE.value)
 				.<VideoFileDTO, HevcFileDTO>chunk(CHUNK).reader(tvShowCacheReader()).processor(mp4ToHevcProcessor())
 				.writer(tvShowHevcWriter()).build();
 	}
@@ -170,7 +171,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public Step extractRPU() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "3/7 Extract RPUs" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "3/8 Extract RPUs" + ConsoleColor.NONE.value)
 				.<HevcFileDTO, RPUFileDTO>chunk(CHUNK).reader(dvHevcReader()).processor(extractRpuProcessor())
 				.writer(dvHevcWriter()).build();
 	}
@@ -193,7 +194,7 @@ public class BatchConfiguration {
 	// Step 4 - Populate Border info
 	@Bean
 	public Step getBorderInfo() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "4/7 Analyze RPUs" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "4/8 Analyze RPUs" + ConsoleColor.NONE.value)
 				.<RPUFileDTO, RPUFileDTO>chunk(CHUNK).reader(rpuReader()).processor(rpuBorderInfoProcessor())
 				.writer(rpuWriter()).build();
 	}
@@ -217,7 +218,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public Step injectRPU() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "5/7 Inject RPUs into HEVCs" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "5/8 Inject RPUs into HEVCs" + ConsoleColor.NONE.value)
 				.<VideoInjectionDTO, BLRPUHevcFileDTO>chunk(CHUNK).reader(cacheInjectorReader())
 				.processor(rpuInjectProcessor()).writer(blRPUCacheFileWriter()).build();
 	}
@@ -241,7 +242,7 @@ public class BatchConfiguration {
 	@Bean
 	public Step validateMerge() {
 		return stepBuilderFactory
-				.get(ConsoleColor.CYAN.value + "6/7 Validate Merge Compatibility" + ConsoleColor.NONE.value)
+				.get(ConsoleColor.CYAN.value + "6/8 Validate Merge Compatibility" + ConsoleColor.NONE.value)
 				.<VideoMergeDTO, VideoMergeDTO>chunk(CHUNK).reader(cacheMergeValidationReader())
 				.processor(mergeValidationProcessor()).writer(cacheMergeValidationWriter()).build();
 	}
@@ -265,7 +266,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public Step mergeResult() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "7/7 Generate Results" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "7/8 Generate Results" + ConsoleColor.NONE.value)
 				.<VideoMergeDTO, VideoFileDTO>chunk(CHUNK).reader(cacheMergeReader()).processor(mergeToMkvProcessor())
 				.writer(blRPUMKVCacheFileWriter()).build();
 	}
@@ -282,6 +283,30 @@ public class BatchConfiguration {
 
 	@Bean
 	public ItemWriter<VideoFileDTO> blRPUMKVCacheFileWriter() {
+		return new CacheFileWriter<VideoFileDTO>(JobCacheKey.BLRPUMKV);
+	}
+
+	// Step 8 - Validate Result
+
+	@Bean
+	public Step validateResult() {
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "8/8 Validate Results" + ConsoleColor.NONE.value)
+				.<VideoFileDTO, VideoFileDTO>chunk(CHUNK).reader(resultReader()).processor(resultValidatorProcessor())
+				.writer(resultWriter()).build();
+	}
+
+	@Bean
+	public ItemReader<VideoFileDTO> resultReader() {
+		return new CacheReader<VideoFileDTO>(JobCacheKey.BLRPUMKV);
+	}
+
+	@Bean
+	public ResultValidatorProcessor resultValidatorProcessor() {
+		return new ResultValidatorProcessor(pbservice, MEDIAINFO);
+	}
+
+	@Bean
+	public ItemWriter<VideoFileDTO> resultWriter() {
 		return new CacheFileWriter<VideoFileDTO>(JobCacheKey.BLRPUMKV);
 	}
 
