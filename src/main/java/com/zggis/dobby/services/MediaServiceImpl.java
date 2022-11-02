@@ -11,6 +11,12 @@ public class MediaServiceImpl {
 	@Value("${media.dir}")
 	private String mediaDir;
 
+	@Value("${results.dir}")
+	private String resultsDir;
+
+	@Value("${temp.dir}")
+	private String tempDir;
+
 	@Value("${cleanup:true}")
 	private boolean cleanup;
 
@@ -19,20 +25,20 @@ public class MediaServiceImpl {
 	}
 
 	public String getTempDirectory() {
-		return mediaDir + "/temp/";
+		return tempDir + "/";
 	}
 
 	public String getResultsDirectory() {
-		return mediaDir + "/results/";
+		return resultsDir + "/";
 	}
 
 	public void createTempDirectory() {
-		createDirectory(mediaDir + "/temp");
+		createDirectory(tempDir);
 	}
 
 	public void deleteTempDirectory() {
 		if (cleanup) {
-			deleteDirectory(mediaDir + "/temp");
+			deleteDirectory(tempDir);
 		}
 	}
 
