@@ -33,7 +33,7 @@ public class MKVActiveAreaProcessor implements ItemProcessor<VideoFileDTO, Video
 	@Override
 	public VideoFileDTO process(VideoFileDTO file) throws IOException {
 		if ("HDR10".equals(JobUtils.getHDRFormatCompatibility(file.getMediaInfo()))) {
-			logger.info("Fetching Border info from {}...", JobUtils.getWithoutPath(file.getName()));
+			logger.info("Fetching active area info from {}...", JobUtils.getWithoutPath(file.getName()));
 			double duration = -1;
 			for (TrackDTO track : file.getMediaInfo().media.track) {
 				if ("1".equals(track.iD)) {
