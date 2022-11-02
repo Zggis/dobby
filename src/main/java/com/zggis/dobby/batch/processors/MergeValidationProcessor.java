@@ -103,10 +103,10 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
 			return false;
 		}
 		logger.info(
-				"\n{}\nResolution:\t{}\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value
+				"Resolution:\t{}\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value
 						+ "\nHDR Format:\t{}\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value
-						+ "\nFrame Rate:\t{}\t\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value + "",
-				JobUtils.getWithoutPath(standardFile.getName()), standardResolution, hdrFormat, frameRate);
+						+ "\nFrame Rate:\t{}\t\t" + ConsoleColor.GREEN.value + "GOOD" + ConsoleColor.NONE.value + "\n",
+				standardResolution, hdrFormat, frameRate);
 		return true;
 	}
 

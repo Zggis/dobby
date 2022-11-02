@@ -36,11 +36,6 @@ public class MyJobCompletionHandler extends JobExecutionListenerSupport {
 			log.info(ConsoleColor.RED.value + "Job Failed!" + ConsoleColor.NONE.value);
 		}
 		log.info("Logs for this job can be found at {}", logFileLocation);
-		log.info(ConsoleColor.YELLOW.value + "Application will exist in 30s" + ConsoleColor.NONE.value);
-		try {
-			Thread.sleep(30000);
-		} catch (InterruptedException e) {
-		}
 	}
 
 	@Override

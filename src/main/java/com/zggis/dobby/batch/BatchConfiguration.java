@@ -1,5 +1,9 @@
 package com.zggis.dobby.batch;
 
+import javax.annotation.PreDestroy;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -43,7 +47,9 @@ public class BatchConfiguration {
 
 	private static final int CHUNK = 1;
 
-	private static final boolean SKIP = true;
+	private static final boolean EXECUTE = true;
+
+	private static final Logger logger = LoggerFactory.getLogger(BatchConfiguration.class);
 
 	@Value("${dovi.tool.location}")
 	private String DOVI_TOOL;
@@ -112,7 +118,7 @@ public class BatchConfiguration {
 	// step 1 - Populate active area
 	@Bean
 	public Step scanActiveArea() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "1/7 Analyze HDR File" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "1/7 Analyze Active Area of HDR Files" + ConsoleColor.NONE.value)
 				.<VideoFileDTO, VideoFileDTO>chunk(CHUNK).reader(stdMkvReader()).processor(mkvActiveAreaProcessor())
 				.writer(conversionWriter2()).build();
 	}
@@ -125,9 +131,9 @@ public class BatchConfiguration {
 	@Bean
 	public MKVActiveAreaProcessor mkvActiveAreaProcessor() {
 		if (StringUtils.hasText(hwaccel)) {
-			return new MKVActiveAreaProcessor(pbservice, FFMPEG + " " + hwaccel.trim(), SKIP);
+			return new MKVActiveAreaProcessor(pbservice, FFMPEG + " " + hwaccel.trim(), EXECUTE);
 		} else {
-			return new MKVActiveAreaProcessor(pbservice, FFMPEG, SKIP);
+			return new MKVActiveAreaProcessor(pbservice, FFMPEG, EXECUTE);
 		}
 	}
 
@@ -151,7 +157,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public ConvertToHevcProcessor mp4ToHevcProcessor() {
-		return new ConvertToHevcProcessor(pbservice, mediaService.getTempDirectory(), MP4EXTRACT, MKVEXTRACT, SKIP);
+		return new ConvertToHevcProcessor(pbservice, mediaService.getTempDirectory(), MP4EXTRACT, MKVEXTRACT, EXECUTE);
 	}
 
 	@Bean
@@ -163,7 +169,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public Step extractRPU() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "3/7 Extract RPU" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "3/7 Extract RPUs" + ConsoleColor.NONE.value)
 				.<HevcFileDTO, RPUFileDTO>chunk(CHUNK).reader(dvHevcReader()).processor(extractRpuProcessor())
 				.writer(dvHevcWriter()).build();
 	}
@@ -175,7 +181,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public ExtractRpuProcessor extractRpuProcessor() {
-		return new ExtractRpuProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, SKIP);
+		return new ExtractRpuProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, EXECUTE);
 	}
 
 	@Bean
@@ -186,7 +192,7 @@ public class BatchConfiguration {
 	// Step 4 - Populate Border info
 	@Bean
 	public Step getBorderInfo() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "4/7 Analyze RPU" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "4/7 Analyze RPUs" + ConsoleColor.NONE.value)
 				.<RPUFileDTO, RPUFileDTO>chunk(CHUNK).reader(rpuReader()).processor(rpuBorderInfoProcessor())
 				.writer(rpuWriter()).build();
 	}
@@ -198,7 +204,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public RPUBorderInfoProcessor rpuBorderInfoProcessor() {
-		return new RPUBorderInfoProcessor(pbservice, DOVI_TOOL, SKIP);
+		return new RPUBorderInfoProcessor(pbservice, DOVI_TOOL, EXECUTE);
 	}
 
 	@Bean
@@ -210,7 +216,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public Step injectRPU() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "5/7 Inject RPU into HEVC" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "5/7 Inject RPUs into HEVCs" + ConsoleColor.NONE.value)
 				.<VideoInjectionDTO, BLRPUHevcFileDTO>chunk(CHUNK).reader(cacheInjectorReader())
 				.processor(rpuInjectProcessor()).writer(blRPUCacheFileWriter()).build();
 	}
@@ -222,7 +228,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public RPUInjectProcessor rpuInjectProcessor() {
-		return new RPUInjectProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, SKIP);
+		return new RPUInjectProcessor(pbservice, mediaService.getTempDirectory(), DOVI_TOOL, EXECUTE);
 	}
 
 	@Bean
@@ -233,7 +239,7 @@ public class BatchConfiguration {
 	// Step 6 - Validate merge
 	@Bean
 	public Step validateMerge() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "6/7 Validate Merge" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "6/7 Validate Mergers" + ConsoleColor.NONE.value)
 				.<VideoMergeDTO, VideoMergeDTO>chunk(CHUNK).reader(cacheMergeValidationReader())
 				.processor(mergeValidationProcessor()).writer(cacheMergeValidationWriter()).build();
 	}
@@ -245,7 +251,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MergeValidationProcessor mergeValidationProcessor() {
-		return new MergeValidationProcessor(SKIP);
+		return new MergeValidationProcessor(EXECUTE);
 	}
 
 	@Bean
@@ -257,7 +263,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public Step mergeResult() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "7/7 Generate Result" + ConsoleColor.NONE.value)
+		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "7/7 Generate Results" + ConsoleColor.NONE.value)
 				.<VideoMergeDTO, VideoFileDTO>chunk(CHUNK).reader(cacheMergeReader()).processor(mergeToMkvProcessor())
 				.writer(blRPUMKVCacheFileWriter()).build();
 	}
@@ -269,12 +275,21 @@ public class BatchConfiguration {
 
 	@Bean
 	public MergeToMKVProcessor mergeToMkvProcessor() {
-		return new MergeToMKVProcessor(pbservice, mediaService.getResultsDirectory(), MKVMERGE, SKIP);
+		return new MergeToMKVProcessor(pbservice, mediaService.getResultsDirectory(), MKVMERGE, EXECUTE);
 	}
 
 	@Bean
 	public ItemWriter<VideoFileDTO> blRPUMKVCacheFileWriter() {
 		return new CacheFileWriter<VideoFileDTO>(JobCacheKey.BLRPUMKV);
+	}
+
+	@PreDestroy
+	public void exit() {
+		logger.info(ConsoleColor.YELLOW.value + "Application will exist in 30s" + ConsoleColor.NONE.value);
+		try {
+			Thread.sleep(30000);
+		} catch (InterruptedException e) {
+		}
 	}
 
 }

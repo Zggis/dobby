@@ -27,7 +27,8 @@ public class JobUtils {
 		}
 		try {
 			p.waitFor();
-			logger.info(ConsoleColor.BLUE.value + "{}" + ConsoleColor.NONE.value, builder.toString());
+			logger.info(ConsoleColor.BLUE.value + "{}" + ConsoleColor.NONE.value,
+					builder.toString().replaceAll("\n", ConsoleColor.NONE.value + "\n" + ConsoleColor.BLUE.value));
 		} catch (InterruptedException e) {
 			logger.error(ConsoleColor.RED.value + "{}" + ConsoleColor.NONE.value, e.getMessage());
 		}
@@ -70,7 +71,7 @@ public class JobUtils {
 		}
 		return builder.toString();
 	}
-	
+
 	public static String getFrameRate(MediaInfoDTO mediaInfo) {
 		for (TrackDTO track : mediaInfo.media.track) {
 			if ("1".equals(track.iD)) {
@@ -120,7 +121,7 @@ public class JobUtils {
 		}
 		return null;
 	}
-	
+
 	public static String getHDRFormatCompatibility(MediaInfoDTO mediaInfo) {
 		for (TrackDTO track : mediaInfo.media.track) {
 			if ("1".equals(track.iD)) {
