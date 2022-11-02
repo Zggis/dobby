@@ -118,7 +118,8 @@ public class BatchConfiguration {
 	// step 1 - Populate active area
 	@Bean
 	public Step scanActiveArea() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "1/7 Analyze Active Area of HDR Files" + ConsoleColor.NONE.value)
+		return stepBuilderFactory
+				.get(ConsoleColor.CYAN.value + "1/7 Analyze Active Area of HDR Files" + ConsoleColor.NONE.value)
 				.<VideoFileDTO, VideoFileDTO>chunk(CHUNK).reader(stdMkvReader()).processor(mkvActiveAreaProcessor())
 				.writer(conversionWriter2()).build();
 	}
@@ -239,7 +240,8 @@ public class BatchConfiguration {
 	// Step 6 - Validate merge
 	@Bean
 	public Step validateMerge() {
-		return stepBuilderFactory.get(ConsoleColor.CYAN.value + "6/7 Validate Mergers" + ConsoleColor.NONE.value)
+		return stepBuilderFactory
+				.get(ConsoleColor.CYAN.value + "6/7 Validate Merge Compatibility" + ConsoleColor.NONE.value)
 				.<VideoMergeDTO, VideoMergeDTO>chunk(CHUNK).reader(cacheMergeValidationReader())
 				.processor(mergeValidationProcessor()).writer(cacheMergeValidationWriter()).build();
 	}
