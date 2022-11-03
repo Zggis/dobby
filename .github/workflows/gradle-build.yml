@@ -16,4 +16,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Dobby JAR
-          path: build/libs
+          path: build/libs/dobby*.jar
