@@ -1,4 +1,4 @@
-name: Build Jar
+name: Build Jar 
 on: [push]
 jobs:
   build:
