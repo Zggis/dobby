@@ -51,7 +51,7 @@ HWACC | YES | VARIABLE | Disabled | Set to the FFMPEG harware acceleration flag 
 Runtime | YES | Extra Docker Run Parameter | --runtime=nvidia | Used with HWACC. See Hardware Acceleration below.
 UID/GUID | YES | Extra Docker Run Parameter | --user=99:100 | Controls the user/group the container runs as.
 RESULTS | YES | VARIABLE | /data/media/dolbyResults | Sets the directory relative to the container to save result files in. By default results are placed in a subdirectory of the media directory.
-TEMP | YES | VARIABLE | /data/media/dolbyTemp | Sets the directory relative to the container to save result temporary in. By default temp files are placed in a subdirectory of the media directory.
+TEMP | YES | VARIABLE | /data/media/dolbyTemp | Sets the directory relative to the container to save temporary files in. By default temporary files are placed in a subdirectory of the media directory.
 LOG | YES | VARIABLE | /data/media | Sets the directory relative to the container to save the dobby.log file in. Logs are not appended, a new file is created and will overwrite an existing file each time.
 CLEANUP | YES | VARIABLE | true | Set to false if you would like the TEMP directory to be left alone after the job completes. This may be useful when debugging.
 
