@@ -13,6 +13,8 @@ COPY /linux/mediainfo_22.09-1_amd64.xUbuntu_20.04.deb /install/mediainfo.deb
 #DOVI_TOOL - https://github.com/quietvoid/dovi_tool
 COPY /linux/dovi_tool /data/dovi_tool
 
+RUN chmod -R 777 /install
+
 ###Install Required Linux Operations
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
