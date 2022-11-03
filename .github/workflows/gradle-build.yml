@@ -1,4 +1,4 @@
-name: Build Jar 
+name: Build and Push 
 on:
   workflow_dispatch:
     inputs:
