@@ -12,3 +12,8 @@ jobs:
           distribution: 'adopt'
       - name: Build with Gradle
         run: ./gradlew assemble
+      - name: Publish JAR
+        uses: actions/upload-artifact@v2
+        with:
+          name: Dobby JAR
+          path: build/libs
