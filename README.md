@@ -32,11 +32,20 @@ $ gradlew assemble
 ### Usage
 Dobby is a Spring Batch application and currently has no GUI. You place your media files in the configured directory, start Dobby and let it do its job. Watching the logs will give you an indication of how the job is progressing, and when it completes Dobby will place your results in the configured directory and shutdown to save resources until you summon him again.<br>
 I recommend you map Dobby to an empty directory to be used as its workspace. Move files to this directory as you need and start Dobby to process those files. I usually process one TV Show season per run, but you can do one episode per run if you like.
-Example media directory content:<br>
-* Andor.S01E06.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mp4<br>
-* Andor.S01E06.HDR.2160p.WEB.h265.mkv<br>
-* Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mp4<br>
-* Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.x265.10bit.HDR.DDP5.1.Atmos.mkv<br>
+#### Example media directory content:
+```
+/data/media
+├── Andor.S01E06.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mp4
+├── Andor.S01E06.HDR.2160p.WEB.h265.mkv
+├── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mp4
+├── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.x265.10bit.HDR.DDP5.1.Atmos.mkv
+├── dobbyResults (Created by Dobby)
+│   ├── Andor.S01E06.HDR.2160p.WEB.h265[BL+RPU].mkv
+│   └── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.x265.10bit.HDR.DDP5.1.Atmos[BL+RPU].mkv
+├── dobbyTemp (Created and cleaned up afterward by Dobby)
+│   └── temp files
+└── dobby.log
+```
 <br>
 In this example the SXXEXX portion of the filenames will be used to match episodes. The name of the TV Show 'Andor' is not considered, <strong>so for now you can only load the directory with one TV Show at a time.</strong> I have plans to improve upon this in the future.<br>
 Once the application completes you should have two BL+RPU MKV files in the configured RESULTS directory one for each episode. The originals will remain untouched. Temporary files will be created during the job in a configured TEMP directory.<br>
