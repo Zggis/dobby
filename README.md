@@ -7,7 +7,7 @@ Dobby will scan a media directory and look for MKV/MP4 Dolby Vision files along 
 
 ### Installing
 #### Unraid
-To install Dobby on Unraid you can install the docker container through the community applications.
+To install Dobby on Unraid you can install the docker container through the community applications. You will need to map the MEDIA_DIRECTORY in the application template.
 #### Docker Desktop
 You can run Dobby on Docker locally by using the following command. Replace MEDIA_DIR with the directory you have the files to be merged in.
 ```
@@ -31,6 +31,7 @@ $ gradlew assemble
 
 ### Usage
 Dobby is a Spring Batch application and currently has no GUI. You place your media files in the configured directory, start Dobby and let it do its job. Watching the logs will give you an indication of how the job is progressing, and when it completes Dobby will place your results in the configured directory and shutdown to save resources until you summon him again.<br>
+I recommend you map Dobby to an empty directory to be used as its workspace. Move files to this directory as you need and start Dobby to process those files. I usually process one TV Show season per run, but you can do one episode per run if you like. <strong>Do not mix TV Shows</strong>
 Example media directory content:<br>
 * Andor.S01E06.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mp4<br>
 * Andor.S01E06.HDR.2160p.WEB.h265.mkv<br>
