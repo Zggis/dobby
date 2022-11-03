@@ -9,8 +9,15 @@ Dobby will scan a media directory and look for MKV/MP4 Dolby Vision files along 
 #### Unraid
 To install Dobby on Unraid you can install the docker container through the community applications.
 #### Docker Desktop
-To install Dobby on Docker desktop you can pull the latest image from dockerhub: https://hub.docker.com/r/zggis/dobby
-#### Windows
+You can run Dobby on Docker locally by using the following command. Replace MEDIA_DIR with the directory you have the files to be merged in.
+```
+$ docker run -v MEDIA_DIR:/data/media zggis/dobby:latest
+```
+Windows Example
+```
+$ docker run -v "C:/temp":/data/media zggis/dobby:latest
+```
+#### Java App
 You can run Dobby as a Java program from command prompt. Java JRE 11 is required. To grab the latest Dobby JAR, navigate to the <a href="https://github.com/Zggis/dobby/releases">Releases</a> page. Run the JAR using this command.
 ```
 $ java -jar -Dspring.profiles.active=local dobby.jar --media.dir=C:/temp
