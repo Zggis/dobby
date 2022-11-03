@@ -20,9 +20,7 @@ jobs:
       
       - name: Build with Gradle
         run: ./gradlew assemble
-  docker:
-    runs-on: ubuntu-latest
-    steps:
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       
@@ -42,12 +40,8 @@ jobs:
           push: true
           tags: zggis/dobby:${{ inputs.name }}
           
-  publish:
-    runs-on: ubuntu-latest
-    steps:
       - name: Publish JAR
         uses: actions/upload-artifact@v3
         with:
           name: Dobby JAR
           path: build/libs/dobby*.jar
-    
