@@ -4,7 +4,7 @@ on:
     inputs:
       name:
         type: string
-        description: Build Name
+        description: Release Version
 run-name: ${{ inputs.name }} by @${{ github.actor }}
 jobs:
   build:
