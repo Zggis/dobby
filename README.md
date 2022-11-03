@@ -37,7 +37,7 @@ I recommend you map Dobby to an empty directory to be used as its workspace. Mov
 /data/media
 ├── Andor.S01E06.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mp4
 ├── Andor.S01E06.HDR.2160p.WEB.h265.mkv
-├── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mp4
+├── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mkv
 ├── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.x265.10bit.HDR.DDP5.1.Atmos.mkv
 ├── dobbyResults (Created by Dobby)
 │   ├── Andor.S01E06.HDR.2160p.WEB.h265[BL+RPU].mkv
