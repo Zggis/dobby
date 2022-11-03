@@ -36,6 +36,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v3
         with:
+          context: .
           push: true
           tags: zggis/dobby:${{ inputs.name }}
           
