@@ -11,7 +11,7 @@ To install Dobby on Unraid you can install the docker container through the comm
 #### Docker Desktop
 To install Dobby on Docker desktop you can pull the latest image from dockerhub: https://hub.docker.com/r/zggis/dobby
 #### Windows
-You can run Dobby as a Java program from command prompt. Java JRE 11 is required. To grab the latest Dobby JAR, navigate to the <a href="https://github.com/Zggis/dobby/actions">Actions</a> tab above, select the latest workflow, and download the artifact at the bottom. Run the JAR using this command.
+You can run Dobby as a Java program from command prompt. Java JRE 11 is required. To grab the latest Dobby JAR, navigate to the <a href="https://github.com/Zggis/dobby/releases">Releases</a> page. Run the JAR using this command.
 ```
 $ java -jar -Dspring.profiles.active=local dobby.jar --media.dir=C:/temp
 ```
