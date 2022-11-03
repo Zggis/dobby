@@ -2,9 +2,26 @@
 
 ## <div align="right"><a href="https://www.buymeacoffee.com/zggis" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></div>
 
-
 ### Description
-Dobby will scan a media directory and look for MKV/MP4 Dolby Vision files along side MKV HDR video files for the same TV Show episode. The application will proceed to merge the files to create BL+RPU MKV files compatible with HDR and Dolby Vision. This process can allow you to enhance your media library by adding Dolby Vision at low cost of disk space and without the need to manage multiple file versions.
+Dobby will scan a media directory and look for MKV/MP4 Dolby Vision files along side MKV HDR video files for the same TV Show episode (Support for movies is comming soon, see FAQ). The application will proceed to merge the files to create BL+RPU MKV files compatible with HDR and Dolby Vision. This process can allow you to enhance your media library by adding Dolby Vision at low cost of disk space and without the need to manage multiple file versions.
+
+### Installing
+#### Unraid
+To install Dobby on Unraid you can install the docker container through the community applications.
+#### Docker Desktop
+To install Dobby on Docker desktop you can pull the latest image from dockerhub: https://hub.docker.com/r/zggis/dobby
+#### Windows
+You can run Dobby as a Java program from command prompt. Grab the latest JAR and run:
+```
+$ java -jar -Dspring.profiles.active=local dobby.jar --media.dir=C:/temp
+```
+
+### Building the Code
+Clone the repo and update application-local.properties as you need, then build with gradle. JAR should be placed in /build/libs
+```
+$ gradlew assemble
+```
+
 ### Usage
 Dobby is a Spring Batch application and currently has no GUI. You place your media files in the configured directory, start Dobby and let it do its job. Watching the logs will give you an indication of how the job is progressing, and when it completes Dobby will place your results in the configured directory and shutdown to save resources until you summon him again.<br>
 Example media directory content:<br>
