@@ -42,7 +42,7 @@ RUN dpkg -i /install/libmediainfo.deb
 RUN dpkg -i /install/mediainfo.deb
 
 ###Install Dobby App
-COPY build/libs/*.jar app.jar
+COPY /build/libs/*.jar app.jar
 
 ###Cleanup
 RUN rm -rf /install
