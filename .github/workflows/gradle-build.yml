@@ -5,7 +5,7 @@ on:
       name:
         type: string
         description: Release Version
-run-name: ${{ inputs.name }} by @${{ github.actor }}
+run-name: ${{ inputs.name }}
 jobs:
   build:
     runs-on: ubuntu-latest
