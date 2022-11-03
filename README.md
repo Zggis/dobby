@@ -68,9 +68,13 @@ CLEANUP | YES | VARIABLE | true | Set to false if you would like the TEMP direct
 Most of Dobby's operations are done using the MKVToolNix suite which cannot be hardware accelerated. There is one operation that uses FFMPEG to scan the active area of a video file in 4 sample locations. This operation is compatible with hardware acceleration. I have tested it using NVIDA GPU by setting HWACC to '-hwaccel cuda' and including '--runtime=nvidia' in the extra docker run parameters.
 
 ### FAQ
-**Question:** Why is it called Dobby?
+**Question:** Does it work for movies?
 
-**Answer:** Because my Unraid server is named 'Dumbledore' and my WiFi is named 'Hogwarts' I have a theme to maintain.
+**Answer:** Right now Dobby only officially supports TV Shows, though if you get clever and rename your movies with matching SXXEXX keys in the title Dobby will attempt to merge them. I have found there is far more inconsistency with movie files since you often have versions that are different lengths, or different borders (IMAX). Dobby checks for these discrepancies between the Dolby Vision and HDR files and will fail a job if it cannot validate the files are the same. So if you attempt this do it with caution. I will try to add movie support in the future.
+##
+**Q:** Why is it called Dobby?
+
+**A:** Because my Unraid server is named 'Dumbledore' and my WiFi is named 'Hogwarts' I have a theme to maintain.
 
 ##
 **Q:** How does it create Dolby Vision data?
@@ -80,10 +84,6 @@ Most of Dobby's operations are done using the MKVToolNix suite which cannot be h
 **Q:** I started it, but there is no option for a WebGUI.
 
 **A:** Dobby is a Spring Batch application, it has no GUI. When you start the app it will run the merge job and shutdown when it completes. The console logs should be more than sufficient to track the progress and status of a job.
-##
-**Q:** Does it work for movies?
-
-**A:** Right now Dobby only officially supports TV Shows, though if you get clever and rename your movies with matching SXXEXX keys in the title Dobby will attempt to merge them. I have found there is far more inconsistency with movie files since you often have versions that are different lengths, or different borders (IMAX). Dobby checks for these discrepancies between the Dolby Vision and HDR files and will fail a job if it cannot validate the files are the same. So if you attempt this do it with caution. I will try to add movie support in the future.
 ##
 **Q:** Is the merge lossless?
 
