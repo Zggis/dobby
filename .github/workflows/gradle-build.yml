@@ -1,5 +1,6 @@
 name: Build Jar 
 on: [workflow_dispatch]
+run-name: ${{ inputs.deploy_target }} by @${{ github.actor }}
 jobs:
   build:
     runs-on: ubuntu-latest
