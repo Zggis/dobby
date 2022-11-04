@@ -14,6 +14,7 @@ COPY /linux/mediainfo_22.09-1_amd64.xUbuntu_20.04.deb /install/mediainfo.deb
 COPY /linux/dovi_tool /data/dovi_tool
 
 RUN chmod -R 777 /install
+RUN chmod 777 /data/dovi_tool
 
 ###Install Required Linux Operations
 RUN apt-get update && \
