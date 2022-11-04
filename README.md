@@ -47,7 +47,7 @@ I recommend you map Dobby to an empty directory to be used as its workspace. Mov
 └── dobby.log
 ```
 <br>
-In this example the SXXEXX portion of the filenames will be used to match episodes. The name of the TV Show 'Andor' is not considered, <strong>so for now you can only load the directory with one TV Show at a time.</strong> I have plans to improve upon this in the future.<br>
+In this example the SXXEXX portion of the filenames will be used to match episodes. The name of the TV Show 'Andor' is not considered, <strong>so for now you should only load the directory with one TV Show at a time.</strong> I have plans to improve upon this in the future.<br>
 Once the application completes you should have two BL+RPU MKV files in the configured RESULTS directory one for each episode. The originals will remain untouched. Temporary files will be created during the job in a configured TEMP directory.<br>
 The operations are disk space intensive, expect it to use 3x the disk space required by the directory prior to the job. By default temporary files are cleaned up after the job completes. Resulting files should be similar in size to the original HDR files, allowing you to save space by discarding the original Dolby Vision MKV/MP4 files afterward.<br>
  
