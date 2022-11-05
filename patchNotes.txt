@@ -1,5 +1,0 @@
-## v1.0.1
- - Fixed permission issue with dovi_tool
-
-## v1.0.0
- - Initial Release

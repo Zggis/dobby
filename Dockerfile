@@ -19,7 +19,7 @@ RUN chmod 777 /data/dovi_tool
 ###Install Required Linux Operations
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
-    apt-get -y install default-jre-headless subversion zlib1g-dev gcc make wget dpkg libcurl3-gnutls libmms0 && \
+    apt-get -y install default-jre-headless subversion zlib1g-dev gcc make wget dpkg libcurl3-gnutls libmms0 dos2unix && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -48,13 +48,15 @@ COPY /build/libs/*.jar app.jar
 ###Cleanup
 RUN rm -rf /install
 
-#RUN chown 99 /root
-#RUN chgrp 100 /root
 RUN chmod -R 777 /root
 
 ADD /scripts/start-dobby.sh /files/start-dobby.sh
 ADD /scripts/runas.sh /files/runas.sh
 ADD /scripts/setuser /sbin/setuser
+RUN dos2unix /files/start-dobby.sh
+RUN dos2unix /files/runas.sh
+RUN dos2unix /sbin/setuser
+RUN chmod +x /sbin/setuser
 RUN chmod +x /files/runas.sh
 RUN chmod a+x /files/start-dobby.sh
 
