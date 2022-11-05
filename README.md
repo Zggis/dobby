@@ -7,7 +7,7 @@ Dobby will scan a media directory and look for MKV/MP4 Dolby Vision files along 
 
 ### Installing
 #### Unraid
-To install Dobby on Unraid you can install the docker container through the community applications. You will need to map the MEDIA_DIRECTORY in the application template.
+To install Dobby on Unraid you can install the docker container through the community applications. You will need to map the WORKSPACE in the application template.
 #### Docker Desktop
 You can run Dobby on Docker locally by using the following command. Replace MEDIA_DIR with the directory you have the files to be merged in.
 ```
