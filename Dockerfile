@@ -59,8 +59,8 @@ RUN chmod +x /files/runas.sh
 RUN chmod a+x /files/start-dobby.sh
 
 # Run as root by default
-ENV PUID 0
-ENV PGID 0
+ENV USER_ID 0
+ENV GROUP_ID 0
 ENV UMASK 0000
 
 ENTRYPOINT ["sh","-c","/files/runas.sh $USER_ID $GROUP_ID $UMASK /files/start-dobby.sh"]
