@@ -59,7 +59,7 @@ Name | Type | Container Path | Description
 WORKSPACE | PATH | /data/media | Map this to the directory where you can load the media files you want to merge.
 
 #### Optional Variables
-Container Variable | Default | Description
+Container Variable | Default Value | Description
 --- | --- | ---
 PUID | 0 (99 in Unraid template) | Controls the user the container runs as.
 PGID | 0 (100 in Unraid template) | Controls the group the container runs as.
