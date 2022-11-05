@@ -18,4 +18,13 @@ public class BeanConfig {
 			return new DoviWindowsProcessBuilderImpl();
 		}
 	}
+
+	@Bean
+	public MediaService mediaService() {
+		if (isLinux) {
+			return new LinuxMediaServiceImpl();
+		} else {
+			return new WindowMediaServiceImpl();
+		}
+	}
 }

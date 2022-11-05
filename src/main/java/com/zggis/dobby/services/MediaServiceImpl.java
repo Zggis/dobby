@@ -5,12 +5,10 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import com.zggis.dobby.batch.ConsoleColor;
 
-@Component
-public class MediaServiceImpl {
+public abstract class MediaServiceImpl implements MediaService {
 
 	private static final Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
 
@@ -26,22 +24,39 @@ public class MediaServiceImpl {
 	@Value("${cleanup:true}")
 	private boolean cleanup;
 
+	protected abstract void createDirectory(String directory);
+
+	protected boolean doesDirectoryExist(String directory) {
+		File dir = new File(directory);
+		return dir != null && dir.exists();
+	}
+
+	@Override
 	public String getMediaDirectory() {
 		return mediaDir;
 	}
 
+	@Override
 	public String getTempDirectory() {
 		return tempDir + "/";
 	}
 
+	@Override
 	public String getResultsDirectory() {
 		return resultsDir + "/";
 	}
 
+	@Override
+	public void createResultsDirectory() {
+		createDirectory(resultsDir);
+	}
+
+	@Override
 	public void createTempDirectory() {
 		createDirectory(tempDir);
 	}
 
+	@Override
 	public void deleteTempDirectory() {
 		if (cleanup) {
 			logger.info("Cleaning up TEMP directory...");
@@ -51,15 +66,9 @@ public class MediaServiceImpl {
 		}
 	}
 
+	@Override
 	public boolean isCleanup() {
 		return cleanup;
-	}
-
-	private static void createDirectory(String directoryStr) {
-		File directory = new File(directoryStr);
-		if (!directory.exists()) {
-			directory.mkdirs();
-		}
 	}
 
 	private void deleteDirectory(String directoryName) {
@@ -80,4 +89,5 @@ public class MediaServiceImpl {
 			}
 		}
 	}
+
 }

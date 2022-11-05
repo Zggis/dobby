@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.zggis'
-version = '1.0.0-RELEASE'
+version = '1.0.2-RELEASE'
 sourceCompatibility = '11'
 
 repositories {
