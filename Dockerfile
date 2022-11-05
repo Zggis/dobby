@@ -48,8 +48,19 @@ COPY /build/libs/*.jar app.jar
 ###Cleanup
 RUN rm -rf /install
 
-RUN chown 99 /root
-RUN chgrp 100 /root
-USER 99:100
-#ENTRYPOINT [ "bash" ]
-ENTRYPOINT ["java","-jar","./app.jar"]
+#RUN chown 99 /root
+#RUN chgrp 100 /root
+RUN chmod -R 777 /root
+
+ADD /scripts/start-dobby.sh /files/start-dobby.sh
+ADD /scripts/runas.sh /files/runas.sh
+ADD /scripts/setuser /sbin/setuser
+RUN chmod +x /files/runas.sh
+RUN chmod a+x /files/start-dobby.sh
+
+# Run as root by default
+ENV USER_ID 0
+ENV GROUP_ID 0
+ENV UMASK 0000
+
+ENTRYPOINT ["sh","-c","/files/runas.sh $USER_ID $GROUP_ID $UMASK /files/start-dobby.sh"]

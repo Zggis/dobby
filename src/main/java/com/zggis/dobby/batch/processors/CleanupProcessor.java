@@ -6,13 +6,13 @@ import java.io.IOException;
 import org.springframework.batch.item.ItemProcessor;
 
 import com.zggis.dobby.dto.batch.FileDTO;
-import com.zggis.dobby.services.MediaServiceImpl;
+import com.zggis.dobby.services.MediaService;
 
 public class CleanupProcessor implements ItemProcessor<FileDTO, FileDTO> {
 
-	private MediaServiceImpl mediaService;
+	private MediaService mediaService;
 
-	public CleanupProcessor(MediaServiceImpl mediaService) {
+	public CleanupProcessor(MediaService mediaService) {
 		this.mediaService = mediaService;
 	}
 

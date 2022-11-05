@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.zggis.dobby.services.MediaServiceImpl;
+import com.zggis.dobby.services.MediaService;
 
 @Component
 public class MyJobCompletionHandler extends JobExecutionListenerSupport {
@@ -17,7 +17,7 @@ public class MyJobCompletionHandler extends JobExecutionListenerSupport {
 	private static final Logger log = LoggerFactory.getLogger(MyJobCompletionHandler.class);
 
 	@Autowired
-	private MediaServiceImpl mediaService;
+	private MediaService mediaService;
 
 	@Value("${logging.file.name}")
 	private String logFileLocation;

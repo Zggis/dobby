@@ -13,15 +13,15 @@ import org.springframework.batch.item.UnexpectedInputException;
 
 import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.dto.batch.FileDTO;
-import com.zggis.dobby.services.MediaServiceImpl;
+import com.zggis.dobby.services.MediaService;
 
 public class CacheCleanupReader implements ItemReader<FileDTO>, StepExecutionListener {
 
 	private Stack<FileDTO> items = new Stack<>();
 
-	private MediaServiceImpl mediaService;
+	private MediaService mediaService;
 
-	public CacheCleanupReader(MediaServiceImpl mediaService) {
+	public CacheCleanupReader(MediaService mediaService) {
 		this.mediaService = mediaService;
 	}
 

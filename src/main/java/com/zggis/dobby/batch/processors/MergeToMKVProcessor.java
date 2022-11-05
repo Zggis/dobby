@@ -12,6 +12,7 @@ import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.dto.batch.VideoFileDTO;
 import com.zggis.dobby.dto.batch.VideoMergeDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
+import com.zggis.dobby.services.MediaService;
 
 public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFileDTO> {
 
@@ -21,7 +22,7 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFi
 
 	private String MKVMERGE;
 
-	private String outputDir;
+	private MediaService mediaService;
 
 	private DoviProcessBuilder pbservice;
 
@@ -40,9 +41,10 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFi
 		fpsMap.put("60.000", "--default-duration 0:60p --fix-bitstream-timing-information 0:1");
 	}
 
-	public MergeToMKVProcessor(DoviProcessBuilder pbservice, String outputDir, String MKVMERGE, boolean execute) {
+	public MergeToMKVProcessor(DoviProcessBuilder pbservice, MediaService mediaService, String MKVMERGE,
+			boolean execute) {
 		this.MKVMERGE = MKVMERGE;
-		this.outputDir = outputDir;
+		this.mediaService = mediaService;
 		this.pbservice = pbservice;
 		this.execute = execute;
 	}
@@ -57,7 +59,7 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFi
 			duration = fpsMap.get(DEFAULT_RESOLUTION);
 		}
 		logger.info("Generating MKV file from {}...", JobUtils.getWithoutPath(merge.getBlRPUFile().getName()));
-		String cmd = MKVMERGE + " --output \"" + outputDir
+		String cmd = MKVMERGE + " --output \"" + mediaService.getResultsDirectory()
 				+ JobUtils.getWithoutPathAndExtension(merge.getStandardFile().getName()) + "[BL+RPU].mkv\""
 				+ " --no-video \"" + merge.getStandardFile().getName()
 				+ "\" --language 0:und --track-order 1:0 --compression 0:none " + duration + " \""
@@ -72,7 +74,8 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFi
 			logger.info("===EXECUTION SKIPPED===");
 		}
 		return new VideoFileDTO(
-				outputDir + JobUtils.getWithoutPathAndExtension(merge.getStandardFile().getName()) + "[BL+RPU].mkv",
+				mediaService.getResultsDirectory()
+						+ JobUtils.getWithoutPathAndExtension(merge.getStandardFile().getName()) + "[BL+RPU].mkv",
 				merge.getStandardFile().getKey());
 	}
 

@@ -44,7 +44,7 @@ import com.zggis.dobby.dto.batch.VideoFileDTO;
 import com.zggis.dobby.dto.batch.VideoInjectionDTO;
 import com.zggis.dobby.dto.batch.VideoMergeDTO;
 import com.zggis.dobby.services.DoviProcessBuilder;
-import com.zggis.dobby.services.MediaServiceImpl;
+import com.zggis.dobby.services.MediaService;
 
 @Configuration
 @EnableBatchProcessing
@@ -81,7 +81,7 @@ public class BatchConfiguration {
 	private boolean cleanup;
 
 	@Autowired
-	private MediaServiceImpl mediaService;
+	private MediaService mediaService;
 
 	@Autowired
 	private DoviProcessBuilder pbservice;
@@ -285,7 +285,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MergeToMKVProcessor mergeToMkvProcessor() {
-		return new MergeToMKVProcessor(pbservice, mediaService.getResultsDirectory(), MKVMERGE, EXECUTE);
+		return new MergeToMKVProcessor(pbservice, mediaService, MKVMERGE, EXECUTE);
 	}
 
 	@Bean
