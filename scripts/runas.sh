@@ -10,19 +10,19 @@ function ts {
 
 function process_args {
   # These are intended to be global
-  USER_ID=$1
-  GROUP_ID=$2
+  PUID=$1
+  PGID=$2
   UMASK=$3
 
-  if [[ ! "$USER_ID" =~ ^[0-9]{1,}$ ]]
+  if [[ ! "$PUID" =~ ^[0-9]{1,}$ ]]
   then
-    echo "User ID value $USER_ID is not valid. It must be a whole number"
+    echo "User ID value $PUID is not valid. It must be a whole number"
     exit 1
   fi
 
-  if [[ ! "$GROUP_ID" =~ ^[0-9]{1,}$ ]]
+  if [[ ! "$PGID" =~ ^[0-9]{1,}$ ]]
   then
-    echo "Group ID value $GROUP_ID is not valid. It must be a whole number"
+    echo "Group ID value $PGID is not valid. It must be a whole number"
     exit 1
   fi
 
@@ -36,15 +36,15 @@ function process_args {
 #-----------------------------------------------------------------------------------------------------------------------
 
 function create_user {
-  local USER_ID=$1
-  local GROUP_ID=$2
+  local PUID=$1
+  local PGID=$2
 
-  USER="user_${USER_ID}_$GROUP_ID"
-  GROUP="group_${USER_ID}_$GROUP_ID"
+  USER="user_${PUID}_$PGID"
+  GROUP="group_${PUID}_$PGID"
 
-  if grep -q "^[^:]*:[^:]*:$USER_ID:$GROUP_ID:" /etc/passwd >/dev/null 2>&1
+  if grep -q "^[^:]*:[^:]*:$PUID:$PGID:" /etc/passwd >/dev/null 2>&1
   then
-    USER=$(grep "^[^:]*:[^:]*:$USER_ID:$GROUP_ID:" /etc/passwd | sed 's/:.*//')
+    USER=$(grep "^[^:]*:[^:]*:$PUID:$PGID:" /etc/passwd | sed 's/:.*//')
 
     if [[ $USER == *$'\n'* ]]
     then
@@ -56,9 +56,9 @@ function create_user {
     return
   fi
 
-  if grep -q "^[^:]*:[^:]*:$USER_ID:" /etc/passwd >/dev/null 2>&1
+  if grep -q "^[^:]*:[^:]*:$PUID:" /etc/passwd >/dev/null 2>&1
   then
-    USER=$(grep "^[^:]*:[^:]*:$USER_ID:" /etc/passwd | sed 's/:.*//')
+    USER=$(grep "^[^:]*:[^:]*:$PUID:" /etc/passwd | sed 's/:.*//')
 
     if [[ $USER == *$'\n'* ]]
     then
@@ -76,11 +76,11 @@ function create_user {
     return
   fi
 
-  echo "$(ts) Creating user \"$USER\" (ID $USER_ID) and group \"$GROUP\" (ID $GROUP_ID) to run the command..."
+  echo "$(ts) Creating user \"$USER\" (ID $PUID) and group \"$GROUP\" (ID $PGID) to run the command..."
 
   # We could be aliasing this new user to some existing user. I assume that's harmless.
-  groupadd -o -g $GROUP_ID $GROUP
-  useradd -o -u $USER_ID -r -g $GROUP -d /home/$USER -s /sbin/nologin -c "Docker image user" $USER
+  groupadd -o -g $PGID $GROUP
+  useradd -o -u $PUID -r -g $GROUP -d /home/$USER -s /sbin/nologin -c "Docker image user" $USER
 
   mkdir -p /home/$USER
   chown -R $USER:$GROUP /home/$USER
@@ -93,7 +93,7 @@ process_args "$@"
 # Shift off the args so that we can exec $@ below
 shift; shift; shift
 
-create_user $USER_ID $GROUP_ID
+create_user $PUID $PGID
 
 echo "$(ts) Running command as user \"$USER\"..."
 umask $UMASK
