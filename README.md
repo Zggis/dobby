@@ -59,15 +59,15 @@ Name | Type | Container Path | Description
 WORKSPACE | PATH | /data/media | Map this to the directory where you can load the media files you want to merge.
 
 #### Optional Variables
-Name | Type | Default | Description
---- | --- | --- | ---
-PUID | VARIABLE | 0 (99 in Unraid template) | Controls the user the container runs as.
-PGID | VARIABLE | 0 (100 in Unraid template) | Controls the group the container runs as.
-UMASK | VARIABLE | 0000 | Controls the UMASK the container uses.
-RESULTS | VARIABLE | /data/media/dolbyResults | Sets the directory relative to the container to save result files in. By default results are placed in a subdirectory of the configured WORKSPACE.
-TEMP | VARIABLE | /data/media/dolbyTemp | Sets the directory relative to the container to save temporary files in. By default temporary files are placed in a subdirectory of the configured WORKSPACE.
-LOG | VARIABLE | /data/media | Sets the directory relative to the container to save the dobby.log file in. Logs are not appended, a new file is created and will overwrite an existing file each time.
-CLEANUP | VARIABLE | true | Set to false if you would like the TEMP directory to be left alone after the job completes. This may be useful when debugging.
+Container Variable | Default | Description
+--- | --- | ---
+PUID | 0 (99 in Unraid template) | Controls the user the container runs as.
+PGID | 0 (100 in Unraid template) | Controls the group the container runs as.
+UMASK | 0000 | Controls the UMASK the container uses.
+RESULTS | /data/media/dolbyResults | Sets the directory relative to the container to save result files in. By default results are placed in a subdirectory of the configured WORKSPACE.
+TEMP | /data/media/dolbyTemp | Sets the directory relative to the container to save temporary files in. By default temporary files are placed in a subdirectory of the configured WORKSPACE.
+LOG | /data/media | Sets the directory relative to the container to save the dobby.log file in. Logs are not appended, a new file is created and will overwrite an existing file each time.
+CLEANUP | true | Set to false if you would like the TEMP directory to be left alone after the job completes. This may be useful when debugging.
 
 ### Hardware Acceleration
 Most of Dobby's operations are done using the MKVToolNix suite which cannot be hardware accelerated. There is one operation that uses FFMPEG to scan the active area of a video file in 4 sample locations. This operation is compatible with hardware acceleration. I have tested it using NVIDA GPU by setting container variable 'HWACC' to '-hwaccel cuda' and including '--runtime=nvidia' in the extra docker run parameters.
