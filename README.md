@@ -53,19 +53,24 @@ The operations are disk space intensive, expect it to use 3x the disk space requ
  
 ### Configuration
 
-Name | Optional | Type | Default/Example | Description
---- | --- | --- | --- | ---
-/data/media | NO | PATH | None | Map this to the directory you want to use for your media files.
-HWACC | YES | VARIABLE | Disabled | Set to the FFMPEG harware acceleration flag such as '-hwaccel cuda' for NVIDA GPUs to use hardware acceleration. See Hardware Acceleration below.
-Runtime | YES | Extra Docker Run Parameter | --runtime=nvidia | Used with HWACC. See Hardware Acceleration below.
-UID/GUID | YES | Extra Docker Run Parameter | --user=99:100 | Controls the user/group the container runs as.
-RESULTS | YES | VARIABLE | /data/media/dolbyResults | Sets the directory relative to the container to save result files in. By default results are placed in a subdirectory of the media directory.
-TEMP | YES | VARIABLE | /data/media/dolbyTemp | Sets the directory relative to the container to save temporary files in. By default temporary files are placed in a subdirectory of the media directory.
-LOG | YES | VARIABLE | /data/media | Sets the directory relative to the container to save the dobby.log file in. Logs are not appended, a new file is created and will overwrite an existing file each time.
-CLEANUP | YES | VARIABLE | true | Set to false if you would like the TEMP directory to be left alone after the job completes. This may be useful when debugging.
+#### Required Path
+Name | Type | Container Path | Description
+--- | --- | --- | ---
+WORKSPACE | PATH | /data/media | Map this to the directory where you can load the media files you want to merge.
+
+#### Optional Variables
+Name | Type | Default | Description
+--- | --- | --- | ---
+PUID | VARIABLE | 0 (99 in Unraid template) | Controls the user the container runs as.
+PGID | VARIABLE | 0 (100 in Unraid template) | Controls the group the container runs as.
+UMASK | VARIABLE | 0000 | Controls the UMASK the container uses.
+RESULTS | VARIABLE | /data/media/dolbyResults | Sets the directory relative to the container to save result files in. By default results are placed in a subdirectory of the configured WORKSPACE.
+TEMP | VARIABLE | /data/media/dolbyTemp | Sets the directory relative to the container to save temporary files in. By default temporary files are placed in a subdirectory of the configured WORKSPACE.
+LOG | VARIABLE | /data/media | Sets the directory relative to the container to save the dobby.log file in. Logs are not appended, a new file is created and will overwrite an existing file each time.
+CLEANUP | VARIABLE | true | Set to false if you would like the TEMP directory to be left alone after the job completes. This may be useful when debugging.
 
 ### Hardware Acceleration
-Most of Dobby's operations are done using the MKVToolNix suite which cannot be hardware accelerated. There is one operation that uses FFMPEG to scan the active area of a video file in 4 sample locations. This operation is compatible with hardware acceleration. I have tested it using NVIDA GPU by setting HWACC to '-hwaccel cuda' and including '--runtime=nvidia' in the extra docker run parameters.
+Most of Dobby's operations are done using the MKVToolNix suite which cannot be hardware accelerated. There is one operation that uses FFMPEG to scan the active area of a video file in 4 sample locations. This operation is compatible with hardware acceleration. I have tested it using NVIDA GPU by setting container variable 'HWACC' to '-hwaccel cuda' and including '--runtime=nvidia' in the extra docker run parameters.
 
 ### FAQ
 **Question:** Does it work for movies?
