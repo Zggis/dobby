@@ -31,17 +31,17 @@ $ gradlew assemble
 
 ### Usage
 Dobby is a Spring Batch application and currently has no GUI. You place your media files in the configured directory, start Dobby and let it do its job. Watching the logs will give you an indication of how the job is progressing, and when it completes Dobby will place your results in the configured directory and shutdown to save resources until you summon him again.<br>
-I recommend you map Dobby to an empty directory to be used as its workspace. Move files to this directory as you need and start Dobby to process those files. I usually process one TV Show season per run, but you can do one episode per run if you like.
+I recommend you map Dobby to an empty directory to be used as its workspace. Move files to this directory as you need and start Dobby to process those files. I usually process one TV Show season per run, but you can do any number of episodes.
 #### Example media directory content:
 ```
 /data/media
-├── Andor.S01E06.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mp4
-├── Andor.S01E06.HDR.2160p.WEB.h265.mkv
-├── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mkv
-├── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.x265.10bit.HDR.DDP5.1.Atmos.mkv
+├── Andor.S01E06.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mp4 (Dolby Vision only MP4 file)
+├── Andor.S01E06.HDR.2160p.WEB.h265.mkv (HDR only file)
+├── Andor.S01E08.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.MP4.x265.mkv (Dolby Vision only MKV file)
+├── Andor.S01E08.2160p.DSNP.WEB-DL.x265.10bit.HDR.DDP5.1.Atmos.mkv (HDR only file)
 ├── dobbyResults (Created by Dobby)
-│   ├── Andor.S01E06.HDR.2160p.WEB.h265[BL+RPU].mkv
-│   └── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.x265.10bit.HDR.DDP5.1.Atmos[BL+RPU].mkv
+│   ├── Andor.S01E06.HDR.2160p.WEB.h265[BL+RPU].mkv (Dolby Vision + HDR compatible file)
+│   └── Andor.S01E08.Narkina.5.2160p.DSNP.WEB-DL.x265.10bit.HDR.DDP5.1.Atmos[BL+RPU].mkv (Dolby Vision + HDR compatible file)
 ├── dobbyTemp (Created and cleaned up afterward by Dobby)
 │   └── temp files
 └── dobby.log
@@ -88,11 +88,15 @@ Most of Dobby's operations are done using the MKVToolNix suite which cannot be h
 ##
 **Q:** I started it, but there is no option for a WebGUI.
 
-**A:** Dobby is a Spring Batch application, it has no GUI. When you start the app it will run the merge job and shutdown when it completes. The console logs should be more than sufficient to track the progress and status of a job.
+**A:** Dobby has no GUI. When you start the app it will run the merge job and shutdown when it completes. The console logs should be more than sufficient to track the progress and status of a job. I will probably add some basic UI in the future, but will always allow for headless operation if desired.
 ##
 **Q:** Is the merge lossless?
 
 **A:** Yes, Dobby does not do any transcoding (The FFMPEG library is only used for validation). The audio and subtitle tracks of your original HDR file should be coppied over into the BL+RPU result. The original Dolby vision file is only used for the Dolby Vision metadata, its other tracks are ignored. 
+##
+**Q:** Can it output results in other formats, or just MKV?
+
+**A:** Right now Dobby only creates result files in MKV. I have plans to add support for outputting files in MP4. I will probably add support for a configuration file you can place in the WORKSPACE that will be read before the job, output format would be a parameter in that.
 ##
 
 ### Additional Links
