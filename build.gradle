@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.zggis'
-version = '1.0.2-RELEASE'
+version = '1.0.3'
 sourceCompatibility = '11'
 
 repositories {
@@ -26,6 +26,10 @@ dependencies {
 
 jar {
     enabled = false
+}
+
+springBoot {    
+    buildInfo() 
 }
 
 tasks.named('test') {
