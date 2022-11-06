@@ -5,28 +5,28 @@ import java.util.List;
 
 public class ActiveAreaDTO {
 
-	private List<Integer> activeAreaHeights = new ArrayList<>();
+    private List<Integer> activeAreaHeights = new ArrayList<>();
 
-	private List<Integer> activeAreaWidths = new ArrayList<>();
+    private List<Integer> activeAreaWidths = new ArrayList<>();
 
-	public ActiveAreaDTO() {
-		super();
-	}
+    public ActiveAreaDTO() {
+        super();
+    }
 
-	public List<Integer> getActiveAreaHeights() {
-		return activeAreaHeights;
-	}
+    public List<Integer> getActiveAreaHeights() {
+        return activeAreaHeights;
+    }
 
-	public void setActiveAreaHeights(List<Integer> activeAreaHeights) {
-		this.activeAreaHeights = activeAreaHeights;
-	}
+    public void setActiveAreaHeights(List<Integer> activeAreaHeights) {
+        this.activeAreaHeights = activeAreaHeights;
+    }
 
-	public List<Integer> getActiveAreaWidths() {
-		return activeAreaWidths;
-	}
+    public List<Integer> getActiveAreaWidths() {
+        return activeAreaWidths;
+    }
 
-	public void setActiveAreaWidths(List<Integer> activeAreaWidths) {
-		this.activeAreaWidths = activeAreaWidths;
-	}
+    public void setActiveAreaWidths(List<Integer> activeAreaWidths) {
+        this.activeAreaWidths = activeAreaWidths;
+    }
 
 }

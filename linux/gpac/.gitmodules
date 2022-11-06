@@ -1,5 +1,0 @@
-[submodule "testsuite"]
-	path = testsuite
-	url = https://github.com/gpac/testsuite.git
-	branch = master
-	ignore = dirty
