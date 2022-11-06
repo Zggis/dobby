@@ -75,7 +75,7 @@ Most of Dobby's operations are done using the MKVToolNix suite which cannot be h
 ### FAQ
 **Question:** Does it work for movies?
 
-**Answer:** Right now Dobby only officially supports TV Shows, though if you get clever and rename your movies with matching SXXEXX keys in the title Dobby will attempt to merge them. I have found there is far more inconsistency with movie files since you often have versions that are different lengths, or different borders (IMAX). Dobby checks for these discrepancies between the Dolby Vision and HDR files and will fail a job if it cannot validate the files are the same. So if you attempt this do it with caution. I will try to add movie support in the future.
+**Answer:** Right now Dobby only officially supports TV Shows, though if you get clever and rename your movies with matching SXXEXX keys in the title Dobby will attempt to merge them. I have found there is far more inconsistency with movie files since you often have versions that are different lengths (theatrical, extended), or different borders (IMAX). Dobby checks for these discrepancies between the Dolby Vision and HDR files and will fail a job if it cannot validate the files are the same content. I plan on improving the matching logic to take other factors aside from filename into account, once I add this movies will be fully supported.
 ##
 **Q:** Why is it called Dobby?
 
