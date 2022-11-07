@@ -1,9 +1,6 @@
 package com.zggis.dobby.batch.readers;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import com.zggis.dobby.dto.batch.*;
 import org.slf4j.Logger;
@@ -58,6 +55,13 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
                     }
                     if (StringUtils.hasText(hevc.getKey()) && StringUtils.hasText(rpu.getKey()) && hevc.getKey().equals(rpu.getKey())) {
                         logger.debug("Matched TV show episode {} between {} and {}", rpu.getKey(), rpu.getName(), hevc.getName());
+                        currentGrade += 20;
+                    }
+                    String name1 = JobUtils.getWithoutPathAndExtension(rpu.getName());
+                    String name2 = JobUtils.getWithoutPathAndExtension(hevc.getName());
+                    Collection<String> titleMatches = JobUtils.getTitleMatches(name1, name2);
+                    if (!titleMatches.isEmpty()) {
+                        logger.debug("Matched media name {} between {} and {}", titleMatches.toArray(), rpu.getName(), hevc.getName());
                         currentGrade += 20;
                     }
                     if (currentGrade > bestMatchGrade) {
