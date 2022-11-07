@@ -7,8 +7,8 @@ public class BLRPUHevcFileDTO extends HevcFileDTO {
 
     private BorderInfoDTO borderInfo;
 
-    public BLRPUHevcFileDTO(String name, String key, MediaInfoDTO mediaInfo, boolean dolbyVision) {
-        super(name, key, mediaInfo, dolbyVision);
+    public BLRPUHevcFileDTO(String name, String key, MediaInfoDTO mediaInfo) {
+        super(name, key, mediaInfo);
     }
 
     public BorderInfoDTO getBorderInfo() {

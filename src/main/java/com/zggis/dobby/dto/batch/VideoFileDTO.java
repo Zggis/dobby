@@ -14,6 +14,10 @@ public class VideoFileDTO extends FileDTO {
         this.key = key;
     }
 
+    public VideoFileDTO(String name) {
+        this.name = name;
+    }
+
     public ActiveAreaDTO getActiveArea() {
         return activeArea;
     }

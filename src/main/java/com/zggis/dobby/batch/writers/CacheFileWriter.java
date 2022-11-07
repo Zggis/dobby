@@ -17,40 +17,42 @@ import com.zggis.dobby.dto.batch.IFile;
 
 public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExecutionListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(CacheFileWriter.class);
+    private static final Logger logger = LoggerFactory.getLogger(CacheFileWriter.class);
 
-	private List<T> files = new ArrayList<>();
+    private List<T> files = new ArrayList<>();
 
-	private JobCacheKey fileType;
+    private JobCacheKey fileType;
+    private boolean validate;
 
-	public CacheFileWriter(JobCacheKey fileType) {
-		this.fileType = fileType;
-	}
+    public CacheFileWriter(JobCacheKey fileType, boolean validate) {
+        this.fileType = fileType;
+        this.validate = validate;
+    }
 
-	@Override
-	public void write(List<? extends T> files) throws Exception {
-		for (T file : files) {
-			this.files.add(file);
-			logger.debug("Writing {} : {}", fileType.value, file.getName());
-		}
+    @Override
+    public void write(List<? extends T> files) throws Exception {
+        for (T file : files) {
+            this.files.add(file);
+            logger.debug("Writing {} : {}", fileType.value, file.getName());
+        }
 
-	}
+    }
 
-	@Override
-	public void beforeStep(StepExecution stepExecution) {
-	}
+    @Override
+    public void beforeStep(StepExecution stepExecution) {
+    }
 
-	@Override
-	public ExitStatus afterStep(StepExecution stepExecution) {
-		for (T file : files) {
-			if (!JobUtils.doesMediaFileExists(file.getName())) {
-				logger.error(ConsoleColor.RED.value + "Could not find processor result {}" + ConsoleColor.NONE.value,
-						file.getName());
-				return ExitStatus.FAILED;
-			}
-		}
-		stepExecution.getJobExecution().getExecutionContext().put(fileType.value, files);
-		return ExitStatus.COMPLETED;
-	}
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        for (T file : files) {
+            if (validate && !JobUtils.doesMediaFileExists(file.getName())) {
+                logger.error(ConsoleColor.RED.value + "Could not find processor result {}" + ConsoleColor.NONE.value,
+                        file.getName());
+                return ExitStatus.FAILED;
+            }
+        }
+        stepExecution.getJobExecution().getExecutionContext().put(fileType.value, files);
+        return ExitStatus.COMPLETED;
+    }
 
 }

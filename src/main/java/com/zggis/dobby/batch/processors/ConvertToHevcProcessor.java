@@ -62,7 +62,7 @@ public class ConvertToHevcProcessor implements ItemProcessor<VideoFileDTO, HevcF
 			logger.info("===EXECUTION SKIPPED===");
 		}
 		return new HevcFileDTO(outputDir + JobUtils.getWithoutPathAndExtension(file.getName()) + ".hevc", file.getKey(),
-				file.getMediaInfo(), dolbyVision);
+				file.getMediaInfo());
 	}
 
 	private HevcFileDTO processMP4(VideoFileDTO file) throws IOException {
@@ -79,6 +79,6 @@ public class ConvertToHevcProcessor implements ItemProcessor<VideoFileDTO, HevcF
 			logger.info("===EXECUTION SKIPPED===");
 		}
 		return new HevcFileDTO(outputDir + JobUtils.getWithoutPathAndExtension(file.getName()) + ".hevc", file.getKey(),
-				file.getMediaInfo(), dolbyVision);
+				file.getMediaInfo());
 	}
 }
