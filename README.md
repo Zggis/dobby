@@ -88,7 +88,7 @@ Most of Dobby's operations are done using the MKVToolNix suite which cannot be h
 ##
 **Q:** I started it, but there is no option for a WebGUI.
 
-**A:** Dobby has no GUI. When you start the app it will run the merge job and shutdown when it completes. The console logs should be more than sufficient to track the progress and status of a job. I will probably add some basic UI in the future, but will always allow for headless operation if desired.
+**A:** Dobby has no GUI. When you start the app it will run the merge job and shutdown when it completes. The console logs should be more than sufficient to track the progress and status of a job. I will be looking at adding a GUI, but given the architecture of Dobby I would probably publish that as a seprate container so users can choose which to use.
 ##
 **Q:** Is the merge lossless?
 
