@@ -99,6 +99,10 @@ Most of Dobby's operations are done using the MKVToolNix suite which cannot be h
 
 **A:** Right now Dobby only creates result files in MKV. While I could (and still might) add support to convert the final MKV result to MP4, there are plenty of other tools available that would do a better job of that.
 ##
+**Q:** What about 1080p content?
+
+**A:** Right now Dobby does a validation check to make sure the content is 2160p and will fail a job if one of the files is 1080p. While I have seen 1080p HDR content, I have never seen a 1080p Dolby Vision file. So this use case seems rare and I have no way to test it.
+##
 
 ### Additional Links
 These additional references should also help you:
