@@ -76,7 +76,7 @@ Most of Dobby's operations are done using the MKVToolNix suite which cannot be h
 ### FAQ
 **Question:** Does it work for movies?
 
-**Answer:** Yes, but I have found there can be inconsistency with movie files since you often have versions that are different lengths (theatrical, extended), or have different borders (IMAX). Dobby checks for these discrepancies between the Dolby Vision and HDR files and will fail a job if it cannot validate the files are the same content. The matching algorithm will take frame count into consideration along with Title. For files that don't have a SXX0XX episode key in the title, you should ensure there are matching portions in the filenames prior to the resolution (.2160p.) to get a match.
+**Answer:** Yes, but I have found there can be inconsistency with movie files since you often have versions that are different lengths (theatrical, extended), or have different borders (IMAX). Dobby checks for these discrepancies between the Dolby Vision and HDR files and will fail a job if it cannot validate the files are the same content. The matching algorithm will take frame count into consideration along with title. For files that don't have a SXX0XX episode key in the title, you should ensure there are matching portions in the filenames prior to the resolution (.2160p.) to get a match.
 ##
 **Q:** Why is it called Dobby?
 
