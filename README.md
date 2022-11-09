@@ -3,7 +3,7 @@
 ## <div align="right"><a href="https://www.buymeacoffee.com/zggis" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></div>
 
 ### Description
-Dobby will scan a media directory and look for MKV/MP4 Dolby Vision files along side MKV HDR video files for the same TV Show episode. The application will merge the files to create BL+RPU MKV files compatible with HDR and Dolby Vision. This allows you to enhance your media library by adding Dolby Vision at low cost of disk space and without the need to manage multiple file versions.
+Dobby will scan a media directory and look for MKV/MP4 Dolby Vision files along side MKV HDR video files for the same content. The application will merge the files to create BL+RPU MKV files compatible with HDR and Dolby Vision. This allows you to enhance your media library by adding Dolby Vision at low cost of disk space and without the need to manage multiple file versions.
 
 ### Installing
 #### Unraid
@@ -31,7 +31,7 @@ $ gradlew assemble
 
 ### Usage
 Dobby is a Spring Batch application and currently has no GUI. You place your media files in the configured directory, start Dobby and let it do its job. Watching the logs will give you an indication of how the job is progressing, and when it completes Dobby will place your results in the configured directory and shutdown to save resources until you summon him again.<br>
-I recommend you map Dobby to an empty directory to be used as its workspace. Move files to this directory as you need and start Dobby to process those files. I usually process one TV Show season per run, but you can do any number of episodes.
+I recommend you map Dobby to an empty directory to be used as its workspace. Move files to this directory as you need and start Dobby to process those files.
 #### Example media directory content:
 ```
 /data/media
@@ -47,7 +47,8 @@ I recommend you map Dobby to an empty directory to be used as its workspace. Mov
 └── dobby.log
 ```
 <br>
-In this example the SXXEXX portion of the filenames will be used to match episodes. The name of the TV Show 'Andor' is not considered, <strong>so for now you should only load the directory with one TV Show at a time.</strong> I have plans to improve upon this in the future.<br>
+In this example the SXXEXX portion of the filenames will be used to match TV show episodes, but Dobby will also look at frame count and title to match movies or other media.
+<br>
 Once the application completes you should have two BL+RPU MKV files in the configured RESULTS directory one for each episode. The originals will remain untouched. Temporary files will be created during the job in a configured TEMP directory.<br>
 The operations are disk space intensive, expect it to use 3x the disk space required by the directory prior to the job. By default temporary files are cleaned up after the job completes. Resulting files should be similar in size to the original HDR files, allowing you to save space by discarding the original Dolby Vision MKV/MP4 files afterward.<br>
  
@@ -75,7 +76,7 @@ Most of Dobby's operations are done using the MKVToolNix suite which cannot be h
 ### FAQ
 **Question:** Does it work for movies?
 
-**Answer:** Right now Dobby only officially supports TV Shows, though if you get clever and rename your movies with matching SXXEXX keys in the title Dobby will attempt to merge them. I have found there is far more inconsistency with movie files since you often have versions that are different lengths (theatrical, extended), or different borders (IMAX). Dobby checks for these discrepancies between the Dolby Vision and HDR files and will fail a job if it cannot validate the files are the same content. I plan on improving the matching logic to take other factors aside from filename into account, once I add this movies will be fully supported.
+**Answer:** Yes, but I have found there can be inconsistency with movie files since you often have versions that are different lengths (theatrical, extended), or have different borders (IMAX). Dobby checks for these discrepancies between the Dolby Vision and HDR files and will fail a job if it cannot validate the files are the same content. The matching algorithm will take frame count into consideration along with Title. For files that don't have a SXX0XX episode key in the title, you should ensure there are matching portions in the filenames prior to the resolution (.2160p.) to get a match.
 ##
 **Q:** Why is it called Dobby?
 
