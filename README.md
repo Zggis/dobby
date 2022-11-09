@@ -3,7 +3,7 @@
 ## <div align="right"><a href="https://www.buymeacoffee.com/zggis" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></div>
 
 ### Description
-Dobby will scan a media directory and look for MKV/MP4 Dolby Vision files along side MKV HDR video files for the same content. The application will merge the files to create BL+RPU MKV files compatible with HDR and Dolby Vision. This allows you to enhance your media library by adding Dolby Vision at low cost of disk space and without the need to manage multiple file versions.
+Dobby will scan a media directory and look for MKV/MP4 Dolby Vision files along side MKV HDR video files for the same content. The application will merge the files to create BL+RPU MKV files compatible with both HDR and Dolby Vision. This allows you to enhance your media library by adding Dolby Vision at low cost of disk space and without the need to manage multiple file versions.
 
 ### Installing
 #### Unraid
