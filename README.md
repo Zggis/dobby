@@ -65,8 +65,8 @@ Container Variable | Default Value | Description
 PUID | 0 (99 in Unraid template) | Controls the user the container runs as.
 PGID | 0 (100 in Unraid template) | Controls the group the container runs as.
 UMASK | 0000 | Controls the UMASK the container uses.
-RESULTS | /data/media/dolbyResults | Sets the directory relative to the container to save result files in. By default results are placed in a subdirectory of the configured WORKSPACE.
-TEMP | /data/media/dolbyTemp | Sets the directory relative to the container to save temporary files in. By default temporary files are placed in a subdirectory of the configured WORKSPACE.
+RESULTS | /data/media/dobbyResults | Sets the directory relative to the container to save result files in. By default results are placed in a subdirectory of the configured WORKSPACE.
+TEMP | /data/media/dobbyTemp | Sets the directory relative to the container to save temporary files in. By default temporary files are placed in a subdirectory of the configured WORKSPACE.
 LOG | /data/media | Sets the directory relative to the container to save the dobby.log file in. Logs are not appended, a new file is created and will overwrite an existing file each time.
 CLEANUP | true | Set to false if you would like the TEMP directory to be left alone after the job completes. This may be useful when debugging.
 
