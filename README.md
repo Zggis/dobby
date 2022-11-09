@@ -97,7 +97,7 @@ Most of Dobby's operations are done using the MKVToolNix suite which cannot be h
 ##
 **Q:** Can it output results in other formats, or just MKV?
 
-**A:** Right now Dobby only creates result files in MKV. I have plans to add support for outputting files in MP4. I will probably add support for a configuration file you can place in the WORKSPACE that will be read before the job, output format would be a parameter in that.
+**A:** Right now Dobby only creates result files in MKV. While I could (and still might) add support to convert the final MKV result to MP4, there are plenty of other tools available that would do a better job of that.
 ##
 
 ### Additional Links
