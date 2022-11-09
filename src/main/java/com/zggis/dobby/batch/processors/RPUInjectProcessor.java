@@ -49,7 +49,7 @@ public class RPUInjectProcessor implements ItemProcessor<VideoInjectionDTO, BLRP
 		BLRPUHevcFileDTO blrpuHevcFileDTO = new BLRPUHevcFileDTO(
 				outputDir + JobUtils.getWithoutPathAndExtension(injectDTO.getStandardHevcFile().getName())
 						+ "[BL+RPU].hevc",
-				injectDTO.getStandardHevcFile().getKey(), injectDTO.getStandardHevcFile().getMediaInfo(), true);
+				injectDTO.getStandardHevcFile().getKey(), injectDTO.getStandardHevcFile().getMediaInfo());
 		blrpuHevcFileDTO.setBorderInfo(injectDTO.getRpuFile().getBorderInfo());
 		return blrpuHevcFileDTO;
 	}

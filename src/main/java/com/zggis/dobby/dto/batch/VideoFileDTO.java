@@ -5,29 +5,33 @@ import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 
 public class VideoFileDTO extends FileDTO {
 
-	private ActiveAreaDTO activeArea;
-	
-	private MediaInfoDTO mediaInfo;
+    private ActiveAreaDTO activeArea;
 
-	public VideoFileDTO(String name, String key) {
-		this.name = name;
-		this.key = key;
-	}
+    private MediaInfoDTO mediaInfo;
 
-	public ActiveAreaDTO getActiveArea() {
-		return activeArea;
-	}
+    public VideoFileDTO(String name, String key) {
+        this.name = name;
+        this.key = key;
+    }
 
-	public void setActiveArea(ActiveAreaDTO activeArea) {
-		this.activeArea = activeArea;
-	}
+    public VideoFileDTO(String name) {
+        this.name = name;
+    }
 
-	public MediaInfoDTO getMediaInfo() {
-		return mediaInfo;
-	}
+    public ActiveAreaDTO getActiveArea() {
+        return activeArea;
+    }
 
-	public void setMediaInfo(MediaInfoDTO mediaInfo) {
-		this.mediaInfo = mediaInfo;
-	}
+    public void setActiveArea(ActiveAreaDTO activeArea) {
+        this.activeArea = activeArea;
+    }
+
+    public MediaInfoDTO getMediaInfo() {
+        return mediaInfo;
+    }
+
+    public void setMediaInfo(MediaInfoDTO mediaInfo) {
+        this.mediaInfo = mediaInfo;
+    }
 
 }

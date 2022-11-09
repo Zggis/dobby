@@ -36,11 +36,14 @@ public class DiskTVShowReader implements ItemReader<VideoFileDTO> {
 				if (child.getName().endsWith(".mkv") || child.getName().endsWith(".mp4")) {
 					logger.debug("Checking {}", child.getName());
 					Matcher m = EPISODE_NUM_REGEX.matcher(child.getName().toLowerCase());
+					VideoFileDTO newFile;
 					if (m.find()) {
 						String key = m.group(1) + m.group(2).substring(1, m.group(2).length()).replace("e", "-");
-						VideoFileDTO newFile = new VideoFileDTO(mediaDir + "/" + child.getName(), key);
-						mediaFiles.push(newFile);
+						newFile = new VideoFileDTO(mediaDir + "/" + child.getName(), key);
+					}else{
+						newFile = new VideoFileDTO(mediaDir + "/" + child.getName());
 					}
+					mediaFiles.push(newFile);
 				} else {
 					logger.warn(ConsoleColor.YELLOW.value + "{} is not a MP4 or MKV file, it wil be ignored."
 							+ ConsoleColor.NONE.value, child.getName());

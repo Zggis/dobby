@@ -2,18 +2,16 @@ package com.zggis.dobby.services;
 
 public interface MediaService {
 
-	public String getMediaDirectory();
+    String getMediaDirectory();
 
-	public String getTempDirectory();
+    String getTempDirectory();
 
-	public String getResultsDirectory();
+    String getResultsDirectory();
 
-	public void createResultsDirectory();
+    void createTempDirectory();
 
-	public void createTempDirectory();
+    void deleteTempDirectory();
 
-	public void deleteTempDirectory();
-
-	public boolean isCleanup();
+    boolean isCleanup();
 
 }
