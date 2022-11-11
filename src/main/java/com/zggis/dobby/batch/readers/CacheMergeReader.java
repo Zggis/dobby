@@ -17,6 +17,7 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
@@ -48,7 +49,7 @@ public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutio
             logger.error(ConsoleColor.RED.value + "Unable to fetch files needed for merge." + ConsoleColor.NONE.value);
             return;
         }
-
+        List<BLRPUHevcFileDTO> blrpuOriginal = new ArrayList<>(blrpus);
         for (VideoFileDTO stdFile : stdFiles) {
             if (!JobUtils.isDolbyVision(stdFile.getMediaInfo())) {
                 int bestMatchGrade = 0;
@@ -93,6 +94,8 @@ public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutio
                     + "Unable to find a HDR episode match for {}, check the logs above. This may be caused by a missing file, or a file that failed validation and was skipped as a result."
                     + ConsoleColor.YELLOW.value, blrpu.getName());
         }
+        blrpus.clear();
+        blrpus.addAll(blrpuOriginal);
     }
 
     @Override
