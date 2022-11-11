@@ -17,38 +17,38 @@ import com.zggis.dobby.services.MediaService;
 
 public class CacheCleanupReader implements ItemReader<FileDTO>, StepExecutionListener {
 
-	private Stack<FileDTO> items = new Stack<>();
+    private final Stack<FileDTO> items = new Stack<>();
 
-	private MediaService mediaService;
+    private final MediaService mediaService;
 
-	public CacheCleanupReader(MediaService mediaService) {
-		this.mediaService = mediaService;
-	}
+    public CacheCleanupReader(MediaService mediaService) {
+        this.mediaService = mediaService;
+    }
 
-	@Override
-	public FileDTO read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		if (!items.isEmpty()) {
-			return items.pop();
-		} else {
-			return null;
-		}
-	}
+    @Override
+    public FileDTO read() throws UnexpectedInputException, ParseException, NonTransientResourceException {
+        if (!items.isEmpty()) {
+            return items.pop();
+        } else {
+            return null;
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void beforeStep(StepExecution stepExecution) {
-		items.addAll((Collection<FileDTO>) stepExecution.getJobExecution().getExecutionContext()
-				.get(JobCacheKey.HEVCFILE.value));
-		items.addAll((Collection<FileDTO>) stepExecution.getJobExecution().getExecutionContext()
-				.get(JobCacheKey.BLRPUHEVC.value));
-		items.addAll(
-				(Collection<FileDTO>) stepExecution.getJobExecution().getExecutionContext().get(JobCacheKey.RPU.value));
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public void beforeStep(StepExecution stepExecution) {
+        items.addAll((Collection<FileDTO>) stepExecution.getJobExecution().getExecutionContext()
+                .get(JobCacheKey.HEVCFILE.value));
+        items.addAll((Collection<FileDTO>) stepExecution.getJobExecution().getExecutionContext()
+                .get(JobCacheKey.BLRPUHEVC.value));
+        items.addAll(
+                (Collection<FileDTO>) stepExecution.getJobExecution().getExecutionContext().get(JobCacheKey.RPU.value));
+    }
 
-	@Override
-	public ExitStatus afterStep(StepExecution stepExecution) {
-		mediaService.deleteTempDirectory();
-		return ExitStatus.COMPLETED;
-	}
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        mediaService.deleteTempDirectory();
+        return ExitStatus.COMPLETED;
+    }
 
 }

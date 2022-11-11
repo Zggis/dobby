@@ -6,7 +6,7 @@ public enum JobCacheKey {
 
 	public final String value;
 
-	private JobCacheKey(String label) {
+	JobCacheKey(String label) {
 		this.value = label;
 	}
 }

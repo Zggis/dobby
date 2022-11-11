@@ -77,9 +77,6 @@ public class BatchConfiguration {
     @Value("${hardware.acceleration}")
     private String hwaccel;
 
-    @Value("${cleanup:true}")
-    private boolean cleanup;
-
     @Autowired
     private MediaService mediaService;
 
@@ -120,7 +117,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemWriter<VideoFileDTO> tvShowStagedWriter() {
-        return new CacheFileWriter<VideoFileDTO>(JobCacheKey.MEDIAFILE, EXECUTE);
+        return new CacheFileWriter<>(JobCacheKey.MEDIAFILE, EXECUTE);
     }
 
     // step 1 - Populate active area
@@ -134,7 +131,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemReader<VideoFileDTO> stdMkvReader() {
-        return new CacheReader<VideoFileDTO>(JobCacheKey.MEDIAFILE);
+        return new CacheReader<>(JobCacheKey.MEDIAFILE);
     }
 
     @Bean
@@ -148,7 +145,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemWriter<VideoFileDTO> conversionWriter2() {
-        return new CacheFileWriter<VideoFileDTO>(JobCacheKey.MEDIAFILE, EXECUTE);
+        return new CacheFileWriter<>(JobCacheKey.MEDIAFILE, EXECUTE);
     }
 
     // Step 2 - Convert Mp4 and MKV to HEVC
@@ -161,7 +158,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemReader<VideoFileDTO> tvShowCacheReader() {
-        return new CacheReader<VideoFileDTO>(JobCacheKey.MEDIAFILE);
+        return new CacheReader<>(JobCacheKey.MEDIAFILE);
     }
 
     @Bean
@@ -171,7 +168,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemWriter<HevcFileDTO> tvShowHevcWriter() {
-        return new CacheFileWriter<HevcFileDTO>(JobCacheKey.HEVCFILE, EXECUTE);
+        return new CacheFileWriter<>(JobCacheKey.HEVCFILE, EXECUTE);
     }
 
     // Step 3 - Extract RPU from DV HEVC
@@ -185,7 +182,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemReader<HevcFileDTO> dvHevcReader() {
-        return new CacheReader<HevcFileDTO>(JobCacheKey.HEVCFILE);
+        return new CacheReader<>(JobCacheKey.HEVCFILE);
     }
 
     @Bean
@@ -195,7 +192,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemWriter<RPUFileDTO> dvHevcWriter() {
-        return new CacheFileWriter<RPUFileDTO>(JobCacheKey.RPU, EXECUTE);
+        return new CacheFileWriter<>(JobCacheKey.RPU, EXECUTE);
     }
 
     // Step 4 - Populate Border info
@@ -208,7 +205,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemReader<RPUFileDTO> rpuReader() {
-        return new CacheReader<RPUFileDTO>(JobCacheKey.RPU);
+        return new CacheReader<>(JobCacheKey.RPU);
     }
 
     @Bean
@@ -218,7 +215,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemWriter<RPUFileDTO> rpuWriter() {
-        return new CacheFileWriter<RPUFileDTO>(JobCacheKey.RPU, EXECUTE);
+        return new CacheFileWriter<>(JobCacheKey.RPU, EXECUTE);
     }
 
     // Step 5 - Inject RPU into standard HEVC
@@ -242,7 +239,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemWriter<BLRPUHevcFileDTO> blRPUCacheFileWriter() {
-        return new CacheFileWriter<BLRPUHevcFileDTO>(JobCacheKey.BLRPUHEVC, EXECUTE);
+        return new CacheFileWriter<>(JobCacheKey.BLRPUHEVC, EXECUTE);
     }
 
     // Step 6 - Validate merge
@@ -280,7 +277,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemReader<VideoMergeDTO> cacheMergeReader() {
-        return new CacheReader<VideoMergeDTO>(JobCacheKey.MERGE);
+        return new CacheReader<>(JobCacheKey.MERGE);
     }
 
     @Bean
@@ -290,7 +287,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemWriter<VideoFileDTO> blRPUMKVCacheFileWriter() {
-        return new CacheFileWriter<VideoFileDTO>(JobCacheKey.BLRPUMKV, EXECUTE);
+        return new CacheFileWriter<>(JobCacheKey.BLRPUMKV, EXECUTE);
     }
 
     // Step 8 - Validate Result
@@ -304,17 +301,17 @@ public class BatchConfiguration {
 
     @Bean
     public ItemReader<VideoFileDTO> resultReader() {
-        return new CacheReader<VideoFileDTO>(JobCacheKey.BLRPUMKV);
+        return new CacheReader<>(JobCacheKey.BLRPUMKV);
     }
 
     @Bean
     public ResultValidatorProcessor resultValidatorProcessor() {
-        return new ResultValidatorProcessor(pbservice, MEDIAINFO,EXECUTE);
+        return new ResultValidatorProcessor(pbservice, MEDIAINFO, EXECUTE);
     }
 
     @Bean
     public ItemWriter<VideoFileDTO> resultWriter() {
-        return new CacheFileWriter<VideoFileDTO>(JobCacheKey.BLRPUMKV, EXECUTE);
+        return new CacheFileWriter<>(JobCacheKey.BLRPUMKV, EXECUTE);
     }
 
     // Step 9 - Clean Up
@@ -338,7 +335,7 @@ public class BatchConfiguration {
 
     @Bean
     public ItemWriter<FileDTO> cleanupWriter() {
-        return new NoOperationWriter<FileDTO>();
+        return new NoOperationWriter<>();
     }
 
     @PreDestroy
@@ -347,6 +344,7 @@ public class BatchConfiguration {
         try {
             Thread.sleep(30000);
         } catch (InterruptedException e) {
+            logger.error(e.getMessage());
         }
     }
 

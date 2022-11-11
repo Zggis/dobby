@@ -88,24 +88,6 @@ public class JobUtils {
         return null;
     }
 
-    public static int getHeight(MediaInfoDTO mediaInfo) {
-        for (TrackDTO track : mediaInfo.media.track) {
-            if ("1".equals(track.iD)) {
-                return Integer.parseInt(track.height);
-            }
-        }
-        return -1;
-    }
-
-    public static int getWidth(MediaInfoDTO mediaInfo) {
-        for (TrackDTO track : mediaInfo.media.track) {
-            if ("1".equals(track.iD)) {
-                return Integer.parseInt(track.width);
-            }
-        }
-        return -1;
-    }
-
     public static String getResolution(MediaInfoDTO mediaInfo) {
         for (TrackDTO track : mediaInfo.media.track) {
             if ("1".equals(track.iD)) {
@@ -124,15 +106,6 @@ public class JobUtils {
         for (TrackDTO track : mediaInfo.media.track) {
             if ("1".equals(track.iD)) {
                 return track.hDR_Format;
-            }
-        }
-        return null;
-    }
-
-    public static String getHDRFormatCompatibility(MediaInfoDTO mediaInfo) {
-        for (TrackDTO track : mediaInfo.media.track) {
-            if ("1".equals(track.iD)) {
-                return track.hDR_Format_Compatibility;
             }
         }
         return null;

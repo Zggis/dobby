@@ -19,10 +19,10 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
 
     private static final Logger logger = LoggerFactory.getLogger(CacheFileWriter.class);
 
-    private List<T> files = new ArrayList<>();
+    private final List<T> files = new ArrayList<>();
 
-    private JobCacheKey fileType;
-    private boolean validate;
+    private final JobCacheKey fileType;
+    private final boolean validate;
 
     public CacheFileWriter(JobCacheKey fileType, boolean validate) {
         this.fileType = fileType;
@@ -30,7 +30,7 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
     }
 
     @Override
-    public void write(List<? extends T> files) throws Exception {
+    public void write(List<? extends T> files) {
         for (T file : files) {
             this.files.add(file);
             logger.debug("Writing {} : {}", fileType.value, file.getName());

@@ -15,32 +15,32 @@ import com.zggis.dobby.batch.JobCacheKey;
 
 public class CacheReader<T> implements ItemReader<T>, StepExecutionListener {
 
-	private JobCacheKey fileType;
+    private final JobCacheKey fileType;
 
-	private Stack<T> items = new Stack<>();
+    private final Stack<T> items = new Stack<>();
 
-	public CacheReader(JobCacheKey cacheKey) {
-		this.fileType = cacheKey;
-	}
+    public CacheReader(JobCacheKey cacheKey) {
+        this.fileType = cacheKey;
+    }
 
-	@Override
-	public T read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		if (!items.isEmpty()) {
-			return items.pop();
-		} else {
-			return null;
-		}
-	}
+    @Override
+    public T read() throws UnexpectedInputException, ParseException, NonTransientResourceException {
+        if (!items.isEmpty()) {
+            return items.pop();
+        } else {
+            return null;
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void beforeStep(StepExecution stepExecution) {
-		items.addAll((Collection<T>) stepExecution.getJobExecution().getExecutionContext().get(fileType.value));
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public void beforeStep(StepExecution stepExecution) {
+        items.addAll((Collection<T>) stepExecution.getJobExecution().getExecutionContext().get(fileType.value));
+    }
 
-	@Override
-	public ExitStatus afterStep(StepExecution stepExecution) {
-		return ExitStatus.COMPLETED;
-	}
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        return ExitStatus.COMPLETED;
+    }
 
 }
