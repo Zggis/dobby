@@ -74,7 +74,7 @@ public class JobUtils {
         try {
             p.waitFor();
         } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
         }
         return builder.toString();
     }
@@ -123,7 +123,7 @@ public class JobUtils {
     public static boolean isDolbyVision(MediaInfoDTO mediaInfo) {
         for (TrackDTO track : mediaInfo.media.track) {
             if ("1".equals(track.iD) || "Video".equalsIgnoreCase(track.type)) {
-                return track.hDR_Format.contains("Dolby Vision");
+                return track.hDR_Format != null && track.hDR_Format.contains("Dolby Vision");
             }
         }
         return false;
