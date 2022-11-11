@@ -9,19 +9,17 @@ import org.springframework.batch.item.ItemWriter;
 
 public class NoOperationWriter<T> implements ItemWriter<T>, StepExecutionListener {
 
-	@Override
-	public void write(List<? extends T> files) throws Exception {
-		return;
-	}
+    @Override
+    public void write(List<? extends T> files) {
+    }
 
-	@Override
-	public void beforeStep(StepExecution stepExecution) {
-		return;
-	}
+    @Override
+    public void beforeStep(StepExecution stepExecution) {
+    }
 
-	@Override
-	public ExitStatus afterStep(StepExecution stepExecution) {
-		return null;
-	}
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        return null;
+    }
 
 }

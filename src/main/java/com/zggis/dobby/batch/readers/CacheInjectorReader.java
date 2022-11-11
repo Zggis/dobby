@@ -22,11 +22,11 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
 
     private static final Logger logger = LoggerFactory.getLogger(CacheInjectorReader.class);
 
-    private Stack<VideoInjectionDTO> availableInjections = new Stack<>();
+    private final Stack<VideoInjectionDTO> availableInjections = new Stack<>();
 
     @Override
     public VideoInjectionDTO read()
-            throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+            throws UnexpectedInputException, ParseException, NonTransientResourceException {
         if (!availableInjections.isEmpty()) {
             return availableInjections.pop();
         } else {
@@ -41,6 +41,10 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
                 .get(JobCacheKey.RPU.value);
         List<HevcFileDTO> hevcs = (List<HevcFileDTO>) stepExecution.getJobExecution().getExecutionContext()
                 .get(JobCacheKey.HEVCFILE.value);
+        if (rpus == null || hevcs == null) {
+            logger.error(ConsoleColor.RED.value + "Unable to fetch files needed for injection." + ConsoleColor.NONE.value);
+            return;
+        }
         for (HevcFileDTO hevc : hevcs) {
             if (!JobUtils.isDolbyVision(hevc.getMediaInfo())) {
                 int bestMatchGrade = 0;

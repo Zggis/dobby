@@ -6,7 +6,7 @@ public enum ConsoleColor {
 
 	public final String value;
 
-	private ConsoleColor(String label) {
+	ConsoleColor(String label) {
 		this.value = label;
 	}
 }

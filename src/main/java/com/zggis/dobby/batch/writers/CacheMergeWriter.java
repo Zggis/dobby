@@ -18,13 +18,11 @@ public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutio
 
 	private static final Logger logger = LoggerFactory.getLogger(CacheMergeWriter.class);
 
-	private List<VideoMergeDTO> mergers = new ArrayList<>();
+	private final List<VideoMergeDTO> mergers = new ArrayList<>();
 
 	@Override
-	public void write(List<? extends VideoMergeDTO> items) throws Exception {
-		for (VideoMergeDTO conversion : items) {
-			mergers.add(conversion);
-		}
+	public void write(List<? extends VideoMergeDTO> items) {
+		mergers.addAll(items);
 
 	}
 

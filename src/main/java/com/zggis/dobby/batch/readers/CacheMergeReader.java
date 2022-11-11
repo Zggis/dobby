@@ -18,23 +18,18 @@ import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(CacheMergeReader.class);
 
-    private static final String DOLBY_VISION = "Dolby Vision";
-
-    private Stack<VideoMergeDTO> availableMerges = new Stack<>();
+    private final Stack<VideoMergeDTO> availableMerges = new Stack<>();
 
     @Override
     public VideoMergeDTO read()
-            throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+            throws UnexpectedInputException, ParseException, NonTransientResourceException {
         if (!availableMerges.isEmpty()) {
             return availableMerges.pop();
         } else {
@@ -49,6 +44,11 @@ public class CacheMergeReader implements ItemReader<VideoMergeDTO>, StepExecutio
                 .get(JobCacheKey.BLRPUHEVC.value);
         List<VideoFileDTO> stdFiles = (List<VideoFileDTO>) stepExecution.getJobExecution().getExecutionContext()
                 .get(JobCacheKey.MEDIAFILE.value);
+        if (blrpus == null || stdFiles == null) {
+            logger.error(ConsoleColor.RED.value + "Unable to fetch files needed for merge." + ConsoleColor.NONE.value);
+            return;
+        }
+
         for (VideoFileDTO stdFile : stdFiles) {
             if (!JobUtils.isDolbyVision(stdFile.getMediaInfo())) {
                 int bestMatchGrade = 0;
