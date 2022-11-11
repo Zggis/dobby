@@ -45,6 +45,7 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
             logger.error(ConsoleColor.RED.value + "Unable to fetch files needed for injection." + ConsoleColor.NONE.value);
             return;
         }
+        List<RPUFileDTO> rpusOriginal = new ArrayList<>(rpus);
         for (HevcFileDTO hevc : hevcs) {
             if (!JobUtils.isDolbyVision(hevc.getMediaInfo())) {
                 int bestMatchGrade = 0;
@@ -89,6 +90,8 @@ public class CacheInjectorReader implements ItemReader<VideoInjectionDTO>, StepE
                     + "Unable to find a HDR HEVC match for {}, check the logs above. This may be caused by a missing file, or a file that failed validation and was skipped as a result."
                     + ConsoleColor.YELLOW.value, rpu.getName());
         }
+        rpus.clear();
+        rpus.addAll(rpusOriginal);
     }
 
     @Override
