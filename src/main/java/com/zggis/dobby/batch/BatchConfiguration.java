@@ -77,6 +77,9 @@ public class BatchConfiguration {
     @Value("${hardware.acceleration}")
     private String hwaccel;
 
+    @Value("${active.area.validation}")
+    private boolean activeAreaValidation;
+
     @Autowired
     private MediaService mediaService;
 
@@ -137,9 +140,9 @@ public class BatchConfiguration {
     @Bean
     public MKVActiveAreaProcessor mkvActiveAreaProcessor() {
         if (StringUtils.hasText(hwaccel)) {
-            return new MKVActiveAreaProcessor(pbservice, FFMPEG + " " + hwaccel.trim(), EXECUTE);
+            return new MKVActiveAreaProcessor(pbservice, FFMPEG + " " + hwaccel.trim(), EXECUTE && activeAreaValidation);
         } else {
-            return new MKVActiveAreaProcessor(pbservice, FFMPEG, EXECUTE);
+            return new MKVActiveAreaProcessor(pbservice, FFMPEG, EXECUTE && activeAreaValidation);
         }
     }
 
@@ -258,7 +261,7 @@ public class BatchConfiguration {
 
     @Bean
     public MergeValidationProcessor mergeValidationProcessor() {
-        return new MergeValidationProcessor(EXECUTE);
+        return new MergeValidationProcessor(EXECUTE, activeAreaValidation);
     }
 
     @Bean
