@@ -77,7 +77,7 @@ public class BatchConfiguration {
     @Value("${hardware.acceleration}")
     private String hwaccel;
 
-    @Value("${AAVALIDATE}")
+    @Value("${active.area.validation}")
     private boolean activeAreaValidation;
 
     @Autowired
