@@ -69,6 +69,8 @@ RESULTS | /data/media/dobbyResults | Sets the directory relative to the containe
 TEMP | /data/media/dobbyTemp | Sets the directory relative to the container to save temporary files in. By default temporary files are placed in a subdirectory of the configured WORKSPACE.
 LOG | /data/media | Sets the directory relative to the container to save the dobby.log file in. Logs are not appended, a new file is created and will overwrite an existing file each time.
 CLEANUP | true | Set to false if you would like the TEMP directory to be left alone after the job completes. This may be useful when debugging.
+AAVALIDATE | true | Set to false if you would like to skip the active area validation step.
+LOGLEVEL | INFO | Set to DEBUG or TRACE to inclease the logging level for debugging.
 
 ### Hardware Acceleration
 Most of Dobby's operations are done using the MKVToolNix suite which cannot be hardware accelerated. There is one operation that uses FFMPEG to scan the active area of a video file in 4 sample locations. This operation is compatible with hardware acceleration. I have tested it using NVIDA GPU by setting container variable 'HWACC' to '-hwaccel cuda' and including '--runtime=nvidia' in the extra docker run parameters.
