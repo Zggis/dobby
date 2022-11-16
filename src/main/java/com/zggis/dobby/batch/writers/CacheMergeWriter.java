@@ -23,7 +23,6 @@ public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutio
 	@Override
 	public void write(List<? extends VideoMergeDTO> items) {
 		mergers.addAll(items);
-
 	}
 
 	@Override
