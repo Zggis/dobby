@@ -151,6 +151,16 @@ public class JobUtils {
         return -1;
     }
 
+    public static double getDuration(MediaInfoDTO mediaInfo) {
+        double duration = -1;
+        for (TrackDTO track : mediaInfo.media.track) {
+            if ("1".equals(track.iD)) {
+                duration = Double.parseDouble(track.duration);
+            }
+        }
+        return duration;
+    }
+
     public static Collection<String> getTitleMatches(String name1, String name2) {
         Collection<String> name1Tokens = new HashSet<>();
         Collection<String> name2Tokens = new HashSet<>();
