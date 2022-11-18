@@ -2,13 +2,13 @@ package com.zggis.dobby.dto;
 
 public class BorderInfoDTO {
 
-    private int topOffset = -1;
+    private int topOffset = 0;
 
-    private int bottomOffset = -1;
+    private int bottomOffset = 0;
 
-    private int leftOffset = -1;
+    private int leftOffset = 0;
 
-    private int rightOffset = -1;
+    private int rightOffset = 0;
 
     public BorderInfoDTO() {
         super();

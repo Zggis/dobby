@@ -35,7 +35,10 @@ public class CacheReader<T> implements ItemReader<T>, StepExecutionListener {
     @SuppressWarnings("unchecked")
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        items.addAll((Collection<T>) stepExecution.getJobExecution().getExecutionContext().get(fileType.value));
+        Collection<T> result = (Collection<T>) stepExecution.getJobExecution().getExecutionContext().get(fileType.value);
+        if (result != null) {
+            items.addAll(result);
+        }
     }
 
     @Override

@@ -16,31 +16,33 @@ import com.zggis.dobby.dto.batch.VideoMergeDTO;
 
 public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutionListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(CacheMergeWriter.class);
+    private static final Logger logger = LoggerFactory.getLogger(CacheMergeWriter.class);
 
-	private final List<VideoMergeDTO> mergers = new ArrayList<>();
+    private final List<VideoMergeDTO> mergers = new ArrayList<>();
 
-	@Override
-	public void write(List<? extends VideoMergeDTO> items) {
-		mergers.addAll(items);
-	}
+    @Override
+    public void write(List<? extends VideoMergeDTO> items) {
+        mergers.addAll(items);
+    }
 
-	@Override
-	public void beforeStep(StepExecution stepExecution) {
-	}
+    @Override
+    public void beforeStep(StepExecution stepExecution) {
+    }
 
-	@Override
-	public ExitStatus afterStep(StepExecution stepExecution) {
-		for (VideoMergeDTO merge : mergers) {
-			logger.debug("Writing merger {} to ...", merge.getBlRPUFile().getKey());
-			if (merge.getBlRPUFile() == null || merge.getStandardFile() == null) {
-				logger.error(ConsoleColor.RED.value + "Merge validation must have failed, job cannot proceed"
-						+ ConsoleColor.NONE.value);
-				return ExitStatus.FAILED;
-			}
-		}
-		stepExecution.getJobExecution().getExecutionContext().put(JobCacheKey.MERGE.value, mergers);
-		return ExitStatus.COMPLETED;
-	}
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        for (VideoMergeDTO merge : mergers) {
+            if (merge.getStandardFile() != null) {
+                logger.debug("Writing merger {} to ...", merge.getStandardFile().getKey());
+            }
+            if (!merge.isValid()) {
+                logger.error(ConsoleColor.RED.value + "Merge failed, job cannot proceed"
+                        + ConsoleColor.NONE.value);
+                return ExitStatus.FAILED;
+            }
+        }
+        stepExecution.getJobExecution().getExecutionContext().put(JobCacheKey.MERGE.value, mergers);
+        return ExitStatus.COMPLETED;
+    }
 
 }

@@ -33,8 +33,7 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
             return conversion;
         }
         if (!validateMergeCompatibility(conversion.getStandardFile(), conversion.getBlRPUFile())) {
-            conversion.setBlRPUFile(null);
-            conversion.setStandardFile(null);
+            conversion.setValid(false);
             return conversion;
         }
         if (activeAreaValidation) {
@@ -53,8 +52,7 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
                         ConsoleColor.RED.value + "Active area height failed to pass matching threshold {}%, aborting merge."
                                 + ConsoleColor.NONE.value,
                         heightPercent);
-                conversion.setBlRPUFile(null);
-                conversion.setStandardFile(null);
+                conversion.setValid(false);
                 return conversion;
             }
             int rpuActiveWidth = conversion.getBlRPUFile().getBorderInfo().getLeftOffset()
@@ -72,8 +70,7 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
                         ConsoleColor.RED.value + "Active area width failed to pass matching threshold {}%, aborting merge."
                                 + ConsoleColor.NONE.value,
                         widthPercent);
-                conversion.setBlRPUFile(null);
-                conversion.setStandardFile(null);
+                conversion.setValid(false);
                 return conversion;
             }
             logger.info(ConsoleColor.GREEN.value + "Active areas match [Height:{}% Width:{}%], proceeding with merge..."
