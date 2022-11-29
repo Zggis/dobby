@@ -1,4 +1,4 @@
-FROM linuxserver/ffmpeg:amd64-latest
+FROM linuxserver/ffmpeg:version-4.4-cli
 ###Base Image is Ubuntu Focal
 
 ###Install Required Linux Operations
@@ -61,6 +61,14 @@ RUN dos2unix /sbin/setuser
 RUN chmod +x /sbin/setuser
 RUN chmod +x /files/runas.sh
 RUN chmod a+x /files/start-dobby.sh
+
+# Remove packages not needed for runtime
+RUN apt -y purge subversion
+RUN apt -y purge gcc
+RUN apt -y purge make
+RUN apt -y purge wget
+RUN apt -y purge dos2unix
+RUN apt -y purge unzip
 
 # Run as root by default
 ENV PUID 0
