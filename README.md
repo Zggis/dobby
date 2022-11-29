@@ -72,6 +72,9 @@ CLEANUP | true | Set to false if you would like the TEMP directory to be left al
 AAVALIDATE | true | Set to false if you would like to skip the active area validation step.
 LOGLEVEL | INFO | Set to DEBUG or TRACE to inclease the logging level for debugging.
 
+### Notifications
+Dobby does not natively support notifications, <strong>however</strong> it can be used in conjunction with my other application <a href="https://github.com/Zggis/howler">Howler</a>, which montiors log files and sends out notifications for specific events. Howler works great with Dobby, almost like they are from the same world. You can use Dobby's log file directory as a <a href="https://github.com/Zggis/howler">Howler</a> data source, and setup an alert with trigger event [COMPLETED] to be notified when a job completes.
+
 ### Hardware Acceleration
 Most of Dobby's operations are done using the MKVToolNix suite which cannot be hardware accelerated. There is one operation that uses FFMPEG to scan the active area of a video file in 4 sample locations. This operation is compatible with hardware acceleration. I have tested it using NVIDA GPU by setting container variable 'HWACC' to '-hwaccel cuda' and including '--runtime=nvidia' in the extra docker run parameters.
 
