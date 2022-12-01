@@ -31,7 +31,7 @@ public class MyJobCompletionHandler extends JobExecutionListenerSupport {
     public void afterJob(JobExecution jobExecution) {
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             log.info(ConsoleColor.GREEN.value + "Job Completed Successfully!" + ConsoleColor.NONE.value);
-            log.info(ConsoleColor.CYAN.value + "Looking for a way to be notified when this job completes? Check out my other app Howler (https://github.com/Zggis/howler), it works great with Dobby." + ConsoleColor.NONE.value);
+            log.info(ConsoleColor.MAGENTA.value + "Looking for a way to be notified when this job completes? Check out my other app Howler (https://github.com/Zggis/howler), it works great with Dobby." + ConsoleColor.NONE.value);
         } else if (jobExecution.getStatus() == BatchStatus.FAILED) {
             log.info(ConsoleColor.RED.value + "Job Failed!" + ConsoleColor.NONE.value);
         }
