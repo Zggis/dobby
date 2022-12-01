@@ -167,7 +167,7 @@ public class JobUtils {
         for (String str : name1.split("\\.")) {
             Matcher m = EPISODE_NUM_REGEX.matcher(str.toLowerCase());
             if (!m.find() && !str.equalsIgnoreCase("2160p") && !str.equalsIgnoreCase("1080p")) {
-                name1Tokens.add(str);
+                name1Tokens.add(str.toLowerCase());
             } else {
                 break;
             }
@@ -175,7 +175,7 @@ public class JobUtils {
         for (String str : name2.split("\\.")) {
             Matcher m = EPISODE_NUM_REGEX.matcher(str.toLowerCase());
             if (!m.find() && !str.equalsIgnoreCase("2160p") && !str.equalsIgnoreCase("1080p")) {
-                name2Tokens.add(str);
+                name2Tokens.add(str.toLowerCase());
             } else {
                 break;
             }

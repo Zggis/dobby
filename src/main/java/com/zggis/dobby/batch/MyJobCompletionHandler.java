@@ -14,32 +14,33 @@ import com.zggis.dobby.services.MediaService;
 @Component
 public class MyJobCompletionHandler extends JobExecutionListenerSupport {
 
-	private static final Logger log = LoggerFactory.getLogger(MyJobCompletionHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(MyJobCompletionHandler.class);
 
-	@Autowired
-	private MediaService mediaService;
+    @Autowired
+    private MediaService mediaService;
 
-	@Value("${logging.file.name}")
-	private String logFileLocation;
+    @Value("${logging.file.name}")
+    private String logFileLocation;
 
-	@Autowired
-	public MyJobCompletionHandler() {
-		super();
-	}
+    @Autowired
+    public MyJobCompletionHandler() {
+        super();
+    }
 
-	@Override
-	public void afterJob(JobExecution jobExecution) {
-		if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-			log.info(ConsoleColor.GREEN.value + "Job Completed Successfully!" + ConsoleColor.NONE.value);
-		} else if (jobExecution.getStatus() == BatchStatus.FAILED) {
-			log.info(ConsoleColor.RED.value + "Job Failed!" + ConsoleColor.NONE.value);
-		}
-		log.info("Logs for this job can be found at {}", logFileLocation);
-	}
+    @Override
+    public void afterJob(JobExecution jobExecution) {
+        if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+            log.info(ConsoleColor.GREEN.value + "Job Completed Successfully!" + ConsoleColor.NONE.value);
+            log.info(ConsoleColor.MAGENTA.value + "Looking for a way to be notified when this job completes? Check out my other app Howler (https://github.com/Zggis/howler), it works great with Dobby." + ConsoleColor.NONE.value);
+        } else if (jobExecution.getStatus() == BatchStatus.FAILED) {
+            log.info(ConsoleColor.RED.value + "Job Failed!" + ConsoleColor.NONE.value);
+        }
+        log.info("Logs for this job can be found at {}", logFileLocation);
+    }
 
-	@Override
-	public void beforeJob(JobExecution jobExecution) {
-		mediaService.createTempDirectory();
-	}
+    @Override
+    public void beforeJob(JobExecution jobExecution) {
+        mediaService.createTempDirectory();
+    }
 
 }

@@ -343,9 +343,9 @@ public class BatchConfiguration {
 
     @PreDestroy
     public void exit() {
-        logger.info(ConsoleColor.YELLOW.value + "Application will exist in 30s" + ConsoleColor.NONE.value);
+        logger.info(ConsoleColor.YELLOW.value + "Application will exist in 5s" + ConsoleColor.NONE.value);
         try {
-            Thread.sleep(30000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             logger.error(e.getMessage());
         }
