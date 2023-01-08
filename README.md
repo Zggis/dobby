@@ -17,11 +17,6 @@ Windows Example
 ```
 $ docker run -v "C:/temp":/data/media zggis/dobby:latest
 ```
-#### Java App
-You can run Dobby as a Java program from command prompt. Java JRE 11 is required. To grab the latest Dobby JAR, navigate to the <a href="https://github.com/Zggis/dobby/releases">Releases</a> page. Run the JAR using this command.
-```
-$ java -jar -Dspring.profiles.active=local dobby.jar --media.dir=C:/temp
-```
 
 ### Building the Code
 Clone the repo and update application-local.properties as you need, then build with gradle. JAR should be placed in /build/libs
