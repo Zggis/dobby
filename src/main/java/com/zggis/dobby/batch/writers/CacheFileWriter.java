@@ -14,6 +14,7 @@ import com.zggis.dobby.batch.ConsoleColor;
 import com.zggis.dobby.batch.JobCacheKey;
 import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.dto.batch.IFile;
+import org.springframework.util.StringUtils;
 
 public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExecutionListener {
 
@@ -45,6 +46,9 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         for (T file : files) {
+            if(validate && !StringUtils.hasText(file.getName())){
+                return ExitStatus.FAILED;
+            }
             if (validate && !JobUtils.doesMediaFileExists(file.getName())) {
                 logger.error(ConsoleColor.RED.value + "Could not find processor result {}" + ConsoleColor.NONE.value,
                         file.getName());
