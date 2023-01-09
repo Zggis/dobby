@@ -132,7 +132,7 @@ public class JobUtils {
     public static boolean isBLRPU(MediaInfoDTO mediaInfo) {
         for (TrackDTO track : mediaInfo.media.track) {
             if ("1".equals(track.iD) || "Video".equalsIgnoreCase(track.type)) {
-                return track.hDR_Format != null && track.hDR_Format.contains("Dolby Vision") && track.hDR_Format.contains("SMPTE ST 2086");
+                return track.hDR_Format != null && track.hDR_Format.contains("Dolby Vision") && (track.hDR_Format.contains("SMPTE ST 2086") || track.hDR_Format.contains("SMPTE ST 2094"));
             }
         }
         return false;
