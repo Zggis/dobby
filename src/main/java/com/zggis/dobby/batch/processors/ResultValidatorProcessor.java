@@ -17,11 +17,11 @@ public class ResultValidatorProcessor implements ItemProcessor<VideoFileDTO, Vid
 
     private static final Logger logger = LoggerFactory.getLogger(ResultValidatorProcessor.class);
 
-    private String MEDIAINFO;
+    private final String MEDIAINFO;
 
-    private DoviProcessBuilder pbservice;
+    private final DoviProcessBuilder pbservice;
 
-    private boolean validate;
+    private final boolean validate;
 
     public ResultValidatorProcessor(DoviProcessBuilder pbservice, String MEDIAINFO, boolean validate) {
         this.MEDIAINFO = MEDIAINFO;
@@ -37,19 +37,18 @@ public class ResultValidatorProcessor implements ItemProcessor<VideoFileDTO, Vid
         logger.debug(cmd);
         ProcessBuilder pb = pbservice.get(cmd);
         pb.redirectErrorStream(true);
-        MediaInfoDTO mediaInfo = null;
         Process process = pb.start();
         String output = JobUtils.returnOutput(process);
-        mediaInfo = objectMapper.readValue(output, MediaInfoDTO.class);
+        MediaInfoDTO mediaInfo = objectMapper.readValue(output, MediaInfoDTO.class);
         if (validate && !JobUtils.isBLRPU(mediaInfo)) {
             logger.warn(ConsoleColor.RED.value + "Dolby Vision and HDR were not detected on {}, something went wrong."
                     + ConsoleColor.NONE.value, videoFile.getName());
-            return null;
+            return new VideoFileDTO(null);
         }
         if (validate && JobUtils.getFrameCount(mediaInfo) < 2000) {
             logger.warn(ConsoleColor.RED.value + "Not enough video frames detected for {}, something went wrong."
                     + ConsoleColor.NONE.value, videoFile.getName());
-            return null;
+            return new VideoFileDTO(null);
         }
         logger.info(ConsoleColor.GREEN.value + "Dolby Vision and HDR were detected on {}, result looks good!"
                 + ConsoleColor.NONE.value, JobUtils.getWithoutPath(videoFile.getName()));
