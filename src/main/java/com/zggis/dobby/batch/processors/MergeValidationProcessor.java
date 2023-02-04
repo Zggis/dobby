@@ -49,7 +49,7 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
                     / (double) conversion.getStandardFile().getActiveArea().getActiveAreaHeights().size()) * 100;
             if (matches < (conversion.getStandardFile().getActiveArea().getActiveAreaHeights().size() * 0.6)) {
                 logger.error(
-                        ConsoleColor.RED.value + "Active area height failed to pass matching threshold {}%, aborting merge."
+                        ConsoleColor.RED.value + "Active area height failed to pass matching threshold {}%, aborting merge. If you are confident the files should match you can disable this step by setting the environment variable AAVALIDATE to false."
                                 + ConsoleColor.NONE.value,
                         heightPercent);
                 conversion.setValid(false);
@@ -67,7 +67,7 @@ public class MergeValidationProcessor implements ItemProcessor<VideoMergeDTO, Vi
                     / (double) conversion.getStandardFile().getActiveArea().getActiveAreaWidths().size()) * 100;
             if (widthMatches < (conversion.getStandardFile().getActiveArea().getActiveAreaWidths().size() * 0.6)) {
                 logger.error(
-                        ConsoleColor.RED.value + "Active area width failed to pass matching threshold {}%, aborting merge."
+                        ConsoleColor.RED.value + "Active area width failed to pass matching threshold {}%, aborting merge. If you are confident the files should match you can disable this step by setting the environment variable AAVALIDATE to false."
                                 + ConsoleColor.NONE.value,
                         widthPercent);
                 conversion.setValid(false);
