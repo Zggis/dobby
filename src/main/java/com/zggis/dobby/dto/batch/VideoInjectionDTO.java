@@ -1,6 +1,8 @@
 package com.zggis.dobby.dto.batch;
 
-public class VideoInjectionDTO {
+import java.io.Serializable;
+
+public class VideoInjectionDTO implements Serializable {
 
     private final HevcFileDTO standardHevcFile;
 

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 
 import com.zggis.dobby.batch.ConsoleColor;
@@ -31,22 +32,13 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
     }
 
     @Override
-    public void write(List<? extends T> files) {
-        for (T file : files) {
-            this.files.add(file);
-            logger.debug("Writing {} : {}", fileType.value, file.getName());
-        }
-
-    }
-
-    @Override
     public void beforeStep(StepExecution stepExecution) {
     }
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         for (T file : files) {
-            if(validate && !StringUtils.hasText(file.getName())){
+            if (validate && !StringUtils.hasText(file.getName())) {
                 return ExitStatus.FAILED;
             }
             if (validate && !JobUtils.doesMediaFileExists(file.getName())) {
@@ -59,4 +51,11 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
         return ExitStatus.COMPLETED;
     }
 
+    @Override
+    public void write(Chunk<? extends T> chunk) throws Exception {
+        for (T file : chunk) {
+            this.files.add(file);
+            logger.debug("Writing {} : {}", fileType.value, file.getName());
+        }
+    }
 }

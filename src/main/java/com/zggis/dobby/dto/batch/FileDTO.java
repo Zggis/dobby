@@ -1,6 +1,8 @@
 package com.zggis.dobby.dto.batch;
 
-public abstract class FileDTO implements IFile {
+import java.io.Serializable;
+
+public abstract class FileDTO implements IFile, Serializable {
 
     protected String name;
 

@@ -1,6 +1,8 @@
 package com.zggis.dobby.dto;
 
-public class BorderInfoDTO {
+import java.io.Serializable;
+
+public class BorderInfoDTO implements Serializable {
 
     private int topOffset = 0;
 

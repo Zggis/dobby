@@ -1,6 +1,8 @@
 package com.zggis.dobby.dto.batch;
 
-public class VideoMergeDTO {
+import java.io.Serializable;
+
+public class VideoMergeDTO implements Serializable {
 
     private final VideoFileDTO standardFile;
 
