@@ -1,9 +1,10 @@
 package com.zggis.dobby.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActiveAreaDTO {
+public class ActiveAreaDTO implements Serializable {
 
     private List<Integer> activeAreaHeights = new ArrayList<>();
 

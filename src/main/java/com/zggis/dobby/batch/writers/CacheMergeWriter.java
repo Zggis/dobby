@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 
 import com.zggis.dobby.batch.ConsoleColor;
@@ -19,11 +20,6 @@ public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutio
     private static final Logger logger = LoggerFactory.getLogger(CacheMergeWriter.class);
 
     private final List<VideoMergeDTO> mergers = new ArrayList<>();
-
-    @Override
-    public void write(List<? extends VideoMergeDTO> items) {
-        mergers.addAll(items);
-    }
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
@@ -45,4 +41,8 @@ public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutio
         return ExitStatus.COMPLETED;
     }
 
+    @Override
+    public void write(Chunk<? extends VideoMergeDTO> chunk) {
+        mergers.addAll(chunk.getItems());
+    }
 }

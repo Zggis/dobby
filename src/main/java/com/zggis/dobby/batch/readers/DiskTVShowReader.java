@@ -1,6 +1,7 @@
 package com.zggis.dobby.batch.readers;
 
 import com.zggis.dobby.batch.ConsoleColor;
+import com.zggis.dobby.batch.JobUtils;
 import com.zggis.dobby.dto.batch.VideoFileDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class DiskTVShowReader implements ItemReader<VideoFileDTO> {
                         newFile = new VideoFileDTO(mediaDir + "/" + child.getName());
                     }
                     mediaFiles.push(newFile);
-                } else {
+                } else if (JobUtils.isDir(mediaDir + "/" + child.getName()) && !"dobby.log".equals(child.getName())) {
                     logger.warn(ConsoleColor.YELLOW.value + "{} is not a MP4 or MKV file, it wil be ignored."
                             + ConsoleColor.NONE.value, child.getName());
                 }

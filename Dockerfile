@@ -1,10 +1,10 @@
-FROM linuxserver/ffmpeg:version-4.4-cli
-###Base Image is Ubuntu Focal
+FROM linuxserver/ffmpeg:version-5.1.2-cli
+###Base Image is Ubuntu Jammy
 
 ###Install Required Linux Operations
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
-    apt-get -y install default-jre-headless subversion zlib1g-dev gcc make wget dpkg libcurl3-gnutls libmms0 dos2unix unzip && \
+    apt-get -y install openjdk-17-jre subversion zlib1g-dev gcc make wget dpkg libcurl3-gnutls libmms0 dos2unix unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -32,8 +32,8 @@ RUN cd /install/gpac ; make install
 
 ###Install MKVToolNix
 RUN wget -O /usr/share/keyrings/gpg-pub-moritzbunkus.gpg https://mkvtoolnix.download/gpg-pub-moritzbunkus.gpg
-RUN echo 'deb [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ focal main' >> /etc/apt/sources.list.d/mkvtoolnix.download.list
-RUN echo 'deb-src [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ focal main' >> /etc/apt/sources.list.d/mkvtoolnix.download.list
+RUN echo 'deb [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ jammy main' >> /etc/apt/sources.list.d/mkvtoolnix.download.list
+RUN echo 'deb-src [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ jammy main' >> /etc/apt/sources.list.d/mkvtoolnix.download.list
 RUN apt-get update && \
     apt-get -y install -f mkvtoolnix mkvtoolnix-gui && \
     apt-get clean && \
@@ -76,3 +76,4 @@ ENV UMASK 0000
 COPY /build/libs/*.jar app.jar
 
 ENTRYPOINT ["sh","-c","/files/runas.sh $PUID $PGID $UMASK /files/start-dobby.sh"]
+#ENTRYPOINT [ "bash" ]
