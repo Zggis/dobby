@@ -49,6 +49,11 @@ public class JobUtils {
         return fullFilename.substring(fullFilename.lastIndexOf('/') + 1);
     }
 
+    public static boolean isDir(String filename){
+        File file = new File(filename);
+        return file.exists() && !file.isDirectory();
+    }
+
     public static boolean doesMediaFileExists(String filename) {
         File file = new File(filename);
         if (file.exists() && !file.isDirectory()) {

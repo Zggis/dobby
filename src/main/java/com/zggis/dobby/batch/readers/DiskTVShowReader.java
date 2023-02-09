@@ -40,7 +40,7 @@ public class DiskTVShowReader implements ItemReader<VideoFileDTO> {
                         newFile = new VideoFileDTO(mediaDir + "/" + child.getName());
                     }
                     mediaFiles.push(newFile);
-                } else if (JobUtils.doesMediaFileExists(mediaDir + "/" + child.getName()) && !"dobby.log".equals(child.getName())) {
+                } else if (JobUtils.isDir(mediaDir + "/" + child.getName()) && !"dobby.log".equals(child.getName())) {
                     logger.warn(ConsoleColor.YELLOW.value + "{} is not a MP4 or MKV file, it wil be ignored."
                             + ConsoleColor.NONE.value, child.getName());
                 }
