@@ -14,8 +14,8 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.0'
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.2'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
   	implementation 'org.springframework.boot:spring-boot-starter-batch'
  	
  	runtimeOnly 'org.hsqldb:hsqldb'
