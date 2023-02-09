@@ -52,7 +52,7 @@ public class CacheFileWriter<T extends IFile> implements ItemWriter<T>, StepExec
     }
 
     @Override
-    public void write(Chunk<? extends T> chunk) throws Exception {
+    public void write(Chunk<? extends T> chunk) {
         for (T file : chunk) {
             this.files.add(file);
             logger.debug("Writing {} : {}", fileType.value, file.getName());

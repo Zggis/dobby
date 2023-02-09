@@ -3,8 +3,6 @@ package com.zggis.dobby.dto.batch;
 import com.zggis.dobby.dto.ActiveAreaDTO;
 import com.zggis.dobby.dto.mediainfo.MediaInfoDTO;
 
-import java.io.Serializable;
-
 public class VideoFileDTO extends FileDTO {
 
     private ActiveAreaDTO activeArea;

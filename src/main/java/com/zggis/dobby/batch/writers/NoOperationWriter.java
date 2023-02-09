@@ -1,7 +1,5 @@
 package com.zggis.dobby.batch.writers;
 
-import java.util.List;
-
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
@@ -20,7 +18,7 @@ public class NoOperationWriter<T> implements ItemWriter<T>, StepExecutionListene
     }
 
     @Override
-    public void write(Chunk<? extends T> chunk) throws Exception {
+    public void write(Chunk<? extends T> chunk) {
 
     }
 }

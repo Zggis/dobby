@@ -42,7 +42,7 @@ public class CacheMergeWriter implements ItemWriter<VideoMergeDTO>, StepExecutio
     }
 
     @Override
-    public void write(Chunk<? extends VideoMergeDTO> chunk) throws Exception {
+    public void write(Chunk<? extends VideoMergeDTO> chunk) {
         mergers.addAll(chunk.getItems());
     }
 }
