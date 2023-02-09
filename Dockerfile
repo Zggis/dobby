@@ -75,5 +75,5 @@ ENV UMASK 0000
 ###Install Dobby App
 COPY /build/libs/*.jar app.jar
 
-#ENTRYPOINT ["sh","-c","/files/runas.sh $PUID $PGID $UMASK /files/start-dobby.sh"]
-ENTRYPOINT [ "bash" ]
+ENTRYPOINT ["sh","-c","/files/runas.sh $PUID $PGID $UMASK /files/start-dobby.sh"]
+#ENTRYPOINT [ "bash" ]
