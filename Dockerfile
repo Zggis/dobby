@@ -1,10 +1,10 @@
 FROM linuxserver/ffmpeg:version-5.1.2-cli
-###Base Image is Ubuntu Focal
+###Base Image is Ubuntu Jammy
 
 ###Install Required Linux Operations
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
-    apt-get -y install default-jre-headless subversion zlib1g-dev gcc make wget dpkg libcurl3-gnutls libmms0 dos2unix unzip && \
+    apt-get -y install openjdk-17-jre subversion zlib1g-dev gcc make wget dpkg libcurl3-gnutls libmms0 dos2unix unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -75,4 +75,5 @@ ENV UMASK 0000
 ###Install Dobby App
 COPY /build/libs/*.jar app.jar
 
-ENTRYPOINT ["sh","-c","/files/runas.sh $PUID $PGID $UMASK /files/start-dobby.sh"]
+#ENTRYPOINT ["sh","-c","/files/runas.sh $PUID $PGID $UMASK /files/start-dobby.sh"]
+ENTRYPOINT [ "bash" ]
