@@ -62,6 +62,9 @@ public class BatchConfiguration {
     @Value("${active.area.validation}")
     private boolean activeAreaValidation;
 
+    @Value("${accept.blrpu.input}")
+    private boolean acceptBLRPUInput;
+
     @Autowired
     private MediaService mediaService;
 
@@ -100,7 +103,7 @@ public class BatchConfiguration {
 
     @Bean
     public MediaInfoProcessor mediaInfoProcessor() {
-        return new MediaInfoProcessor(pbservice, MEDIAINFO);
+        return new MediaInfoProcessor(pbservice, MEDIAINFO, acceptBLRPUInput);
     }
 
     @Bean
