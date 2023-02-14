@@ -43,7 +43,7 @@ public class MediaInfoProcessor implements ItemProcessor<VideoFileDTO, VideoFile
 		mediaInfo = objectMapper.readValue(output, MediaInfoDTO.class);
 		if (!acceptBLRPUInput && JobUtils.isBLRPU(mediaInfo)) {
 			logger.warn(ConsoleColor.YELLOW.value
-					+ "Dolby Vision and HDR were already detected on {}, this file will be ignored."
+					+ "Dolby Vision and HDR were already detected on {}, this file will be ignored. You can allow this file by setting ACCEPTBLRPUINPUT to true."
 					+ ConsoleColor.NONE.value, videoFile.getName());
 			return null;
 		}
