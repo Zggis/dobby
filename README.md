@@ -65,6 +65,7 @@ TEMP | /data/media/dobbyTemp | Sets the directory relative to the container to s
 LOG | /data/media | Sets the directory relative to the container to save the dobby.log file in. Logs are not appended, a new file is created and will overwrite an existing file each time.
 CLEANUP | true | Set to false if you would like the TEMP directory to be left alone after the job completes. This may be useful when debugging.
 AAVALIDATE | true | Set to false if you would like to skip the active area validation step.
+ACCEPTBLRPUINPUT | false | Set to true if you want to accept input files that already have DV+HDR. This is helpful if you are converting your original DV+HDR files and want to add the DV data back to the converted result from your original DV+HDR file. This process will likely require you to set AAVALIDATE to false.
 LOGLEVEL | INFO | Set to DEBUG or TRACE to inclease the logging level for debugging.
 
 ### Notifications
