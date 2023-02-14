@@ -17,13 +17,16 @@ public class MediaInfoProcessor implements ItemProcessor<VideoFileDTO, VideoFile
 
 	private static final Logger logger = LoggerFactory.getLogger(MediaInfoProcessor.class);
 
-	private String MEDIAINFO;
+	private final String MEDIAINFO;
 
-	private DoviProcessBuilder pbservice;
+	private final DoviProcessBuilder pbservice;
 
-	public MediaInfoProcessor(DoviProcessBuilder pbservice, String MEDIAINFO) {
+	private final boolean acceptBLRPUInput;
+
+	public MediaInfoProcessor(DoviProcessBuilder pbservice, String MEDIAINFO, boolean acceptBLRPUInput) {
 		this.MEDIAINFO = MEDIAINFO;
 		this.pbservice = pbservice;
+		this.acceptBLRPUInput = acceptBLRPUInput;
 	}
 
 	@Override
@@ -34,11 +37,11 @@ public class MediaInfoProcessor implements ItemProcessor<VideoFileDTO, VideoFile
 		logger.debug(cmd);
 		ProcessBuilder pb = pbservice.get(cmd);
 		pb.redirectErrorStream(true);
-		MediaInfoDTO mediaInfo = null;
+		MediaInfoDTO mediaInfo;
 		Process process = pb.start();
 		String output = JobUtils.returnOutput(process);
 		mediaInfo = objectMapper.readValue(output, MediaInfoDTO.class);
-		if (JobUtils.isBLRPU(mediaInfo)) {
+		if (!acceptBLRPUInput && JobUtils.isBLRPU(mediaInfo)) {
 			logger.warn(ConsoleColor.YELLOW.value
 					+ "Dolby Vision and HDR were already detected on {}, this file will be ignored."
 					+ ConsoleColor.NONE.value, videoFile.getName());

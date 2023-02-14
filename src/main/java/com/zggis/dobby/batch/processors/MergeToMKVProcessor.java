@@ -20,19 +20,19 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFi
 
 	private static final String DEFAULT_RESOLUTION = "24.000";
 
-	private String MKVMERGE;
+	private final String MKVMERGE;
 
-	private MediaService mediaService;
+	private final MediaService mediaService;
 
-	private DoviProcessBuilder pbservice;
+	private final DoviProcessBuilder pbservice;
 
-	private boolean execute;
+	private final boolean execute;
 
 	private static final Map<String, String> fpsMap;
 
 	static {
 		fpsMap = new HashMap<>();
-		fpsMap.put("23.976", "--default-duration 0:24000/1001p --fix-bitstream-timing-information 0:1");
+		fpsMap.put("23.976", "--default-duration 0:23.97602397602p --fix-bitstream-timing-information 0:1");
 		fpsMap.put(DEFAULT_RESOLUTION, "--default-duration 0:24p --fix-bitstream-timing-information 0:1");
 		fpsMap.put("25.000", "--default-duration 0:25p --fix-bitstream-timing-information 0:1");
 		fpsMap.put("30.000", "--default-duration 0:30p --fix-bitstream-timing-information 0:1");
@@ -52,7 +52,7 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFi
 	@Override
 	public VideoFileDTO process(VideoMergeDTO merge) throws IOException {
 		String frameRate = JobUtils.getFrameRate(merge.getStandardFile().getMediaInfo());
-		String duration = null;
+		String duration;
 		if (fpsMap.containsKey(frameRate)) {
 			duration = fpsMap.get(frameRate);
 		} else {
