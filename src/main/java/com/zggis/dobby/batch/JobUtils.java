@@ -23,6 +23,8 @@ public class JobUtils {
     private static final Logger logger = LoggerFactory.getLogger(JobUtils.class);
 
     private static final Pattern EPISODE_NUM_REGEX = Pattern.compile("^.*?s(\\d{2})((?:e\\d{2})+).*");
+    public static final String DOLBY_VISION = "Dolby Vision";
+    public static final String HDR_10 = "HDR10";
 
     public static void printOutput(Process p) throws IOException {
         StringBuilder builder = new StringBuilder();
@@ -49,7 +51,7 @@ public class JobUtils {
         return fullFilename.substring(fullFilename.lastIndexOf('/') + 1);
     }
 
-    public static boolean isDir(String filename){
+    public static boolean isDir(String filename) {
         File file = new File(filename);
         return file.exists() && !file.isDirectory();
     }
@@ -119,7 +121,7 @@ public class JobUtils {
     public static boolean isHDR(MediaInfoDTO mediaInfo) {
         for (TrackDTO track : mediaInfo.media.track) {
             if ("1".equals(track.iD) || "Video".equalsIgnoreCase(track.type)) {
-                return StringUtils.hasText(track.hDR_Format);
+                return StringUtils.hasText(track.hDR_Format_Compatibility) && track.hDR_Format_Compatibility.contains(HDR_10);
             }
         }
         return false;
@@ -128,7 +130,7 @@ public class JobUtils {
     public static boolean isDolbyVision(MediaInfoDTO mediaInfo) {
         for (TrackDTO track : mediaInfo.media.track) {
             if ("1".equals(track.iD) || "Video".equalsIgnoreCase(track.type)) {
-                return track.hDR_Format != null && track.hDR_Format.contains("Dolby Vision");
+                return StringUtils.hasText(track.hDR_Format) && track.hDR_Format.contains(DOLBY_VISION);
             }
         }
         return false;
@@ -137,7 +139,7 @@ public class JobUtils {
     public static boolean isBLRPU(MediaInfoDTO mediaInfo) {
         for (TrackDTO track : mediaInfo.media.track) {
             if ("1".equals(track.iD) || "Video".equalsIgnoreCase(track.type)) {
-                return track.hDR_Format != null && track.hDR_Format.contains("Dolby Vision") && (track.hDR_Format.contains("SMPTE ST 2086") || track.hDR_Format.contains("SMPTE ST 2094"));
+                return StringUtils.hasText(track.hDR_Format) && StringUtils.hasText(track.hDR_Format_Compatibility) && track.hDR_Format.contains(DOLBY_VISION) && track.hDR_Format_Compatibility.contains(HDR_10);
             }
         }
         return false;
