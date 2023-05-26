@@ -102,7 +102,7 @@ Most of Dobby's operations are done using the MKVToolNix suite which cannot be h
 ##
 **Q:** What about 1080p content?
 
-**A:** Right now Dobby does a validation check to make sure the content is 2160p and will fail a job if one of the files is 1080p. While I have seen 1080p HDR content, I have never seen a 1080p Dolby Vision file. So this use case seems rare and I have no way to test it.
+**A:** I have not done as much testing with 1080p files as I have with 2160p, but what limited testing I have done has shown 1080p files work provided both your HDR and Dolby Vision file are 1080p.
 ##
 
 ### Additional Links
