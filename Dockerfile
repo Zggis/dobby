@@ -6,10 +6,10 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get -y install subversion zlib1g-dev gcc make wget dpkg libcurl3-gnutls libmms0 dos2unix unzip python3
 
+###Install JAVA and required dependencies
 RUN apt-get -y install libc6-x32 libc6-i386 libasound2 libxi6 libxrender1 libxtst6 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
 RUN wget https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.deb
 RUN dpkg -i jdk-17_linux-x64_bin.deb
 RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-17/bin/java 1
