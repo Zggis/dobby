@@ -1,4 +1,4 @@
-FROM linuxserver/ffmpeg:version-5.1.2-cli
+FROM linuxserver/ffmpeg:version-6.1-cli
 ###Base Image is Ubuntu Jammy
 
 ###Install Required Linux Operations
@@ -25,6 +25,7 @@ COPY /linux/libmediainfo0v5_22.09-1_amd64.xUbuntu_20.04.deb /install/libmediainf
 COPY /linux/mediainfo_22.09-1_amd64.xUbuntu_20.04.deb /install/mediainfo.deb
 
 #DOVI_TOOL - https://github.com/quietvoid/dovi_tool
+#Current Version 2.1.0
 COPY /linux/dovi_tool /data/dovi_tool
 
 ###Open permissions for install
