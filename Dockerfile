@@ -1,4 +1,4 @@
-FROM linuxserver/ffmpeg:version-6.1-cli
+FROM linuxserver/ffmpeg:version-5.1.2-cli
 ###Base Image is Ubuntu Jammy
 
 ###Install Required Linux Operations
@@ -12,7 +12,8 @@ RUN apt-get -y install libc6-x32 libc6-i386 libasound2 libxi6 libxrender1 libxts
     rm -rf /var/lib/apt/lists/*
 RUN wget https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.deb
 RUN dpkg -i jdk-17_linux-x64_bin.deb
-RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-17/bin/java 1
+#If this command fails inspect the container and check the right hand side path 'jdk-17-oracle-x64'
+RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-17-oracle-x64/bin/java 1
 
 ###Copy Dependencies
 #MP4Box - Clone SVO Repo: https://svn.code.sf.net/p/gpac/code/trunk/gpac and zip it up
