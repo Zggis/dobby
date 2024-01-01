@@ -65,6 +65,9 @@ public class BatchConfiguration {
     @Value("${accept.blrpu.input}")
     private boolean acceptBLRPUInput;
 
+    @Value("${result.suffix}")
+    private String resultSuffix;
+
     @Autowired
     private MediaService mediaService;
 
@@ -264,7 +267,7 @@ public class BatchConfiguration {
 
     @Bean
     public MergeToMKVProcessor mergeToMkvProcessor() {
-        return new MergeToMKVProcessor(pbservice, mediaService, MKVMERGE, EXECUTE);
+        return new MergeToMKVProcessor(pbservice, mediaService, MKVMERGE, resultSuffix, EXECUTE);
     }
 
     @Bean
