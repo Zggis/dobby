@@ -66,6 +66,7 @@ LOG | /data/media | Sets the directory relative to the container to save the dob
 CLEANUP | true | Set to false if you would like the TEMP directory to be left alone after the job completes. This may be useful when debugging.
 AAVALIDATE | true | Set to false if you would like to skip the active area validation step.
 ACCEPTBLRPUINPUT | false | Set to true if you want to accept input files that already have DV+HDR. This is helpful if you are converting your original DV+HDR files and want to add the DV data back to the converted result from your original DV+HDR file. This process will likely require you to set AAVALIDATE to false.
+RESULTSUFFIX | [BL+RPU] | Value that is appended at the end of the result file.
 LOGLEVEL | INFO | Set to DEBUG or TRACE to inclease the logging level for debugging.
 
 ### Notifications
