@@ -1,5 +1,5 @@
-FROM linuxserver/ffmpeg:version-5.1.2-cli
-###Base Image is Ubuntu Jammy
+FROM linuxserver/ffmpeg:version-7.1-cli
+###Base Image is Ubuntu Noble
 
 ###Install Required Linux Operations
 RUN apt-get update && \
@@ -7,17 +7,15 @@ RUN apt-get update && \
     apt-get -y install subversion zlib1g-dev gcc make wget dpkg libcurl3-gnutls libmms0 dos2unix unzip python3
 
 ###Install JAVA and required dependencies
-RUN apt-get -y install libc6-x32 libc6-i386 libasound2 libxi6 libxrender1 libxtst6 && \
+RUN apt-get -y install libc6-x32 libc6-i386 libasound2t64 libxi6 libxrender1 libxtst6 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-RUN wget https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.deb
-RUN dpkg -i jdk-17_linux-x64_bin.deb
-#If this command fails inspect the container and check the right hand side path 'jdk-17-oracle-x64'
-RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-17-oracle-x64/bin/java 1
+RUN wget https://download.oracle.com/java/17/archive/jdk-17.0.12_linux-x64_bin.deb
+RUN dpkg -i jdk-17.0.12_linux-x64_bin.deb
 
 ###Copy Dependencies
-#MP4Box - Clone SVO Repo: https://svn.code.sf.net/p/gpac/code/trunk/gpac and zip it up
-COPY /linux/gpac.zip /install/gpac.zip
+#MP4Box - Download source zip here: https://github.com/gpac/gpac/releases (Don't forget to update version below, NEED TO RE-ZIP to match existing structure)
+COPY /linux/gpac-2.4.0.zip /install/gpac.zip
 RUN unzip /install/gpac.zip -d /install
 
 #MediaInfo - https://mediaarea.net/en/MediaInfo/Download/Ubuntu
@@ -40,8 +38,8 @@ RUN cd /install/gpac ; make install
 
 ###Install MKVToolNix
 RUN wget -O /usr/share/keyrings/gpg-pub-moritzbunkus.gpg https://mkvtoolnix.download/gpg-pub-moritzbunkus.gpg
-RUN echo 'deb [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ jammy main' >> /etc/apt/sources.list.d/mkvtoolnix.download.list
-RUN echo 'deb-src [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ jammy main' >> /etc/apt/sources.list.d/mkvtoolnix.download.list
+RUN echo 'deb [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ noble main' >> /etc/apt/sources.list.d/mkvtoolnix.download.list
+RUN echo 'deb-src [signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ noble main' >> /etc/apt/sources.list.d/mkvtoolnix.download.list
 RUN apt-get update && \
     apt-get -y install -f mkvtoolnix && \
     apt-get clean && \

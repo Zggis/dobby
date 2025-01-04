@@ -74,7 +74,8 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFi
             + " --output \""
             + mediaService.getResultsDirectory()
             + JobUtils.getWithoutPathAndExtension(merge.getStandardFile().getName())
-            + "[BL+RPU].mkv\""
+            + resultSuffix
+            + ".mkv\""
             + " --no-video \""
             + merge.getStandardFile().getName()
             + "\" --language 0:und --track-order 1:0 --compression 0:none "
@@ -94,7 +95,8 @@ public class MergeToMKVProcessor implements ItemProcessor<VideoMergeDTO, VideoFi
     return new VideoFileDTO(
         mediaService.getResultsDirectory()
             + JobUtils.getWithoutPathAndExtension(merge.getStandardFile().getName())
-            + "[BL+RPU].mkv",
+            + resultSuffix
+            + ".mkv",
         merge.getStandardFile().getKey());
   }
 }
