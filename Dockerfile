@@ -24,7 +24,7 @@ COPY /linux/libmediainfo0v5_22.09-1_amd64.xUbuntu_20.04.deb /install/libmediainf
 COPY /linux/mediainfo_22.09-1_amd64.xUbuntu_20.04.deb /install/mediainfo.deb
 
 #DOVI_TOOL - https://github.com/quietvoid/dovi_tool
-#Current Version 2.1.0
+#Current Version 2.1.3
 COPY /linux/dovi_tool /data/dovi_tool
 
 ###Open permissions for install
