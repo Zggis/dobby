@@ -24,7 +24,7 @@ public class DiskTVShowReader implements ItemReader<VideoFileDTO> {
     Stack<VideoFileDTO> mediaFiles = new Stack<>();
 
     public DiskTVShowReader(String mediaDir) {
-        logger.info("Scanning {} for TV shows...", mediaDir);
+        logger.info("Scanning {} for files...", mediaDir);
         File dir = new File(mediaDir);
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
