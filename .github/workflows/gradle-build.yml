@@ -41,7 +41,7 @@ jobs:
           tags: zggis/dobby:${{ inputs.name }}
           
       - name: Publish JAR
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: Dobby JAR
           path: build/libs/dobby*.jar
